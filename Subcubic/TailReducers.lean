@@ -1,0 +1,1276 @@
+import Subcubic.Pattern
+
+open Set
+
+namespace Subcubic
+
+/-- Names of the positive tail reducers in the supplied catalog. -/
+inductive PositiveTailReducerName
+  | a
+  | b
+  | c
+  | d
+  | e
+  | f
+  | g
+  | h
+  | i
+  | j
+  | k
+  | l
+  | m
+  | n
+  | o
+  | p
+  | q
+  | r
+  | s
+  | t
+  | u
+  | v
+  | w
+  | x
+  deriving DecidableEq, Repr
+
+/-- Exact graph and color data for every positive tail reducer. -/
+def positiveTailReducerData : PositiveTailReducerName → PatternData
+  | .a => {
+      label := "a+"
+      vertexCount := 4
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 2), -- bc
+        (1, 3), -- bd
+        (2, 3) -- cd
+      ]
+    }
+  | .b => {
+      label := "b+"
+      vertexCount := 4
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 2), -- bc
+        (1, 3) -- bd
+      ]
+    }
+  | .c => {
+      label := "c+"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 2), -- ac
+        (0, 4), -- ae
+        (1, 3), -- bd
+        (1, 4), -- be
+        (2, 3) -- cd
+      ]
+    }
+  | .d => {
+      label := "d+"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 3), -- bd
+        (1, 4), -- be
+        (2, 3) -- cd
+      ]
+    }
+  | .e => {
+      label := "e+"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 4), -- ae
+        (1, 2), -- bc
+        (1, 4), -- be
+        (2, 3) -- cd
+      ]
+    }
+  | .f => {
+      label := "f+"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 4), -- ae
+        (1, 3), -- bd
+        (1, 4), -- be
+        (2, 3) -- cd
+      ]
+    }
+  | .g => {
+      label := "g+"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 3), -- bd
+        (1, 4) -- be
+      ]
+    }
+  | .h => {
+      label := "h+"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 3), -- bd
+        (1, 4) -- be
+      ]
+    }
+  | .i => {
+      label := "i+"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 4), -- be
+        (1, 5), -- bf
+        (3, 4) -- de
+      ]
+    }
+  | .j => {
+      label := "j+"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 3), -- bd
+        (1, 5), -- bf
+        (3, 4) -- de
+      ]
+    }
+  | .k => {
+      label := "k+"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 4), -- be
+        (1, 5) -- bf
+      ]
+    }
+  | .l => {
+      label := "l+"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 3), -- bd
+        (1, 4), -- be
+        (4, 5) -- ef
+      ]
+      reddish := [0] -- a
+    }
+  | .m => {
+      label := "m+"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 3), -- bd
+        (1, 5), -- bf
+        (4, 5) -- ef
+      ]
+      reddish := [0] -- a
+    }
+  | .n => {
+      label := "n+"
+      vertexCount := 7
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 3), -- bd
+        (1, 5), -- bf
+        (2, 4), -- ce
+        (2, 6), -- cg
+        (5, 6) -- fg
+      ]
+    }
+  | .o => {
+      label := "o+"
+      vertexCount := 7
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 2), -- bc
+        (1, 4), -- be
+        (1, 6), -- bg
+        (2, 5), -- cf
+        (2, 6), -- cg
+        (3, 4) -- de
+      ]
+      reddish := [0] -- a
+    }
+  | .p => {
+      label := "p+"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 6), -- bg
+        (2, 5), -- cf
+        (2, 7), -- ch
+        (4, 5) -- ef
+      ]
+      reddish := [0] -- a
+    }
+  | .q => {
+      label := "q+"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 2), -- bc
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 6), -- cg
+        (2, 7), -- ch
+        (4, 5) -- ef
+      ]
+      reddish := [0] -- a
+    }
+  | .r => {
+      label := "r+"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 6), -- ag
+        (1, 3), -- bd
+        (1, 5), -- bf
+        (2, 7), -- ch
+        (2, 8), -- ci
+        (4, 5), -- ef
+        (6, 7) -- gh
+      ]
+      reddish := [0] -- a
+    }
+  | .s => {
+      label := "s+"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 6), -- ag
+        (1, 2), -- bc
+        (1, 6), -- bg
+        (1, 7), -- bh
+        (2, 7), -- ch
+        (2, 8), -- ci
+        (5, 6) -- fg
+      ]
+      reddish := [0] -- a
+    }
+  | .t => {
+      label := "t+"
+      vertexCount := 10
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i, j.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 7), -- ah
+        (1, 2), -- bc
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 7), -- ch
+        (2, 9), -- cj
+        (7, 8) -- hi
+      ]
+      reddish := [0] -- a
+    }
+  | .u => {
+      label := "u+"
+      vertexCount := 10
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j.
+      edges := [
+        (0, 1), -- ab
+        (0, 7), -- ah
+        (0, 8), -- ai
+        (1, 2), -- bc
+        (1, 8), -- bi
+        (2, 3), -- cd
+        (3, 4), -- de
+        (4, 5), -- ef
+        (4, 9), -- ej
+        (5, 6), -- fg
+        (5, 9), -- fj
+        (6, 7) -- gh
+      ]
+    }
+  | .v => {
+      label := "v+"
+      vertexCount := 11
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k.
+      edges := [
+        (0, 1), -- ab
+        (0, 7), -- ah
+        (0, 8), -- ai
+        (1, 2), -- bc
+        (1, 9), -- bj
+        (2, 3), -- cd
+        (3, 4), -- de
+        (4, 5), -- ef
+        (4, 10), -- ek
+        (5, 6), -- fg
+        (5, 10), -- fk
+        (6, 7) -- gh
+      ]
+    }
+  | .w => {
+      label := "w+"
+      vertexCount := 11
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k.
+      edges := [
+        (0, 1), -- ab
+        (0, 4), -- ae
+        (0, 6), -- ag
+        (1, 5), -- bf
+        (1, 7), -- bh
+        (2, 6), -- cg
+        (2, 9), -- cj
+        (3, 7), -- dh
+        (3, 8), -- di
+        (3, 10), -- dk
+        (7, 8), -- hi
+        (9, 10) -- jk
+      ]
+      reddish := [3] -- d
+    }
+  | .x => {
+      label := "x+"
+      vertexCount := 12
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k, l.
+      edges := [
+        (0, 1), -- ab
+        (0, 7), -- ah
+        (0, 8), -- ai
+        (1, 2), -- bc
+        (1, 9), -- bj
+        (2, 3), -- cd
+        (3, 4), -- de
+        (4, 5), -- ef
+        (4, 10), -- ek
+        (5, 6), -- fg
+        (5, 11), -- fl
+        (6, 7) -- gh
+      ]
+    }
+
+/-- The exact colored induced pattern associated with a positive reducer name. -/
+def positiveTailReducer (name : PositiveTailReducerName) : ColoredPattern :=
+  (positiveTailReducerData name).toPattern
+
+/-- Every listed positive reducer graph is subcubic. -/
+theorem positiveTailReducer_subcubic (name : PositiveTailReducerName) :
+    IsSubcubic (positiveTailReducer name).graph := by
+  cases name <;>
+    change IsSubcubic (graphOfEdges _) <;>
+    intro v <;>
+    unfold vertexDegree <;>
+    rw [Set.ncard_eq_toFinset_card'] <;>
+    native_decide +revert
+
+/-- Names of the negative tail reducers in the supplied catalog. -/
+inductive NegativeTailReducerName
+  | a0
+  | a1
+  | b
+  | c
+  | d
+  | e
+  | f
+  | g
+  | h
+  | i
+  | j
+  | k
+  | l
+  | m
+  | n
+  | o
+  | p
+  | q
+  | r
+  | s
+  | t
+  | u
+  | v
+  | w0
+  | w1
+  | x
+  | y
+  | z
+  | aa
+  | ab
+  | ac
+  | ad
+  | ae
+  | af
+  | ag
+  | ah
+  | ai
+  | aj
+  | ak
+  | al
+  | am
+  | an
+  deriving DecidableEq, Repr
+
+/-- Exact graph and color data for every negative tail reducer. -/
+def negativeTailReducerData : NegativeTailReducerName → PatternData
+  | .a0 => {
+      label := "a0-"
+      vertexCount := 3
+      sideCount := 1
+      -- Red side: a. Blue side: b, c.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (1, 2) -- bc
+      ]
+      reddish := [0] -- a
+    }
+  | .a1 => {
+      label := "a1-"
+      vertexCount := 3
+      sideCount := 1
+      -- Red side: a. Blue side: b, c.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (1, 2) -- bc
+      ]
+    }
+  | .b => {
+      label := "b-"
+      vertexCount := 4
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 2), -- bc
+        (1, 3) -- bd
+      ]
+    }
+  | .c => {
+      label := "c-"
+      vertexCount := 4
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 2), -- bc
+        (1, 3) -- bd
+      ]
+    }
+  | .d => {
+      label := "d-"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 3), -- bd
+        (1, 4) -- be
+      ]
+    }
+  | .e => {
+      label := "e-"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 2), -- bc
+        (1, 3), -- bd
+        (1, 4) -- be
+      ]
+      reddish := [1] -- b
+    }
+  | .f => {
+      label := "f-"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 4), -- be
+        (1, 5), -- bf
+        (3, 4) -- de
+      ]
+    }
+  | .g => {
+      label := "g-"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 1), -- ab
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 4), -- be
+        (1, 5) -- bf
+      ]
+    }
+  | .h => {
+      label := "h-"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 3), -- bd
+        (1, 4), -- be
+        (1, 5), -- bf
+        (4, 5) -- ef
+      ]
+      reddish := [1] -- b
+    }
+  | .i => {
+      label := "i-"
+      vertexCount := 6
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 3), -- bd
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 3) -- cd
+      ]
+      reddish := [1] -- b
+    }
+  | .j => {
+      label := "j-"
+      vertexCount := 7
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e, f, g.
+      edges := [
+        (0, 2), -- ac
+        (0, 4), -- ae
+        (1, 4), -- be
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (3, 4), -- de
+        (5, 6) -- fg
+      ]
+      reddish := [1] -- b
+    }
+  | .k => {
+      label := "k-"
+      vertexCount := 6
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 3), -- cd
+        (2, 4), -- ce
+        (2, 5), -- cf
+        (3, 4) -- de
+      ]
+      reddish := [2] -- c
+    }
+  | .l => {
+      label := "l-"
+      vertexCount := 7
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 3), -- bd
+        (1, 5), -- bf
+        (2, 4), -- ce
+        (2, 6), -- cg
+        (5, 6) -- fg
+      ]
+    }
+  | .m => {
+      label := "m-"
+      vertexCount := 7
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 5), -- cf
+        (2, 6), -- cg
+        (3, 4) -- de
+      ]
+    }
+  | .n => {
+      label := "n-"
+      vertexCount := 7
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 3), -- cd
+        (2, 4), -- ce
+        (2, 6), -- cg
+        (3, 4) -- de
+      ]
+      reddish := [2] -- c
+    }
+  | .o => {
+      label := "o-"
+      vertexCount := 7
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 3), -- bd
+        (1, 4), -- be
+        (2, 5), -- cf
+        (2, 6), -- cg
+        (4, 5) -- ef
+      ]
+      reddish := [0] -- a
+    }
+  | .p => {
+      label := "p-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 6), -- bg
+        (2, 5), -- cf
+        (2, 7), -- ch
+        (5, 6) -- fg
+      ]
+      reddish := [0] -- a
+    }
+  | .q => {
+      label := "q-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 6), -- bg
+        (2, 5), -- cf
+        (2, 7), -- ch
+        (4, 5) -- ef
+      ]
+      reddish := [0] -- a
+    }
+  | .r => {
+      label := "r-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 3), -- cd
+        (2, 5), -- cf
+        (2, 7), -- ch
+        (5, 6) -- fg
+      ]
+      reddish := [2] -- c
+    }
+  | .s => {
+      label := "s-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 5), -- cf
+        (2, 6), -- cg
+        (2, 7) -- ch
+      ]
+      reddish := [2] -- c
+    }
+  | .t => {
+      label := "t-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 7), -- ah
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 3), -- cd
+        (2, 5), -- cf
+        (2, 7), -- ch
+        (5, 6) -- fg
+      ]
+      reddish := [2] -- c
+    }
+  | .u => {
+      label := "u-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 6), -- cg
+        (2, 7), -- ch
+        (5, 6) -- fg
+      ]
+      reddish := [0, 1] -- a, b
+    }
+  | .v => {
+      label := "v-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 3), -- bd
+        (1, 4), -- be
+        (1, 6), -- bg
+        (2, 5), -- cf
+        (2, 7), -- ch
+        (6, 7) -- gh
+      ]
+      reddish := [0, 1] -- a, b
+    }
+  | .w0 => {
+      label := "w0-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 6), -- cg
+        (2, 7), -- ch
+        (5, 6) -- fg
+      ]
+      reddish := [0, 1] -- a, b
+    }
+  | .w1 => {
+      label := "w1-"
+      vertexCount := 8
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h.
+      edges := [
+        (0, 3), -- ad
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 6), -- cg
+        (2, 7), -- ch
+        (5, 6) -- fg
+      ]
+      reddish := [1] -- b
+    }
+  | .x => {
+      label := "x-"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 1), -- ab
+        (0, 3), -- ad
+        (0, 5), -- af
+        (1, 3), -- bd
+        (1, 6), -- bg
+        (2, 5), -- cf
+        (2, 6), -- cg
+        (2, 8), -- ci
+        (4, 5), -- ef
+        (6, 7) -- gh
+      ]
+      reddish := [2] -- c
+    }
+  | .y => {
+      label := "y-"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 4), -- be
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 6), -- cg
+        (2, 8), -- ci
+        (6, 7) -- gh
+      ]
+      reddish := [1] -- b
+    }
+  | .z => {
+      label := "z-"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 6), -- ag
+        (1, 2), -- bc
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 6), -- cg
+        (2, 8), -- ci
+        (6, 7) -- gh
+      ]
+      reddish := [0] -- a
+    }
+  | .aa => {
+      label := "aa-"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (1, 4), -- be
+        (1, 5), -- bf
+        (2, 6), -- cg
+        (2, 7), -- ch
+        (2, 8), -- ci
+        (5, 6), -- fg
+        (7, 8) -- hi
+      ]
+    }
+  | .ab => {
+      label := "ab-"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 4), -- be
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 7), -- ch
+        (2, 8), -- ci
+        (6, 7) -- gh
+      ]
+    }
+  | .ac => {
+      label := "ac-"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 5), -- af
+        (0, 6), -- ag
+        (1, 4), -- be
+        (1, 5), -- bf
+        (1, 7), -- bh
+        (2, 6), -- cg
+        (2, 8), -- ci
+        (7, 8) -- hi
+      ]
+    }
+  | .ad => {
+      label := "ad-"
+      vertexCount := 9
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 5), -- af
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (1, 7), -- bh
+        (2, 4), -- ce
+        (2, 8), -- ci
+        (6, 7) -- gh
+      ]
+    }
+  | .ae => {
+      label := "ae-"
+      vertexCount := 10
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i, j.
+      edges := [
+        (0, 1), -- ab
+        (0, 4), -- ae
+        (0, 6), -- ag
+        (1, 3), -- bd
+        (1, 7), -- bh
+        (2, 6), -- cg
+        (2, 7), -- ch
+        (2, 9), -- cj
+        (5, 6), -- fg
+        (7, 8) -- hi
+      ]
+    }
+  | .af => {
+      label := "af-"
+      vertexCount := 10
+      sideCount := 3
+      -- Red side: a, b, c. Blue side: d, e, f, g, h, i, j.
+      edges := [
+        (0, 3), -- ad
+        (0, 4), -- ae
+        (0, 7), -- ah
+        (1, 2), -- bc
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 7), -- ch
+        (2, 9), -- cj
+        (7, 8) -- hi
+      ]
+    }
+  | .ag => {
+      label := "ag-"
+      vertexCount := 10
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j.
+      edges := [
+        (0, 4), -- ae
+        (0, 6), -- ag
+        (0, 9), -- aj
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (1, 7), -- bh
+        (2, 3), -- cd
+        (2, 7), -- ch
+        (2, 8), -- ci
+        (3, 8), -- di
+        (3, 9), -- dj
+        (6, 7) -- gh
+      ]
+    }
+  | .ah => {
+      label := "ah-"
+      vertexCount := 10
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j.
+      edges := [
+        (0, 4), -- ae
+        (0, 6), -- ag
+        (0, 9), -- aj
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (1, 7), -- bh
+        (2, 3), -- cd
+        (2, 7), -- ch
+        (2, 8), -- ci
+        (3, 4), -- de
+        (3, 9), -- dj
+        (6, 7) -- gh
+      ]
+    }
+  | .ai => {
+      label := "ai-"
+      vertexCount := 11
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k.
+      edges := [
+        (0, 1), -- ab
+        (0, 4), -- ae
+        (0, 9), -- aj
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 3), -- cd
+        (2, 7), -- ch
+        (2, 10), -- ck
+        (3, 8), -- di
+        (3, 10), -- dk
+        (6, 7), -- gh
+        (8, 9) -- ij
+      ]
+    }
+  | .aj => {
+      label := "aj-"
+      vertexCount := 12
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k, l.
+      edges := [
+        (0, 1), -- ab
+        (0, 4), -- ae
+        (0, 9), -- aj
+        (1, 5), -- bf
+        (1, 6), -- bg
+        (2, 3), -- cd
+        (2, 7), -- ch
+        (2, 11), -- cl
+        (3, 8), -- di
+        (3, 10), -- dk
+        (6, 7), -- gh
+        (8, 9) -- ij
+      ]
+    }
+  | .ak => {
+      label := "ak-"
+      vertexCount := 12
+      sideCount := 4
+      -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k, l.
+      edges := [
+        (0, 4), -- ae
+        (0, 5), -- af
+        (0, 7), -- ah
+        (1, 6), -- bg
+        (1, 7), -- bh
+        (1, 8), -- bi
+        (2, 3), -- cd
+        (2, 8), -- ci
+        (2, 9), -- cj
+        (3, 10), -- dk
+        (3, 11), -- dl
+        (7, 8) -- hi
+      ]
+    }
+  | .al => {
+      label := "al-"
+      vertexCount := 12
+      sideCount := 5
+      -- Red side: a, b, c, d, e. Blue side: f, g, h, i, j, k, l.
+      edges := [
+        (0, 5), -- af
+        (0, 7), -- ah
+        (0, 8), -- ai
+        (1, 2), -- bc
+        (1, 6), -- bg
+        (1, 10), -- bk
+        (2, 6), -- cg
+        (2, 7), -- ch
+        (3, 4), -- de
+        (3, 8), -- di
+        (3, 11), -- dl
+        (4, 9), -- ej
+        (4, 11), -- el
+        (7, 8), -- hi
+        (9, 10) -- jk
+      ]
+    }
+  | .am => {
+      label := "am-"
+      vertexCount := 14
+      sideCount := 5
+      -- Red side: a, b, c, d, e. Blue side: f, g, h, i, j, k, l, m, n.
+      edges := [
+        (0, 5), -- af
+        (0, 6), -- ag
+        (0, 8), -- ai
+        (1, 7), -- bh
+        (1, 8), -- bi
+        (1, 9), -- bj
+        (2, 3), -- cd
+        (2, 9), -- cj
+        (2, 10), -- ck
+        (3, 10), -- dk
+        (3, 11), -- dl
+        (4, 10), -- ek
+        (4, 12), -- em
+        (4, 13), -- en
+        (8, 9) -- ij
+      ]
+    }
+  | .an => {
+      label := "an-"
+      vertexCount := 14
+      sideCount := 5
+      -- Red side: a, b, c, d, e. Blue side: f, g, h, i, j, k, l, m, n.
+      edges := [
+        (0, 5), -- af
+        (0, 6), -- ag
+        (0, 8), -- ai
+        (1, 7), -- bh
+        (1, 8), -- bi
+        (1, 10), -- bk
+        (2, 9), -- cj
+        (2, 10), -- ck
+        (2, 11), -- cl
+        (3, 4), -- de
+        (3, 11), -- dl
+        (3, 12), -- dm
+        (4, 8), -- ei
+        (4, 13), -- en
+        (10, 11) -- kl
+      ]
+    }
+
+/-- The exact colored induced pattern associated with a negative reducer name. -/
+def negativeTailReducer (name : NegativeTailReducerName) : ColoredPattern :=
+  (negativeTailReducerData name).toPattern
+
+/-- Every listed negative reducer graph is subcubic. -/
+theorem negativeTailReducer_subcubic (name : NegativeTailReducerName) :
+    IsSubcubic (negativeTailReducer name).graph := by
+  cases name <;>
+    change IsSubcubic (graphOfEdges _) <;>
+    intro v <;>
+    unfold vertexDegree <;>
+    rw [Set.ncard_eq_toFinset_card'] <;>
+    native_decide +revert
+
+/-- Membership in the complete supplied catalog of positive tail reducers. -/
+def IsPositiveTailReducer (P : ColoredPattern) : Prop :=
+  ∃ name, P = positiveTailReducer name
+
+/-- Membership in the complete supplied catalog of negative tail reducers. -/
+def IsNegativeTailReducer (P : ColoredPattern) : Prop :=
+  ∃ name, P = negativeTailReducer name
+
+theorem IsPositiveTailReducer.subcubic {P : ColoredPattern}
+    (hP : IsPositiveTailReducer P) : IsSubcubic P.graph := by
+  obtain ⟨name, rfl⟩ := hP
+  exact positiveTailReducer_subcubic name
+
+theorem IsNegativeTailReducer.subcubic {P : ColoredPattern}
+    (hP : IsNegativeTailReducer P) : IsSubcubic P.graph := by
+  obtain ⟨name, rfl⟩ := hP
+  exact negativeTailReducer_subcubic name
+
+/-- An induced positive reducer in the catalog's displayed orientation. -/
+def ContainsOrientedPositiveTailReducer {V : Type*} [Fintype V]
+    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+  ∃ P, IsPositiveTailReducer P ∧ P.OccursInduced C
+
+/-- An induced positive reducer, allowing all colors to be exchanged. -/
+def ContainsPositiveTailReducer {V : Type*} [Fintype V]
+    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+  ContainsInducedUpToSwap IsPositiveTailReducer C
+
+/-- An induced negative reducer in the catalog's displayed orientation. -/
+def ContainsOrientedNegativeTailReducer {V : Type*} [Fintype V]
+    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+  ∃ P, IsNegativeTailReducer P ∧ P.OccursInduced C
+
+/-- An induced negative reducer, allowing all colors to be exchanged. -/
+def ContainsNegativeTailReducer {V : Type*} [Fintype V]
+    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+  ContainsInducedUpToSwap IsNegativeTailReducer C
+
+/-! Named color checks for exceptional entries. -/
+
+@[simp] theorem negativeA0_color_a :
+    (negativeTailReducer .a0).color ⟨0, by native_decide⟩ = .reddish := by
+  native_decide
+
+@[simp] theorem negativeA1_color_a :
+    (negativeTailReducer .a1).color ⟨0, by native_decide⟩ = .red := by
+  native_decide
+
+@[simp] theorem negativeW0_color_a :
+    (negativeTailReducer .w0).color ⟨0, by native_decide⟩ = .reddish := by
+  native_decide
+
+@[simp] theorem negativeW0_color_b :
+    (negativeTailReducer .w0).color ⟨1, by native_decide⟩ = .reddish := by
+  native_decide
+
+@[simp] theorem negativeW1_color_a :
+    (negativeTailReducer .w1).color ⟨0, by native_decide⟩ = .red := by
+  native_decide
+
+@[simp] theorem negativeW1_color_b :
+    (negativeTailReducer .w1).color ⟨1, by native_decide⟩ = .reddish := by
+  native_decide
+
+end Subcubic

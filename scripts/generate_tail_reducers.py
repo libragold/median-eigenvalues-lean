@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+"""Print the systematic Lean definitions for all supplied tail reducers.
+
+The compact source table is expanded into readable blocks. Each numeric edge
+is accompanied by its original letter name, and the script validates the
+transformation before printing Lean code.
+"""
+
+from pathlib import Path
+
+
+POSITIVE_REDDISH = {
+    "l": [0], "m": [0], "o": [0], "p": [0], "q": [0],
+    "r": [0], "s": [0], "t": [0], "w": [3],
+}
+NEGATIVE_REDDISH = {
+    "e": [1], "h": [1], "i": [1], "j": [1], "k": [2],
+    "n": [2], "o": [0], "p": [0], "q": [0], "r": [2],
+    "s": [2], "t": [2], "u": [0, 1], "v": [0, 1],
+    "w": [1], "x": [2], "y": [1], "z": [0],
+}
+
+
+def letter(index):
+    return chr(ord("a") + index)
+
+
+def parse_rows():
+    rows = {"+": [], "-": []}
+    source = Path("data/tail_reducers.txt")
+    for line_number, line in enumerate(source.read_text().splitlines(), 1):
+        head, code = line.split()
+        sign = "+" if "+" in head else "-"
+        name, side_count = head.split(sign)
+        assert len(code) % 2 == 0, (line_number, "odd edge encoding")
+        edges = [
+            (ord(code[i]) - ord("a"), ord(code[i + 1]) - ord("a"))
+            for i in range(0, len(code), 2)
+        ]
+        assert all(0 <= u < 26 and 0 <= v < 26 and u != v for u, v in edges)
+        unordered = [tuple(sorted(edge)) for edge in edges]
+        assert len(unordered) == len(set(unordered)), (head, "duplicate edge")
+        vertex_count = 1 + max(max(edge) for edge in edges)
+        degrees = [0] * vertex_count
+        for u, v in edges:
+            degrees[u] += 1
+            degrees[v] += 1
+        assert max(degrees) <= 3, (head, "not subcubic", degrees)
+        assert int(side_count) <= vertex_count
+        rows[sign].append({
+            "name": name,
+            "label": f"{name}{sign}",
+            "side_count": int(side_count),
+            "vertex_count": vertex_count,
+            "edges": edges,
+        })
+    assert len(rows["+"]) == 24
+    assert len(rows["-"]) == 40
+    return rows
+
+
+def exact_rows():
+    rows = parse_rows()
+    positive = []
+    for row in rows["+"]:
+        positive.append({**row, "reddish": POSITIVE_REDDISH.get(row["name"], [])})
+
+    negative = []
+    for row in rows["-"]:
+        name = row["name"]
+        if name == "a":
+            # User convention: suffix 0 is the reddish-a version; suffix 1 is red.
+            negative.append({**row, "name": "a0", "label": "a0-", "reddish": [0]})
+            negative.append({**row, "name": "a1", "label": "a1-", "reddish": []})
+        elif name == "w":
+            # b is always reddish; suffix 0/1 selects reddish/red for a.
+            negative.append({**row, "name": "w0", "label": "w0-", "reddish": [0, 1]})
+            negative.append({**row, "name": "w1", "label": "w1-", "reddish": [1]})
+        else:
+            negative.append({**row, "reddish": NEGATIVE_REDDISH.get(name, [])})
+
+    assert len(positive) == 24
+    assert len(negative) == 42
+    for row in positive + negative:
+        assert all(i < row["side_count"] for i in row["reddish"])
+    return positive, negative
+
+
+def emit_catalog(title, prefix, sign, rows):
+    print(f"/-- Names of the {title.lower()} tail reducers in the supplied catalog. -/")
+    print(f"inductive {title}TailReducerName")
+    for row in rows:
+        print(f"  | {row['name']}")
+    print("  deriving DecidableEq, Repr\n")
+
+    print(f"/-- Exact graph and color data for every {title.lower()} tail reducer. -/")
+    print(f"def {prefix}TailReducerData : {title}TailReducerName → PatternData")
+    for row in rows:
+        name = row["name"]
+        n = row["vertex_count"]
+        k = row["side_count"]
+        red_letters = ", ".join(letter(i) for i in range(k))
+        blue_letters = ", ".join(letter(i) for i in range(k, n))
+        print(f"  | .{name} => {{")
+        print(f"      label := \"{row['label']}\"")
+        print(f"      vertexCount := {n}")
+        print(f"      sideCount := {k}")
+        print(f"      -- Red side: {red_letters}. Blue side: {blue_letters}.")
+        print("      edges := [")
+        for index, (u, v) in enumerate(row["edges"]):
+            comma = "," if index + 1 < len(row["edges"]) else ""
+            print(f"        ({u}, {v}){comma} -- {letter(u)}{letter(v)}")
+        print("      ]")
+        if row["reddish"]:
+            values = ", ".join(map(str, row["reddish"]))
+            names = ", ".join(letter(i) for i in row["reddish"])
+            print(f"      reddish := [{values}] -- {names}")
+        print("    }")
+    print()
+
+    print(f"/-- The exact colored induced pattern associated with a {title.lower()} reducer name. -/")
+    print(f"def {prefix}TailReducer (name : {title}TailReducerName) : ColoredPattern :=")
+    print(f"  ({prefix}TailReducerData name).toPattern\n")
+
+    print(f"/-- Every listed {title.lower()} reducer graph is subcubic. -/")
+    print(f"theorem {prefix}TailReducer_subcubic (name : {title}TailReducerName) :")
+    print(f"    IsSubcubic ({prefix}TailReducer name).graph := by")
+    print("  cases name <;>")
+    print("    change IsSubcubic (graphOfEdges _) <;>")
+    print("    intro v <;>")
+    print("    unfold vertexDegree <;>")
+    print("    rw [Set.ncard_eq_toFinset_card'] <;>")
+    print("    native_decide +revert\n")
+
+
+def main():
+    positive, negative = exact_rows()
+    print("import Subcubic.Pattern\n")
+    print("open Set\n")
+    print("namespace Subcubic\n")
+    emit_catalog("Positive", "positive", "+", positive)
+    emit_catalog("Negative", "negative", "-", negative)
+
+    print("/-- Membership in the complete supplied catalog of positive tail reducers. -/")
+    print("def IsPositiveTailReducer (P : ColoredPattern) : Prop :=")
+    print("  ∃ name, P = positiveTailReducer name\n")
+    print("/-- Membership in the complete supplied catalog of negative tail reducers. -/")
+    print("def IsNegativeTailReducer (P : ColoredPattern) : Prop :=")
+    print("  ∃ name, P = negativeTailReducer name\n")
+    print("theorem IsPositiveTailReducer.subcubic {P : ColoredPattern}")
+    print("    (hP : IsPositiveTailReducer P) : IsSubcubic P.graph := by")
+    print("  obtain ⟨name, rfl⟩ := hP")
+    print("  exact positiveTailReducer_subcubic name\n")
+    print("theorem IsNegativeTailReducer.subcubic {P : ColoredPattern}")
+    print("    (hP : IsNegativeTailReducer P) : IsSubcubic P.graph := by")
+    print("  obtain ⟨name, rfl⟩ := hP")
+    print("  exact negativeTailReducer_subcubic name\n")
+
+    for title, prefix in [("Positive", "positive"), ("Negative", "negative")]:
+        print(f"/-- An induced {title.lower()} reducer in the catalog's displayed orientation. -/")
+        print(f"def ContainsOriented{title}TailReducer {{V : Type*}} [Fintype V]")
+        print("    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=")
+        print(f"  ∃ P, Is{title}TailReducer P ∧ P.OccursInduced C\n")
+        print(f"/-- An induced {title.lower()} reducer, allowing all colors to be exchanged. -/")
+        print(f"def Contains{title}TailReducer {{V : Type*}} [Fintype V]")
+        print("    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=")
+        print(f"  ContainsInducedUpToSwap Is{title}TailReducer C\n")
+
+    print("/-! Named color checks for exceptional entries. -/\n")
+    checks = [
+        ("negativeA0_color_a", "a0", 0, "reddish"),
+        ("negativeA1_color_a", "a1", 0, "red"),
+        ("negativeW0_color_a", "w0", 0, "reddish"),
+        ("negativeW0_color_b", "w0", 1, "reddish"),
+        ("negativeW1_color_a", "w1", 0, "red"),
+        ("negativeW1_color_b", "w1", 1, "reddish"),
+    ]
+    for theorem, name, vertex, color in checks:
+        print(f"@[simp] theorem {theorem} :")
+        print(f"    (negativeTailReducer .{name}).color ⟨{vertex}, by native_decide⟩ = .{color} := by")
+        print("  native_decide\n")
+    print("end Subcubic")
+
+
+if __name__ == "__main__":
+    main()
