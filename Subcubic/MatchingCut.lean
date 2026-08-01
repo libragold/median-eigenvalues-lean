@@ -74,9 +74,57 @@ structure MatchingCut (G : SimpleGraph V) where
 
 namespace MatchingCut
 
+/-- Matching cuts in the same graph are equal when their chosen side is
+equal; the remaining fields are propositions. -/
+@[ext] theorem ext (M N : MatchingCut G) (hside : M.side = N.side) : M = N := by
+  cases M
+  cases N
+  simp_all
+
+/-- Exchange the two sides of a matching cut. -/
+def swapSides (M : MatchingCut G) : MatchingCut G where
+  side := M.sideᶜ
+  subcubic := M.subcubic
+  matching := by
+    constructor
+    · intro v hv
+      exact M.matching.2 v (by simpa using hv)
+    · intro v hv
+      simpa using M.matching.1 v (by simpa using hv)
+
+@[simp] theorem swapSides_side (M : MatchingCut G) :
+    M.swapSides.side = M.sideᶜ := rfl
+
+@[simp] theorem swapSides_swapSides (M : MatchingCut G) :
+    M.swapSides.swapSides = M := by
+  apply MatchingCut.ext
+  simp
+
 /-- The exact colors obtained by inspecting the two induced matchings. -/
 noncomputable def color (M : MatchingCut G) : V → Color :=
   colorOfCut G M.side
+
+@[simp] theorem swapSides_color (M : MatchingCut G) (v : V) :
+    M.swapSides.color v = (M.color v).swap := by
+  classical
+  unfold color colorOfCut
+  by_cases hv : v ∈ M.side
+  · have hv' : v ∉ M.sideᶜ := by simpa
+    by_cases hn : ∃ w ∈ M.side, G.Adj v w
+    · have hn' : ∃ w ∉ M.sideᶜ, G.Adj v w := by simpa
+      simp [hv, hv', hn, hn', Color.swap]
+    · have hn' : ¬ ∃ w ∉ M.sideᶜ, G.Adj v w := by
+        rintro ⟨w, hw, hvw⟩
+        exact hn ⟨w, by simpa using hw, hvw⟩
+      simp [hv, hv', hn, hn', Color.swap]
+  · have hv' : v ∈ M.sideᶜ := by simpa
+    by_cases hn : ∃ w ∉ M.side, G.Adj v w
+    · have hn' : ∃ w ∈ M.sideᶜ, G.Adj v w := by simpa
+      simp [hv, hv', hn, hn', Color.swap]
+    · have hn' : ¬ ∃ w ∈ M.sideᶜ, G.Adj v w := by
+        rintro ⟨w, hw, hvw⟩
+        exact hn ⟨w, by simpa using hw, hvw⟩
+      simp [hv, hv', hn, hn', Color.swap]
 
 @[simp] theorem redSideOf_color (M : MatchingCut G) :
     redSideOf M.color = M.side := by
@@ -136,6 +184,25 @@ inductive FlipReachable (M : MatchingCut G) : MatchingCut G → Prop
   | refl : FlipReachable M M
   | step {M₁ M₂ : MatchingCut G} {a b : V} :
       FlipReachable M M₁ → M₁.IsFlipAt M₂ a b → FlipReachable M M₂
+
+/-- Complementing both cuts turns a flip at the red--blue edge `ab` into a
+flip at the blue--red edge `ba`. -/
+theorem IsFlipAt.swapSides {M N : MatchingCut G} {a b : V}
+    (h : M.IsFlipAt N a b) :
+    M.swapSides.IsFlipAt N.swapSides b a := by
+  constructor
+  · exact ⟨h.1.1.symm, by simpa using h.1.2.2,
+      by simpa using h.1.2.1⟩
+  · ext z
+    simp only [swapSides_side, Set.mem_compl_iff, h.2,
+      Set.mem_symmDiff, Set.mem_insert_iff, Set.mem_singleton_iff]
+    tauto
+
+theorem FlipReachable.swapSides {M N : MatchingCut G}
+    (h : M.FlipReachable N) : M.swapSides.FlipReachable N.swapSides := by
+  induction h with
+  | refl => exact .refl
+  | step hreach hflip ih => exact .step ih hflip.swapSides
 
 end MatchingCut
 

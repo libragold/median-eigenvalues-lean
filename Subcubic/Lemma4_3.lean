@@ -56,4 +56,48 @@ theorem lemma4_3
     exact redEdge_twoBlueNeighbors C hb ha (hB c hc.2) (hB d hd.2)
       hab.symm hc.1 hd.1 hcd_vertices
 
+/-- A convenient finite form of Lemma 4.3: three distinct blue vertices,
+each adjacent to at least one endpoint of a red edge, already supply the
+required edge count. -/
+theorem lemma4_3_of_three_neighbors
+    (C : GoodColoring G) {a b x y z : V}
+    (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
+    (hx : C.color x = .blue) (hy : C.color y = .blue)
+    (hz : C.color z = .blue)
+    (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
+    (hax : G.Adj a x ∨ G.Adj b x)
+    (hay : G.Adj a y ∨ G.Adj b y)
+    (haz : G.Adj a z ∨ G.Adj b z) :
+    ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C := by
+  classical
+  let B : Set V := {x, y, z}
+  apply lemma4_3 C B ha hb hab
+  · intro v hv
+    simp only [B, Set.mem_insert_iff, Set.mem_singleton_iff] at hv
+    rcases hv with rfl | rfl | rfl
+    · exact hx
+    · exact hy
+    · exact hz
+  · have hcard : B.ncard = 3 := by simp [B, hxy, hxz, hyz]
+    have hcover : B ⊆
+        (G.neighborSet a ∩ B) ∪ (G.neighborSet b ∩ B) := by
+      intro v hv
+      simp only [Set.mem_union, Set.mem_inter_iff]
+      simp only [B, Set.mem_insert_iff, Set.mem_singleton_iff] at hv
+      rcases hv with rfl | rfl | rfl
+      · rcases hax with h | h
+        · exact Or.inl ⟨h, by simp [B]⟩
+        · exact Or.inr ⟨h, by simp [B]⟩
+      · rcases hay with h | h
+        · exact Or.inl ⟨h, by simp [B]⟩
+        · exact Or.inr ⟨h, by simp [B]⟩
+      · rcases haz with h | h
+        · exact Or.inl ⟨h, by simp [B]⟩
+        · exact Or.inr ⟨h, by simp [B]⟩
+    have hlower := Set.ncard_le_ncard hcover
+    have hunion := Set.ncard_union_le
+      (G.neighborSet a ∩ B) (G.neighborSet b ∩ B)
+    unfold edgeCountFromPairToSet
+    omega
+
 end Subcubic

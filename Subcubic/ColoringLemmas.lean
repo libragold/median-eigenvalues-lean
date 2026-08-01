@@ -15,6 +15,31 @@ open Set
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
+/-- In a subcubic graph, three displayed distinct neighbors exclude every
+fourth distinct neighbor; no color or exact-degree hypothesis is needed. -/
+theorem not_adj_fourth_neighbor_of_subcubic
+    (hsub : IsSubcubic G) {v x y z w : V}
+    (hvx : G.Adj v x) (hvy : G.Adj v y) (hvz : G.Adj v z)
+    (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
+    (hwx : w ≠ x) (hwy : w ≠ y) (hwz : w ≠ z) :
+    ¬ G.Adj v w := by
+  intro hvw
+  have hsubset : ({x, y, z, w} : Set V) ⊆ G.neighborSet v := by
+    intro q hq
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hq
+    rcases hq with rfl | rfl | rfl | rfl
+    · exact hvx
+    · exact hvy
+    · exact hvz
+    · exact hvw
+  have hcard : ({x, y, z, w} : Set V).ncard = 4 := by
+    exact Set.ncard_eq_four.2 ⟨x, y, z, w, hxy, hxz, Ne.symm hwx,
+      hyz, Ne.symm hwy, Ne.symm hwz, rfl⟩
+  have hlower := Set.ncard_le_ncard hsubset
+  have hupper := hsub v
+  unfold vertexDegree at hupper
+  omega
+
 /-- A vertex on the red side cannot have two distinct red-side neighbors. -/
 theorem GoodColoring.redSide_not_adj_second_neighbor
     (C : GoodColoring G) {v x y : V}
@@ -144,6 +169,44 @@ theorem GoodColoring.exists_two_other_neighbors
   obtain ⟨y, hvy, hymate, hyx⟩ :=
     C.exists_third_neighbor hv hxmate.symm
   exact ⟨x, y, hvx, hvy, hxmate, hymate, hyx.symm⟩
+
+/-- A degree-three vertex with one displayed neighbor has two distinct other
+neighbors.  Unlike `GoodColoring.exists_two_other_neighbors`, this version
+also applies to a reddish or bluish vertex once its degree has separately
+been established (as in Lemma 3.5). -/
+theorem exists_two_other_neighbors_of_degree_three
+    {v mate : V} (hdeg : vertexDegree G v = 3) (hvm : G.Adj v mate) :
+    ∃ x y, G.Adj v x ∧ G.Adj v y ∧
+      x ≠ mate ∧ y ≠ mate ∧ x ≠ y := by
+  have hcard : (G.neighborSet v).ncard = 3 := by
+    simpa [vertexDegree] using hdeg
+  have first : ∃ x, G.Adj v x ∧ x ≠ mate := by
+    by_contra h
+    push Not at h
+    have hsubset : G.neighborSet v ⊆ ({mate} : Set V) := by
+      intro z hz
+      simp only [Set.mem_singleton_iff]
+      by_contra hzm
+      exact hzm (h z hz)
+    have := Set.ncard_le_ncard hsubset
+    simp [hcard] at this
+  obtain ⟨x, hvx, hxm⟩ := first
+  have second : ∃ y, G.Adj v y ∧ y ≠ mate ∧ y ≠ x := by
+    by_contra h
+    push Not at h
+    have hsubset : G.neighborSet v ⊆ ({mate, x} : Set V) := by
+      intro z hz
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff]
+      by_cases hzm : z = mate
+      · exact Or.inl hzm
+      · exact Or.inr (by
+          by_contra hzx
+          exact hzx (h z hz hzm))
+    have hle := Set.ncard_le_ncard hsubset
+    rw [Set.ncard_pair hxm.symm, hcard] at hle
+    omega
+  obtain ⟨y, hvy, hym, hyx⟩ := second
+  exact ⟨x, y, hvx, hvy, hxm, hym, hyx.symm⟩
 
 /-- If a degree-three red or blue vertex already has three pairwise-distinct
 displayed neighbors, it has no fourth neighbor. -/

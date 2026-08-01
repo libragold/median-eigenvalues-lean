@@ -19,6 +19,7 @@ inductive PositiveTailReducerName
   | k
   | l
   | m
+  | mMinus
   | n
   | o
   | p
@@ -209,6 +210,20 @@ def positiveTailReducerData : PositiveTailReducerName → PatternData
         (1, 3), -- bd
         (1, 5), -- bf
         (4, 5) -- ef
+      ]
+      reddish := [0] -- a
+    }
+  | .mMinus => {
+      label := "m-minus+"
+      vertexCount := 5
+      sideCount := 2
+      -- Red side: a, b. Blue side: c, d, e.
+      edges := [
+        (0, 2), -- ac
+        (0, 3), -- ad
+        (1, 2), -- bc
+        (1, 4), -- be
+        (3, 4) -- de
       ]
       reddish := [0] -- a
     }
@@ -508,6 +523,99 @@ theorem positiveV_automaticNonedges (x y : Fin (positiveTailReducer .v).vertexCo
 theorem positiveX_automaticNonedges (x y : Fin (positiveTailReducer .x).vertexCount)
     (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .x).graph.Adj x y) :
     (positiveTailReducer .x).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+/-! Generated lists of the remaining boundary nonedges. -/
+
+theorem positiveC_boundaryNonedges (x y : Fin (positiveTailReducer .c).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .c).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .c).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveG_boundaryNonedges (x y : Fin (positiveTailReducer .g).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .g).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .g).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveL_boundaryNonedges (x y : Fin (positiveTailReducer .l).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .l).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .l).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨5, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨5, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveM_boundaryNonedges (x y : Fin (positiveTailReducer .m).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .m).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .m).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨4, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨4, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveMMinus_boundaryNonedges (x y : Fin (positiveTailReducer .mMinus).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .mMinus).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .mMinus).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveN_boundaryNonedges (x y : Fin (positiveTailReducer .n).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .n).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .n).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveO_boundaryNonedges (x y : Fin (positiveTailReducer .o).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .o).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .o).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveP_boundaryNonedges (x y : Fin (positiveTailReducer .p).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .p).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .p).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveQ_boundaryNonedges (x y : Fin (positiveTailReducer .q).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .q).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .q).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveR_boundaryNonedges (x y : Fin (positiveTailReducer .r).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .r).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .r).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨8, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨8, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveS_boundaryNonedges (x y : Fin (positiveTailReducer .s).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .s).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .s).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveT_boundaryNonedges (x y : Fin (positiveTailReducer .t).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .t).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .t).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨0, by native_decide⟩, ⟨9, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨0, by native_decide⟩, ⟨9, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem positiveW_boundaryNonedges (x y : Fin (positiveTailReducer .w).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .w).graph.Adj x y)
+    (hauto : ¬ (positiveTailReducer .w).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨8, by native_decide⟩), (⟨2, by native_decide⟩, ⟨10, by native_decide⟩), (⟨3, by native_decide⟩, ⟨4, by native_decide⟩), (⟨3, by native_decide⟩, ⟨5, by native_decide⟩), (⟨3, by native_decide⟩, ⟨6, by native_decide⟩), (⟨3, by native_decide⟩, ⟨9, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨8, by native_decide⟩), (⟨2, by native_decide⟩, ⟨10, by native_decide⟩), (⟨3, by native_decide⟩, ⟨4, by native_decide⟩), (⟨3, by native_decide⟩, ⟨5, by native_decide⟩), (⟨3, by native_decide⟩, ⟨6, by native_decide⟩), (⟨3, by native_decide⟩, ⟨9, by native_decide⟩)] := by
   revert x y
   native_decide
 
@@ -1390,6 +1498,190 @@ theorem negativeAm_automaticNonedges (x y : Fin (negativeTailReducer .am).vertex
 theorem negativeAn_automaticNonedges (x y : Fin (negativeTailReducer .an).vertexCount)
     (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .an).graph.Adj x y) :
     (negativeTailReducer .an).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+/-! Generated lists of the remaining boundary nonedges. -/
+
+theorem negativeB_boundaryNonedges (x y : Fin (negativeTailReducer .b).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .b).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .b).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeD_boundaryNonedges (x y : Fin (negativeTailReducer .d).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .d).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .d).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeE_boundaryNonedges (x y : Fin (negativeTailReducer .e).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .e).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .e).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeH_boundaryNonedges (x y : Fin (negativeTailReducer .h).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .h).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .h).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeI_boundaryNonedges (x y : Fin (negativeTailReducer .i).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .i).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .i).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeJ_boundaryNonedges (x y : Fin (negativeTailReducer .j).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .j).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .j).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨3, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨3, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeL_boundaryNonedges (x y : Fin (negativeTailReducer .l).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .l).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .l).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeM_boundaryNonedges (x y : Fin (negativeTailReducer .m).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .m).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .m).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeN_boundaryNonedges (x y : Fin (negativeTailReducer .n).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .n).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .n).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨5, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨5, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeO_boundaryNonedges (x y : Fin (negativeTailReducer .o).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .o).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .o).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨6, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨6, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeP_boundaryNonedges (x y : Fin (negativeTailReducer .p).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .p).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .p).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeQ_boundaryNonedges (x y : Fin (negativeTailReducer .q).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .q).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .q).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeR_boundaryNonedges (x y : Fin (negativeTailReducer .r).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .r).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .r).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeS_boundaryNonedges (x y : Fin (negativeTailReducer .s).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .s).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .s).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeT_boundaryNonedges (x y : Fin (negativeTailReducer .t).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .t).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .t).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeU_boundaryNonedges (x y : Fin (negativeTailReducer .u).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .u).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .u).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeV_boundaryNonedges (x y : Fin (negativeTailReducer .v).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .v).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .v).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨5, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeW0_boundaryNonedges (x y : Fin (negativeTailReducer .w0).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .w0).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .w0).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeW1_boundaryNonedges (x y : Fin (negativeTailReducer .w1).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .w1).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .w1).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨4, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeX_boundaryNonedges (x y : Fin (negativeTailReducer .x).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .x).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .x).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeY_boundaryNonedges (x y : Fin (negativeTailReducer .y).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .y).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .y).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨8, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨2, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨1, by native_decide⟩, ⟨2, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨8, by native_decide⟩), (⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeZ_boundaryNonedges (x y : Fin (negativeTailReducer .z).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .z).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .z).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeAa_boundaryNonedges (x y : Fin (negativeTailReducer .aa).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .aa).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .aa).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨8, by native_decide⟩)] ∨ (y, x) ∈ [(⟨0, by native_decide⟩, ⟨1, by native_decide⟩), (⟨0, by native_decide⟩, ⟨5, by native_decide⟩), (⟨0, by native_decide⟩, ⟨6, by native_decide⟩), (⟨0, by native_decide⟩, ⟨7, by native_decide⟩), (⟨0, by native_decide⟩, ⟨8, by native_decide⟩), (⟨1, by native_decide⟩, ⟨3, by native_decide⟩), (⟨1, by native_decide⟩, ⟨6, by native_decide⟩), (⟨1, by native_decide⟩, ⟨7, by native_decide⟩), (⟨1, by native_decide⟩, ⟨8, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeAb_boundaryNonedges (x y : Fin (negativeTailReducer .ab).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ab).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .ab).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeAc_boundaryNonedges (x y : Fin (negativeTailReducer .ac).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ac).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .ac).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨4, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] := by
+  revert x y
+  native_decide
+
+theorem negativeAd_boundaryNonedges (x y : Fin (negativeTailReducer .ad).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ad).graph.Adj x y)
+    (hauto : ¬ (negativeTailReducer .ad).AutomaticallyForcesNonedge x y) :
+    (x, y) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] ∨ (y, x) ∈ [(⟨2, by native_decide⟩, ⟨3, by native_decide⟩), (⟨2, by native_decide⟩, ⟨5, by native_decide⟩), (⟨2, by native_decide⟩, ⟨6, by native_decide⟩), (⟨2, by native_decide⟩, ⟨7, by native_decide⟩)] := by
   revert x y
   native_decide
 

@@ -147,4 +147,73 @@ theorem containsCutEnhancerA_of {V : Type*} [Fintype V] {G : SimpleGraph V}
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc]
 
+/-- Exact constructor for cut enhancer `b`. -/
+theorem containsCutEnhancerB_of {V : Type*} [Fintype V] {G : SimpleGraph V}
+    (C : GoodColoring G) {a b c d e : V}
+    (ha : C.color a = .reddish) (hb : C.color b = .blue)
+    (hc : C.color c = .red) (hd : C.color d = .blue)
+    (he : C.color e = .red)
+    (hab : G.Adj a b) (had : G.Adj a d)
+    (hbc : G.Adj b c) (hde : G.Adj d e)
+    (hac : ¬ G.Adj a c) (hae : ¬ G.Adj a e)
+    (hbd : ¬ G.Adj b d) (hbe : ¬ G.Adj b e)
+    (hcd : ¬ G.Adj c d) (hce : ¬ G.Adj c e) :
+    ContainsCutEnhancer C := by
+  have hn : [a, b, c, d, e].Nodup := by
+    have hab_ne := hab.ne
+    have had_ne := had.ne
+    have hbc_ne := hbc.ne
+    have hde_ne := hde.ne
+    have hac_ne : a ≠ c := by intro h; subst c; simp_all
+    have hae_ne : a ≠ e := by intro h; subst e; simp_all
+    have hbd_ne : b ≠ d := by intro h; subst d; simp_all
+    have hbe_ne : b ≠ e := by intro h; subst e; simp_all
+    have hcd_ne : c ≠ d := by intro h; subst d; simp_all
+    have hce_ne : c ≠ e := by intro h; subst e; simp_all
+    simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
+      hcd_ne, hce_ne, hde_ne]
+  refine ⟨cutEnhancer .b, ⟨.b, rfl⟩, Or.inl ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  · intro x y
+    fin_cases x <;> fin_cases y <;>
+      simp [cutEnhancer, graphOfEdges, G.adj_comm, hab, had, hbc, hde,
+        hac, hae, hbd, hbe, hcd, hce]
+  · intro x
+    fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
+
+/-- Exact constructor for cut enhancer `c`. -/
+theorem containsCutEnhancerC_of {V : Type*} [Fintype V] {G : SimpleGraph V}
+    (C : GoodColoring G) {a b c d e : V}
+    (ha : C.color a = .red) (hb : C.color b = .red)
+    (hc : C.color c = .blue) (hd : C.color d = .bluish)
+    (he : C.color e = .red)
+    (hac : G.Adj a c) (had : G.Adj a d)
+    (hbd : G.Adj b d) (hde : G.Adj d e)
+    (hab : ¬ G.Adj a b) (hae : ¬ G.Adj a e)
+    (hbc : ¬ G.Adj b c) (hbe : ¬ G.Adj b e)
+    (hcd : ¬ G.Adj c d) (hce : ¬ G.Adj c e)
+    (habV : a ≠ b) (haeV : a ≠ e) (hbeV : b ≠ e) :
+    ContainsCutEnhancer C := by
+  have hn : [a, b, c, d, e].Nodup := by
+    have hac_ne := hac.ne
+    have had_ne := had.ne
+    have hbd_ne := hbd.ne
+    have hde_ne := hde.ne
+    have hab_ne : a ≠ b := habV
+    have hae_ne : a ≠ e := haeV
+    have hbc_ne : b ≠ c := by intro h; subst c; simp_all
+    have hbe_ne : b ≠ e := hbeV
+    have hcd_ne : c ≠ d := by intro h; subst d; simp_all
+    have hce_ne : c ≠ e := by intro h; subst e; simp_all
+    simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
+      hcd_ne, hce_ne, hde_ne]
+  refine ⟨cutEnhancer .c, ⟨.c, rfl⟩, Or.inl ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  · intro x y
+    fin_cases x <;> fin_cases y <;>
+      simp [cutEnhancer, graphOfEdges, G.adj_comm, hac, had, hbd, hde,
+        hab, hae, hbc, hbe, hcd, hce]
+  · intro x
+    fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
+
 end Subcubic

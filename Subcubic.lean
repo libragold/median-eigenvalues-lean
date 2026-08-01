@@ -5,8 +5,10 @@ import Subcubic.Pattern
 import Subcubic.TailReducers
 import Subcubic.CutEnhancers
 import Subcubic.Lemma3_3
+import Subcubic.Lemma3_5
 import Subcubic.Lemma4_2
 import Subcubic.Lemma4_3
 import Subcubic.Lemma4_4
 import Subcubic.Lemma4_5
 import Subcubic.Lemma4_7
+import Subcubic.Lemma4_8

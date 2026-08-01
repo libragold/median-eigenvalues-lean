@@ -14,7 +14,7 @@ import sys
 
 POSITIVE_REDDISH = {
     "l": [0], "m": [0], "o": [0], "p": [0], "q": [0],
-    "r": [0], "s": [0], "t": [0], "w": [3],
+    "r": [0], "s": [0], "t": [0], "w": [3], "mMinus": [0],
 }
 NEGATIVE_REDDISH = {
     "e": [1], "h": [1], "i": [1], "j": [1], "k": [2],
@@ -75,6 +75,39 @@ def all_nonedges_automatic(row):
     return True
 
 
+def boundary_nonedges(row):
+    """Missing unordered pairs not forced by saturation/matching alone."""
+    n = row["vertex_count"]
+    k = row["side_count"]
+    edges = {tuple(sorted(edge)) for edge in row["edges"]}
+    colors = row_colors(row)
+    degrees = [0] * n
+    same_side_neighbor = [False] * n
+    for u, v in edges:
+        degrees[u] += 1
+        degrees[v] += 1
+        if (u < k) == (v < k):
+            same_side_neighbor[u] = True
+            same_side_neighbor[v] = True
+    result = []
+    def automatic(x, y):
+        saturated_x = colors[x] in {"red", "blue"} and degrees[x] == 3
+        saturated_y = colors[y] in {"red", "blue"} and degrees[y] == 3
+        same_side = (x < k) == (y < k)
+        matching_forces = same_side and (
+            colors[x] in {"reddish", "bluish"} or
+            same_side_neighbor[x]
+        )
+        return saturated_x or saturated_y or matching_forces
+    for x in range(n):
+        for y in range(x + 1, n):
+            if (x, y) in edges:
+                continue
+            if not automatic(x, y) or not automatic(y, x):
+                result.append((x, y))
+    return result
+
+
 def parse_rows():
     rows = {"+": [], "-": []}
     source = Path("data/tail_reducers.txt")
@@ -104,14 +137,15 @@ def parse_rows():
                 side_degrees[u] += 1
                 side_degrees[v] += 1
         assert max(side_degrees) <= 1, (head, "not a matching cut", side_degrees)
+        display_label = "m-minus+" if sign == "+" and name == "mMinus" else f"{name}{sign}"
         rows[sign].append({
             "name": name,
-            "label": f"{name}{sign}",
+            "label": display_label,
             "side_count": int(side_count),
             "vertex_count": vertex_count,
             "edges": edges,
         })
-    assert len(rows["+"]) == 24
+    assert len(rows["+"]) == 25
     assert len(rows["-"]) == 40
     return rows
 
@@ -136,7 +170,7 @@ def exact_rows():
         else:
             negative.append({**row, "reddish": NEGATIVE_REDDISH.get(name, [])})
 
-    assert len(positive) == 24
+    assert len(positive) == 25
     assert len(negative) == 42
     for row in positive + negative:
         assert all(i < row["side_count"] for i in row["reddish"])
@@ -202,6 +236,24 @@ def emit_catalog(title, prefix, sign, rows):
         print(f"theorem {theorem_name} (x y : Fin ({prefix}TailReducer .{row['name']}).vertexCount)")
         print(f"    (hne : x ≠ y) (hxy : ¬ ({prefix}TailReducer .{row['name']}).graph.Adj x y) :")
         print(f"    ({prefix}TailReducer .{row['name']}).AutomaticallyForcesNonedge x y := by")
+        print("  revert x y")
+        print("  native_decide\n")
+
+    print(f"/-! Generated lists of the remaining boundary nonedges. -/\n")
+    for row in rows:
+        pairs = boundary_nonedges(row)
+        if not pairs:
+            continue
+        theorem_name = f"{prefix}{row['name'][0].upper()}{row['name'][1:]}_boundaryNonedges"
+        pattern = f"{prefix}TailReducer .{row['name']}"
+        pair_text = ", ".join(
+            f"(⟨{u}, by native_decide⟩, ⟨{v}, by native_decide⟩)"
+            for u, v in pairs
+        )
+        print(f"theorem {theorem_name} (x y : Fin ({pattern}).vertexCount)")
+        print(f"    (hne : x ≠ y) (hxy : ¬ ({pattern}).graph.Adj x y)")
+        print(f"    (hauto : ¬ ({pattern}).AutomaticallyForcesNonedge x y) :")
+        print(f"    (x, y) ∈ [{pair_text}] ∨ (y, x) ∈ [{pair_text}] := by")
         print("  revert x y")
         print("  native_decide\n")
 
