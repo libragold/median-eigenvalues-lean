@@ -15,7 +15,9 @@ The initial organization is:
   Lemma 3.4 axiom for degree-three red/blue vertices;
 - `Subcubic/Pattern.lean`: finite colored patterns and induced occurrence (for
   both tail reducers and cut enhancers), including reversal under the symmetry
-  `A ↔ B`, red ↔ blue, and reddish ↔ bluish;
+  `A ↔ B`, red ↔ blue, and reddish ↔ bluish. It also provides reusable
+  induced-occurrence certificates: displayed edges are checked explicitly,
+  while saturation and the matching cut force the remaining nonedges;
 - `Subcubic/TailReducers.lean`: 24 positive and 42 exact-color negative
   reducers, generated in a readable format from the compact source table;
 - `Subcubic/CutEnhancers.lean`: the seven explicitly colored induced
@@ -28,10 +30,14 @@ The initial organization is:
   tail reducer or a cut enhancer.
 - `Subcubic/Lemma4_4.lean`: Lemma 4.4, using the three possible overlap sizes
   of the bluish neighbor pairs to obtain reducers `b+`, `h+`, or `k+`.
+- `Subcubic/Lemma4_5.lean`: Lemma 4.5, including the sequential cut-preserver
+  flips and color recomputation.
+- `Subcubic/Lemma4_7.lean`: Lemma 4.7 for an induced eight-cycle, using the
+  generated nonedge certificates for reducers `u+`, `v+`, and `x+`.
 
 The two formerly flexible negative reducers are split as follows: `a0` and
 `w0` have reddish `a`, while `a1` and `w1` have red `a`. Run
-`python3 scripts/generate_tail_reducers.py` to print a regenerated
+`python3 scripts/generate_tail_reducers.py --write` to regenerate
 `Subcubic/TailReducers.lean` after changing the source data.
 
 Build with `lake build`.

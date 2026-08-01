@@ -1,4 +1,4 @@
-import Subcubic.Basic
+import Subcubic.ColoringLemmas
 
 /-!
 # Finite colored configurations
@@ -39,6 +39,133 @@ def OccursInduced (C : GoodColoring G) : Prop :=
     Function.Injective f ∧
     (∀ x y, P.graph.Adj x y ↔ G.Adj (f x) (f y)) ∧
     (∀ x, C.color (f x) = P.color x)
+
+/-- A pattern vertex is saturated when it has three displayed neighbors and
+its color forces ambient degree three. -/
+def SaturatedAt (x : Fin P.vertexCount) : Prop :=
+  (P.color x = .red ∨ P.color x = .blue) ∧
+    ∃ a b c, a ≠ b ∧ a ≠ c ∧ b ≠ c ∧
+      P.graph.Adj x a ∧ P.graph.Adj x b ∧ P.graph.Adj x c
+
+/-- Two pattern vertices lie on the same side of the encoded cut. -/
+def OnSameSide (x y : Fin P.vertexCount) : Prop :=
+  (P.color x).IsRedSide ↔ (P.color y).IsRedSide
+
+/-- Reasons why a missing pattern edge is already forced to be missing in
+the ambient graph. A nonedge is automatic if one endpoint is saturated, or
+if both endpoints lie on the same matching-cut side. -/
+def AutomaticallyForcesNonedge (x y : Fin P.vertexCount) : Prop :=
+  P.SaturatedAt x ∨ P.SaturatedAt y ∨
+    (P.OnSameSide x y ∧
+      (P.color x = .reddish ∨ P.color x = .bluish ∨
+        ∃ z, z ≠ y ∧ P.graph.Adj x z ∧ P.OnSameSide x z))
+
+instance [DecidableRel P.graph.Adj] (x : Fin P.vertexCount) :
+    Decidable (P.SaturatedAt x) := by
+  unfold SaturatedAt
+  infer_instance
+
+instance (x y : Fin P.vertexCount) : Decidable (P.OnSameSide x y) := by
+  cases hx : P.color x <;> cases hy : P.color y <;>
+    simp only [OnSameSide, Color.IsRedSide, hx, hy]
+  all_goals infer_instance
+
+instance [DecidableRel P.graph.Adj] (x y : Fin P.vertexCount) :
+    Decidable (P.AutomaticallyForcesNonedge x y) := by
+  unfold AutomaticallyForcesNonedge
+  infer_instance
+
+/-- Construct an induced occurrence from an injective, edge- and
+color-preserving embedding. Degree saturation and the matching-cut condition
+prove the automatic nonedges; `hboundary` supplies only the remaining
+cross-side nonedges. -/
+theorem occursInduced_of_embedding
+    (C : GoodColoring G)
+    (f : Fin P.vertexCount → V)
+    (hinj : Function.Injective f)
+    (hedge : ∀ {x y}, P.graph.Adj x y → G.Adj (f x) (f y))
+    (hcolor : ∀ x, C.color (f x) = P.color x)
+    (hboundary : ∀ x y, x ≠ y → ¬ P.graph.Adj x y →
+      ¬ P.AutomaticallyForcesNonedge x y → ¬ G.Adj (f x) (f y)) :
+    P.OccursInduced C := by
+  refine ⟨f, hinj, ?_, hcolor⟩
+  intro x y
+  constructor
+  · exact hedge
+  · intro hxy
+    by_cases hne : x = y
+    · subst y
+      exact (G.loopless.irrefl _ hxy).elim
+    by_contra hpattern
+    have mem_side_iff (i : Fin P.vertexCount) :
+        f i ∈ C.redSide ↔ (P.color i).IsRedSide := by
+      rw [C.mem_redSide_iff, hcolor i]
+      cases P.color i <;> simp [Color.IsRedSide]
+    by_cases hauto : P.AutomaticallyForcesNonedge x y
+    · rcases hauto with hsat | hsat | hside
+      · rcases hsat with ⟨hxcolor, a, b, c, hab, hac, hbc,
+          hxa, hxb, hxc⟩
+        have hya : y ≠ a := fun h => by subst a; exact hpattern hxa
+        have hyb : y ≠ b := fun h => by subst b; exact hpattern hxb
+        have hyc : y ≠ c := fun h => by subst c; exact hpattern hxc
+        exact (C.not_adj_fourth_neighbor
+          (by simpa [hcolor x] using hxcolor)
+          (hedge hxa) (hedge hxb) (hedge hxc)
+          (hinj.ne hab) (hinj.ne hac) (hinj.ne hbc)
+          (hinj.ne hya) (hinj.ne hyb) (hinj.ne hyc)) hxy
+      · rcases hsat with ⟨hycolor, a, b, c, hab, hac, hbc,
+          hya, hyb, hyc⟩
+        have hxa : x ≠ a := fun h => by subst a; exact hpattern hya.symm
+        have hxb : x ≠ b := fun h => by subst b; exact hpattern hyb.symm
+        have hxc : x ≠ c := fun h => by subst c; exact hpattern hyc.symm
+        exact (C.not_adj_fourth_neighbor
+          (by simpa [hcolor y] using hycolor)
+          (hedge hya) (hedge hyb) (hedge hyc)
+          (hinj.ne hab) (hinj.ne hac) (hinj.ne hbc)
+          (hinj.ne hxa) (hinj.ne hxb) (hinj.ne hxc)) hxy.symm
+      · rcases hside with ⟨hxySide, hrest⟩
+        rcases hrest with hquiet | hrest
+        · have hxquiet : C.color (f x) = .reddish := by
+            rw [hcolor x, hquiet]
+          have hymem : f y ∈ C.redSide :=
+            (mem_side_iff y).2 (hxySide.mp (by
+              simp [hquiet, Color.IsRedSide]))
+          exact (C.reddish_not_adj_redSide hxquiet
+            ((C.mem_redSide_iff _).1 hymem)) hxy
+        · rcases hrest with hquiet | ⟨z, hzy, hxz, hxzSide⟩
+          · have hxquiet : C.color (f x) = .bluish := by
+              rw [hcolor x, hquiet]
+            have hxblue : ¬ (P.color x).IsRedSide := by
+              simp [hquiet, Color.IsRedSide]
+            have hyblue : ¬ (P.color y).IsRedSide := fun hy =>
+              hxblue (hxySide.mpr hy)
+            have hymem : f y ∉ C.redSide := fun hy =>
+              hyblue ((mem_side_iff y).1 hy)
+            exact (C.bluish_not_adj_blueSide hxquiet
+              ((C.not_mem_redSide_iff _).1 hymem)) hxy
+          · by_cases hxred : (P.color x).IsRedSide
+            · have hxmem : f x ∈ C.redSide := (mem_side_iff x).2 hxred
+              have hymem : f y ∈ C.redSide :=
+                (mem_side_iff y).2 (hxySide.mp hxred)
+              have hzmem : f z ∈ C.redSide :=
+                (mem_side_iff z).2 (hxzSide.mp hxred)
+              exact (C.redSide_not_adj_second_neighbor hxmem hzmem hymem
+                (hedge hxz) (hinj.ne hzy)) hxy
+            · have hxmem : f x ∉ C.redSide := fun hx =>
+                hxred ((mem_side_iff x).1 hx)
+              have hyblue : ¬ (P.color y).IsRedSide := by
+                intro hy
+                exact hxred (hxySide.mpr hy)
+              have hymem : f y ∉ C.redSide := fun hy =>
+                hyblue ((mem_side_iff y).1 hy)
+              have hzblue : ¬ (P.color z).IsRedSide := by
+                intro hz
+                exact hxred (hxzSide.mpr hz)
+              have hzmem : f z ∉ C.redSide := fun hz =>
+                hzblue ((mem_side_iff z).1 hz)
+              exact (C.blueSide_not_adj_second_neighbor hxmem hzmem hymem
+                (hedge hxz) (hinj.ne hzy)) hxy
+    · exact hboundary x y hne hpattern hauto hxy
 
 /-- Induced colored occurrence depends only on the color function, not on the
 proof fields of `GoodColoring`. -/
@@ -133,6 +260,23 @@ structure PatternData where
   reddish : List (Fin vertexCount) := []
 
 namespace PatternData
+
+/-- Every edge listed in `D` is sent to an ambient edge.  This is the compact
+input used by generated occurrence proofs: callers check the edge list once,
+rather than considering every ordered pair of pattern vertices. -/
+def EdgesMapTo (D : PatternData) {V : Type*} (G : SimpleGraph V)
+    (f : Fin D.vertexCount → V) : Prop :=
+  ∀ e ∈ D.edges, G.Adj (f e.1) (f e.2)
+
+/-- Mapping the explicit edge list to ambient edges preserves all adjacency
+of the graph generated by that list. -/
+theorem adj_map_of_edgesMapTo (D : PatternData) {V : Type*}
+    (G : SimpleGraph V) (f : Fin D.vertexCount → V)
+    (h : D.EdgesMapTo G f) {x y : Fin D.vertexCount}
+    (hxy : (graphOfEdges D.edges).Adj x y) : G.Adj (f x) (f y) := by
+  rcases hxy with ⟨_, hxy | hyx⟩
+  · exact h (x, y) hxy
+  · exact (h (y, x) hyx).symm
 
 /-- The exact color forced by one row of reducer data. -/
 def color (D : PatternData) (i : Fin D.vertexCount) : Color :=

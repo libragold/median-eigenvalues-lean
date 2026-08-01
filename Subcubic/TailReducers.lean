@@ -342,17 +342,17 @@ def positiveTailReducerData : PositiveTailReducerName → PatternData
       -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j.
       edges := [
         (0, 1), -- ab
-        (0, 7), -- ah
+        (0, 4), -- ae
         (0, 8), -- ai
-        (1, 2), -- bc
-        (1, 8), -- bi
+        (1, 4), -- be
+        (1, 5), -- bf
         (2, 3), -- cd
-        (3, 4), -- de
-        (4, 5), -- ef
-        (4, 9), -- ej
+        (2, 6), -- cg
+        (2, 9), -- cj
+        (3, 7), -- dh
+        (3, 9), -- dj
         (5, 6), -- fg
-        (5, 9), -- fj
-        (6, 7) -- gh
+        (7, 8) -- hi
       ]
     }
   | .v => {
@@ -362,17 +362,17 @@ def positiveTailReducerData : PositiveTailReducerName → PatternData
       -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k.
       edges := [
         (0, 1), -- ab
-        (0, 7), -- ah
-        (0, 8), -- ai
-        (1, 2), -- bc
-        (1, 9), -- bj
+        (0, 4), -- ae
+        (0, 9), -- aj
+        (1, 5), -- bf
+        (1, 6), -- bg
         (2, 3), -- cd
-        (3, 4), -- de
-        (4, 5), -- ef
-        (4, 10), -- ek
-        (5, 6), -- fg
-        (5, 10), -- fk
-        (6, 7) -- gh
+        (2, 7), -- ch
+        (2, 10), -- ck
+        (3, 8), -- di
+        (3, 10), -- dk
+        (6, 7), -- gh
+        (8, 9) -- ij
       ]
     }
   | .w => {
@@ -403,23 +403,28 @@ def positiveTailReducerData : PositiveTailReducerName → PatternData
       -- Red side: a, b, c, d. Blue side: e, f, g, h, i, j, k, l.
       edges := [
         (0, 1), -- ab
-        (0, 7), -- ah
-        (0, 8), -- ai
-        (1, 2), -- bc
-        (1, 9), -- bj
+        (0, 4), -- ae
+        (0, 9), -- aj
+        (1, 5), -- bf
+        (1, 6), -- bg
         (2, 3), -- cd
-        (3, 4), -- de
-        (4, 5), -- ef
-        (4, 10), -- ek
-        (5, 6), -- fg
-        (5, 11), -- fl
-        (6, 7) -- gh
+        (2, 7), -- ch
+        (2, 11), -- cl
+        (3, 8), -- di
+        (3, 10), -- dk
+        (6, 7), -- gh
+        (8, 9) -- ij
       ]
     }
 
 /-- The exact colored induced pattern associated with a positive reducer name. -/
 def positiveTailReducer (name : PositiveTailReducerName) : ColoredPattern :=
   (positiveTailReducerData name).toPattern
+
+instance (name : PositiveTailReducerName) :
+    DecidableRel (positiveTailReducer name).graph.Adj := by
+  unfold positiveTailReducer PatternData.toPattern
+  infer_instance
 
 /-- Every listed positive reducer graph is subcubic. -/
 theorem positiveTailReducer_subcubic (name : PositiveTailReducerName) :
@@ -430,6 +435,81 @@ theorem positiveTailReducer_subcubic (name : PositiveTailReducerName) :
     unfold vertexDegree <;>
     rw [Set.ncard_eq_toFinset_card'] <;>
     native_decide +revert
+
+/-! Generated induced-occurrence certificates for positive reducers
+whose every nonedge follows from saturation or the matching cut. -/
+
+theorem positiveA_automaticNonedges (x y : Fin (positiveTailReducer .a).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .a).graph.Adj x y) :
+    (positiveTailReducer .a).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveB_automaticNonedges (x y : Fin (positiveTailReducer .b).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .b).graph.Adj x y) :
+    (positiveTailReducer .b).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveD_automaticNonedges (x y : Fin (positiveTailReducer .d).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .d).graph.Adj x y) :
+    (positiveTailReducer .d).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveE_automaticNonedges (x y : Fin (positiveTailReducer .e).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .e).graph.Adj x y) :
+    (positiveTailReducer .e).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveF_automaticNonedges (x y : Fin (positiveTailReducer .f).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .f).graph.Adj x y) :
+    (positiveTailReducer .f).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveH_automaticNonedges (x y : Fin (positiveTailReducer .h).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .h).graph.Adj x y) :
+    (positiveTailReducer .h).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveI_automaticNonedges (x y : Fin (positiveTailReducer .i).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .i).graph.Adj x y) :
+    (positiveTailReducer .i).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveJ_automaticNonedges (x y : Fin (positiveTailReducer .j).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .j).graph.Adj x y) :
+    (positiveTailReducer .j).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveK_automaticNonedges (x y : Fin (positiveTailReducer .k).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .k).graph.Adj x y) :
+    (positiveTailReducer .k).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveU_automaticNonedges (x y : Fin (positiveTailReducer .u).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .u).graph.Adj x y) :
+    (positiveTailReducer .u).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveV_automaticNonedges (x y : Fin (positiveTailReducer .v).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .v).graph.Adj x y) :
+    (positiveTailReducer .v).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem positiveX_automaticNonedges (x y : Fin (positiveTailReducer .x).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (positiveTailReducer .x).graph.Adj x y) :
+    (positiveTailReducer .x).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
 
 /-- Names of the negative tail reducers in the supplied catalog. -/
 inductive NegativeTailReducerName
@@ -1199,6 +1279,11 @@ def negativeTailReducerData : NegativeTailReducerName → PatternData
 def negativeTailReducer (name : NegativeTailReducerName) : ColoredPattern :=
   (negativeTailReducerData name).toPattern
 
+instance (name : NegativeTailReducerName) :
+    DecidableRel (negativeTailReducer name).graph.Adj := by
+  unfold negativeTailReducer PatternData.toPattern
+  infer_instance
+
 /-- Every listed negative reducer graph is subcubic. -/
 theorem negativeTailReducer_subcubic (name : NegativeTailReducerName) :
     IsSubcubic (negativeTailReducer name).graph := by
@@ -1208,6 +1293,105 @@ theorem negativeTailReducer_subcubic (name : NegativeTailReducerName) :
     unfold vertexDegree <;>
     rw [Set.ncard_eq_toFinset_card'] <;>
     native_decide +revert
+
+/-! Generated induced-occurrence certificates for negative reducers
+whose every nonedge follows from saturation or the matching cut. -/
+
+theorem negativeA0_automaticNonedges (x y : Fin (negativeTailReducer .a0).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .a0).graph.Adj x y) :
+    (negativeTailReducer .a0).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeA1_automaticNonedges (x y : Fin (negativeTailReducer .a1).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .a1).graph.Adj x y) :
+    (negativeTailReducer .a1).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeC_automaticNonedges (x y : Fin (negativeTailReducer .c).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .c).graph.Adj x y) :
+    (negativeTailReducer .c).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeF_automaticNonedges (x y : Fin (negativeTailReducer .f).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .f).graph.Adj x y) :
+    (negativeTailReducer .f).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeG_automaticNonedges (x y : Fin (negativeTailReducer .g).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .g).graph.Adj x y) :
+    (negativeTailReducer .g).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeK_automaticNonedges (x y : Fin (negativeTailReducer .k).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .k).graph.Adj x y) :
+    (negativeTailReducer .k).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAe_automaticNonedges (x y : Fin (negativeTailReducer .ae).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ae).graph.Adj x y) :
+    (negativeTailReducer .ae).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAf_automaticNonedges (x y : Fin (negativeTailReducer .af).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .af).graph.Adj x y) :
+    (negativeTailReducer .af).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAg_automaticNonedges (x y : Fin (negativeTailReducer .ag).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ag).graph.Adj x y) :
+    (negativeTailReducer .ag).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAh_automaticNonedges (x y : Fin (negativeTailReducer .ah).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ah).graph.Adj x y) :
+    (negativeTailReducer .ah).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAi_automaticNonedges (x y : Fin (negativeTailReducer .ai).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ai).graph.Adj x y) :
+    (negativeTailReducer .ai).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAj_automaticNonedges (x y : Fin (negativeTailReducer .aj).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .aj).graph.Adj x y) :
+    (negativeTailReducer .aj).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAk_automaticNonedges (x y : Fin (negativeTailReducer .ak).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .ak).graph.Adj x y) :
+    (negativeTailReducer .ak).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAl_automaticNonedges (x y : Fin (negativeTailReducer .al).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .al).graph.Adj x y) :
+    (negativeTailReducer .al).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAm_automaticNonedges (x y : Fin (negativeTailReducer .am).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .am).graph.Adj x y) :
+    (negativeTailReducer .am).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
+
+theorem negativeAn_automaticNonedges (x y : Fin (negativeTailReducer .an).vertexCount)
+    (hne : x ≠ y) (hxy : ¬ (negativeTailReducer .an).graph.Adj x y) :
+    (negativeTailReducer .an).AutomaticallyForcesNonedge x y := by
+  revert x y
+  native_decide
 
 /-- Membership in the complete supplied catalog of positive tail reducers. -/
 def IsPositiveTailReducer (P : ColoredPattern) : Prop :=

@@ -18,10 +18,10 @@ q+3 adaeafbcbfbgcgchef
 r+3 adaeagbdbfchciefgh
 s+3 adaeagbcbgbhchcifg
 t+3 adaeahbcbfbgchcjhi
-u+4 abahaibcbicddeefejfgfjgh
-v+4 abahaibcbjcddeefekfgfkgh
+u+4 abaeaibebfcdcgcjdhdjfghi
+v+4 abaeajbfbgcdchckdidkghij
 w+4 abaeagbfbhcgcjdhdidkhijk
-x+4 abahaibcbjcddeefekfgflgh
+x+4 abaeajbfbgcdchcldidkghij
 a-1 abacbc
 b-2 acadbcbd
 c-2 abacadbcbd

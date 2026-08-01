@@ -6,7 +6,10 @@ is accompanied by its original letter name, and the script validates the
 transformation before printing Lean code.
 """
 
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
+import sys
 
 
 POSITIVE_REDDISH = {
@@ -23,6 +26,53 @@ NEGATIVE_REDDISH = {
 
 def letter(index):
     return chr(ord("a") + index)
+
+
+def row_colors(row):
+    """Compute the exact graph color assigned to every encoded vertex."""
+    n = row["vertex_count"]
+    k = row["side_count"]
+    reddish = set(row["reddish"])
+    has_same_side_neighbor = [False] * n
+    for u, v in row["edges"]:
+        if (u < k) == (v < k):
+            has_same_side_neighbor[u] = True
+            has_same_side_neighbor[v] = True
+    return [
+        ("reddish" if i in reddish else "red") if i < k else
+        ("blue" if has_same_side_neighbor[i] else "bluish")
+        for i in range(n)
+    ]
+
+
+def all_nonedges_automatic(row):
+    """Whether degree saturation/matching sides force every missing edge."""
+    n = row["vertex_count"]
+    k = row["side_count"]
+    edges = {tuple(sorted(edge)) for edge in row["edges"]}
+    colors = row_colors(row)
+    degrees = [0] * n
+    same_side_neighbor = [False] * n
+    for u, v in edges:
+        degrees[u] += 1
+        degrees[v] += 1
+        if (u < k) == (v < k):
+            same_side_neighbor[u] = True
+            same_side_neighbor[v] = True
+    for x in range(n):
+        for y in range(n):
+            if x == y or tuple(sorted((x, y))) in edges:
+                continue
+            saturated_x = colors[x] in {"red", "blue"} and degrees[x] == 3
+            saturated_y = colors[y] in {"red", "blue"} and degrees[y] == 3
+            same_side = (x < k) == (y < k)
+            matching_forces = same_side and (
+                colors[x] in {"reddish", "bluish"} or
+                same_side_neighbor[x]
+            )
+            if not (saturated_x or saturated_y or matching_forces):
+                return False
+    return True
 
 
 def parse_rows():
@@ -47,6 +97,13 @@ def parse_rows():
             degrees[v] += 1
         assert max(degrees) <= 3, (head, "not subcubic", degrees)
         assert int(side_count) <= vertex_count
+        side = set(range(int(side_count)))
+        side_degrees = [0] * vertex_count
+        for u, v in edges:
+            if (u in side) == (v in side):
+                side_degrees[u] += 1
+                side_degrees[v] += 1
+        assert max(side_degrees) <= 1, (head, "not a matching cut", side_degrees)
         rows[sign].append({
             "name": name,
             "label": f"{name}{sign}",
@@ -122,6 +179,11 @@ def emit_catalog(title, prefix, sign, rows):
     print(f"def {prefix}TailReducer (name : {title}TailReducerName) : ColoredPattern :=")
     print(f"  ({prefix}TailReducerData name).toPattern\n")
 
+    print(f"instance (name : {title}TailReducerName) :")
+    print(f"    DecidableRel ({prefix}TailReducer name).graph.Adj := by")
+    print(f"  unfold {prefix}TailReducer PatternData.toPattern")
+    print("  infer_instance\n")
+
     print(f"/-- Every listed {title.lower()} reducer graph is subcubic. -/")
     print(f"theorem {prefix}TailReducer_subcubic (name : {title}TailReducerName) :")
     print(f"    IsSubcubic ({prefix}TailReducer name).graph := by")
@@ -131,6 +193,17 @@ def emit_catalog(title, prefix, sign, rows):
     print("    unfold vertexDegree <;>")
     print("    rw [Set.ncard_eq_toFinset_card'] <;>")
     print("    native_decide +revert\n")
+
+    automatic = [row for row in rows if all_nonedges_automatic(row)]
+    print(f"/-! Generated induced-occurrence certificates for {title.lower()} reducers")
+    print("whose every nonedge follows from saturation or the matching cut. -/\n")
+    for row in automatic:
+        theorem_name = f"{prefix}{row['name'][0].upper()}{row['name'][1:]}_automaticNonedges"
+        print(f"theorem {theorem_name} (x y : Fin ({prefix}TailReducer .{row['name']}).vertexCount)")
+        print(f"    (hne : x ≠ y) (hxy : ¬ ({prefix}TailReducer .{row['name']}).graph.Adj x y) :")
+        print(f"    ({prefix}TailReducer .{row['name']}).AutomaticallyForcesNonedge x y := by")
+        print("  revert x y")
+        print("  native_decide\n")
 
 
 def main():
@@ -183,4 +256,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:] == ["--write"]:
+        output = StringIO()
+        with redirect_stdout(output):
+            main()
+        Path("Subcubic/TailReducers.lean").write_text(output.getvalue())
+    else:
+        assert not sys.argv[1:], "usage: generate_tail_reducers.py [--write]"
+        main()
