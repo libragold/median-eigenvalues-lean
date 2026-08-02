@@ -156,6 +156,28 @@ theorem GoodColoring.exists_third_neighbor
   rw [hdegree, Set.ncard_pair hxy] at hle
   omega
 
+/-- A degree-three vertex has a neighbor outside any two distinct vertices.
+Unlike `GoodColoring.exists_third_neighbor`, this also applies to a reddish
+or bluish vertex once degree three has been established separately. -/
+theorem exists_third_neighbor_of_degree_three
+    {v x y : V} (hdeg : vertexDegree G v = 3) (hxy : x ≠ y) :
+    ∃ z, G.Adj v z ∧ z ≠ x ∧ z ≠ y := by
+  have hcard : (G.neighborSet v).ncard = 3 := by
+    simpa [vertexDegree] using hdeg
+  by_contra h
+  push Not at h
+  have hsubset : G.neighborSet v ⊆ ({x, y} : Set V) := by
+    intro z hz
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff]
+    by_cases hzx : z = x
+    · exact Or.inl hzx
+    · exact Or.inr (by
+        by_contra hzy
+        exact hzy (h z hz hzx))
+  have hle := Set.ncard_le_ncard hsubset
+  rw [hcard, Set.ncard_pair hxy] at hle
+  omega
+
 /-- A red or blue vertex with one displayed neighbor has two distinct other
 neighbors. -/
 theorem GoodColoring.exists_two_other_neighbors
