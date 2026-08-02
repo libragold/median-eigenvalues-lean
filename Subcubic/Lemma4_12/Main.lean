@@ -20,7 +20,7 @@ theorem lemma4_12_oriented
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hNoBlueAtA : ∀ v, G.Adj a v → C.color v ≠ .blue)
     (hNoRedAtD : ∀ v, G.Adj d v → C.color v ≠ .red)
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     (hef : ¬ G.Adj Q.e Q.f) (hea : ¬ G.Adj Q.e a) :
     HasReachableReduction C := by
   classical
@@ -94,7 +94,7 @@ theorem lemma4_12
     (hNoRedAtD : ∀ v, G.Adj d v → C.color v ≠ .red) :
     HasReachableReduction C := by
   classical
-  rcases lemma4_12_setup C hpath ha hb hc hd with hresult | hcore
+  rcases lemma4_12_third_neighbor_setup C hpath ha hb hc hd with hresult | hcore
   · exact hresult
   · obtain ⟨Q⟩ := hcore
     by_cases hef : G.Adj Q.e Q.f
@@ -110,7 +110,7 @@ theorem lemma4_12
             · exact hresult
             · obtain ⟨P⟩ := hpath3
               exact P.reduces
-        · let R : Lemma4_12CoreConfiguration C.swapSides d c b a := {
+        · let R : Lemma4_12ThirdNeighborConfiguration C.swapSides d c b a := {
               e := Q.f
               f := Q.e
               he := by simp [Q.hf]

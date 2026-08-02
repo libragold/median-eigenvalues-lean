@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_8.Early
+import Subcubic.Lemma4_8.Case3_4Configuration
 import Subcubic.PositiveTailReducerWitnesses
 
 /-! The shared-neighbor case (3.2) of Lemma 4.8. -/
@@ -13,7 +13,7 @@ theorem lemma4_8_case_shared_ab_neighbor
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
-    (Q : Lemma4_8DeepConfiguration C a b c d e f g h)
+    (Q : Lemma4_8Case3Configuration C a b c d e f g h)
     (hxy : Q.x = Q.y) : HasReachableReduction C := by
   classical
   rcases Q with ⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,

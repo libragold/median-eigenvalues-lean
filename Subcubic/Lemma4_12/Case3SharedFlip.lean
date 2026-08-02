@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_12.Residual
+import Subcubic.Lemma4_12.InlinePath3Cases
 
 /-! The final flip subcase of the shared-neighbor branch in Lemma 4.12. -/
 

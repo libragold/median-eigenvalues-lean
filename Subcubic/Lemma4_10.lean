@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_10.FinalCases
+import Subcubic.Lemma4_10.Case3_2_2_3_2_3
 
 /-!
 # Lemma 4.10
@@ -25,15 +25,15 @@ theorem lemma4_10
     (hNoBlueAtF : ∀ v, G.Adj f v → C.color v ≠ .blue) :
     HasReachableReduction C := by
   classical
-  rcases lemma4_10_initial_cases C hpath ha hb hc hd he hf
+  rcases lemma4_10_cases1_and_2_setup3 C hpath ha hb hc hd he hf
       hNoBlueAtA hNoBlueAtF with hresult | hDeep
   · exact hresult
-  · obtain ⟨Deep⟩ := hDeep
-    rcases lemma4_10_case_3_1 C hpath ha hb hc hd he hf Deep with
+  · obtain ⟨Q3⟩ := hDeep
+    rcases lemma4_10_case_3_1 C hpath ha hb hc hd he hf Q3 with
       hresult | hLate
     · exact hresult
-    · obtain ⟨Late⟩ := hLate
-      rcases lemma4_10_setup_i C hpath ha hb hc hd he hf Late with
+    · obtain ⟨Q3_2⟩ := hLate
+      rcases lemma4_10_setup_i C hpath ha hb hc hd he hf Q3_2 with
         hresult | hI
       · exact hresult
       · obtain ⟨I⟩ := hI

@@ -1,6 +1,12 @@
 import Subcubic.Lemma4_12.InlinePath3
 
-/-! Residual configurations whose proofs use the inlined Lemma 4.11 step. -/
+/-!
+# Cases using the inlined Lemma 4.11 step
+
+This file handles Cases (2), (4.1), and (3.1.2.2), where one valid flip
+produces three alternating monochromatic edges.  `InlinePath3.lean` proves
+the common distance-free reduction applied by these cases.
+-/
 
 namespace Subcubic
 
@@ -25,8 +31,9 @@ structure OneFlipPath3Configuration (C : GoodColoring G) where
   hr₂ : M.toGoodColoring.color r₂ = .red
   hr₃ : M.toGoodColoring.color r₃ = .red
 
-/-- Discharge a residual three-edge alternating path by the distance-free,
-inlined form of Lemma 4.11, and transport the result back across the flip. -/
+/-- Discharge the three-edge alternating path produced in Cases (2), (4.1),
+and (3.1.2.2) by the distance-free, inlined form of Lemma 4.11, and transport
+the result back across the flip. -/
 theorem OneFlipPath3Configuration.reduces
     {C : GoodColoring G} (Q : OneFlipPath3Configuration C) :
     HasReachableReduction C := by
@@ -38,7 +45,7 @@ theorem OneFlipPath3Configuration.reduces
 /-- Case (2): besides its red neighbor `b`, the bluish vertex `e` has a red
 neighbor `g`; `h` is the red mate of `g`. -/
 structure Lemma4_12Case2Configuration (C : GoodColoring G)
-    (a b c d : V) extends Lemma4_12CoreConfiguration C a b c d where
+    (a b c d : V) extends Lemma4_12ThirdNeighborConfiguration C a b c d where
   g : V
   h : V
   hg : C.color g = .red
@@ -49,11 +56,11 @@ structure Lemma4_12Case2Configuration (C : GoodColoring G)
 
 theorem lemma4_12_case2_setup
     (C : GoodColoring G) {a b c d : V}
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     {g : V} (hg : C.color g = .red) (heg : G.Adj Q.e g)
     (hgb : g ≠ b) :
     ∃ R : Lemma4_12Case2Configuration C a b c d,
-      R.toLemma4_12CoreConfiguration = Q := by
+      R.toLemma4_12ThirdNeighborConfiguration = Q := by
   have hgCorrect := C.color_correct g
   rw [hg] at hgCorrect
   obtain ⟨_, h, hhSide, hgh⟩ := hgCorrect

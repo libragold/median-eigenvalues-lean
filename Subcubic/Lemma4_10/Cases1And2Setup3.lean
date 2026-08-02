@@ -1,7 +1,7 @@
 import Subcubic.Lemma4_10.Isolated
 
 /-!
-# Initial cases of Lemma 4.10
+# Lemma 4.10: Cases (1), (2), and setup for Case (3)
 
 This module handles cases (1), (2), and the reversal used at the start of
 case (3).  What remains is the single orientation shown in the prose proof.
@@ -11,7 +11,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_10DeepConfiguration (C : GoodColoring G)
+structure Lemma4_10Case3Configuration (C : GoodColoring G)
     (a b c d e f : V) where
   g : V
   h : V
@@ -24,7 +24,7 @@ structure Lemma4_10DeepConfiguration (C : GoodColoring G)
   hge : ¬ G.Adj g e
   hhb : ¬ G.Adj h b
 
-theorem lemma4_10_initial_cases
+theorem lemma4_10_cases1_and_2_setup3
     (C : GoodColoring G) {a b c d e f : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
@@ -33,7 +33,7 @@ theorem lemma4_10_initial_cases
     (hNoBlueAtA : ∀ v, G.Adj a v → C.color v ≠ .blue)
     (hNoBlueAtF : ∀ v, G.Adj f v → C.color v ≠ .blue) :
     HasReachableReduction C ∨
-      Nonempty (Lemma4_10DeepConfiguration C a b c d e f) := by
+      Nonempty (Lemma4_10Case3Configuration C a b c d e f) := by
   classical
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩

@@ -1,6 +1,6 @@
-import Subcubic.Lemma4_12.Initial
+import Subcubic.Lemma4_12.ThirdNeighborSetup
 
-/-! The adjacent-third-neighbor case of Lemma 4.12. -/
+/-! Case (1) of Lemma 4.12: the two exposed third neighbors are adjacent. -/
 
 namespace Subcubic
 
@@ -11,7 +11,7 @@ theorem lemma4_12_case_ef
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     (hef : G.Adj Q.e Q.f) : HasReachableReduction C := by
   classical
   by_contra hresult

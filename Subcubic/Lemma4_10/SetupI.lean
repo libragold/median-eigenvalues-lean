@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_10.Early
+import Subcubic.Lemma4_10.Case3_1
 
 /-!
 # Entering case (3.2) of Lemma 4.10
@@ -13,7 +13,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 structure Lemma4_10IConfiguration (C : GoodColoring G)
     (a b c d e f : V) extends
-    Lemma4_10LateConfiguration C a b c d e f where
+    Lemma4_10Case3_2Configuration C a b c d e f where
   i : V
   hi : C.color i = .reddish
   hci : G.Adj c i
@@ -28,7 +28,7 @@ theorem lemma4_10_setup_i
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (_he : C.color e = .red) (hf : C.color f = .red)
-    (Q : Lemma4_10LateConfiguration C a b c d e f) :
+    (Q : Lemma4_10Case3_2Configuration C a b c d e f) :
     HasReachableReduction C ∨
       Nonempty (Lemma4_10IConfiguration C a b c d e f) := by
   classical

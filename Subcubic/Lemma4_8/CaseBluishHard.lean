@@ -744,7 +744,7 @@ theorem lemma4_8_case_lm_bluish_restart
       exact (nonedge 1 3 (by native_decide)) (by simpa [h] using Q.hby)
     rcases lemma3_3 C hb hc hd hySide hbc Q.hby hcd Q.hyc.symm hyd.symm with
       hy | hce
-    · let deep : Lemma4_8DeepConfiguration C a b c d e f g h := {
+    · let deep : Lemma4_8Case3Configuration C a b c d e f g h := {
         i := Q.i
         j := Q.j
         x := Q.x
@@ -765,13 +765,13 @@ theorem lemma4_8_case_lm_bluish_restart
         hyc := Q.hyc
         hig := Q.hig
         hjb := Q.hjb }
-      let late : Lemma4_8LateConfiguration C a b c d e f g h := {
-        toLemma4_8DeepConfiguration := deep
+      let late : Lemma4_8Case3_4Configuration C a b c d e f g h := {
+        toLemma4_8Case3Configuration := deep
         hxy := Q.hxy
         hij := Q.hij
         hnotBoth := Q.hnotBoth }
       let kconfig : Lemma4_8KConfiguration C a b c d e f g h := {
-        toLemma4_8LateConfiguration := late
+        toLemma4_8Case3_4Configuration := late
         hic := Q.hic
         k := Q.k
         hk := hk

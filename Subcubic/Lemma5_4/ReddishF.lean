@@ -162,32 +162,7 @@ private theorem flip_when_h_meets_neither
       exact hblue ⟨z, hz, hfz⟩
   · exact HasReachableNegativeReduction.of_current_ce C hce
 
-/-- The one local configuration not discharged by the printed proof of
-Lemma 5.4: in Case 2.2.5.3.3, the asserted cut enhancer needs the additional
-induced nonedge `h-k`.  If `h-k` is an edge, it is the red matching edge. -/
-structure Lemma5_4Residual (C : GoodColoring G) where
-  h : V
-  k : V
-  j : V
-  g : V
-  f : V
-  hh : C.color h = .red
-  hk : C.color k = .red
-  hj : C.color j = .blue
-  hg : C.color g = .blue
-  hf : C.color f = .reddish
-  hhg : G.Adj h g
-  hhk : G.Adj h k
-  hkj : G.Adj k j
-  hjf : G.Adj j f
-  hfg : G.Adj f g
-  hgj : ¬ G.Adj g j
-  hhj : ¬ G.Adj h j
-  hfk : ¬ G.Adj f k
-
-/-- Case 2.2.5.3, oriented by `h-e`.  Every branch gives the required
-reduction except the explicit residual produced by the missing inducedness
-condition in the prose's last cut-enhancer invocation. -/
+/-- Case 2.2.5.3, oriented by `h-e`. -/
 private theorem hard_oriented
     (C : GoodColoring G) {a b g i h r : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
@@ -198,8 +173,7 @@ private theorem hard_oriented
     (hfg : G.Adj Q.f g) (hgi : G.Adj g i)
     (hgh : G.Adj g h) (hhr : G.Adj h r)
     (hfc : ¬ G.Adj Q.f Q.c) (hfe : ¬ G.Adj Q.f Q.e)
-    (hhe : G.Adj h Q.e) :
-    HasReachableNegativeReduction C ∨ Nonempty (Lemma5_4Residual C) := by
+    (hhe : G.Adj h Q.e) : HasReachableNegativeReduction C := by
   have hga : ¬ G.Adj g a := by
     simpa [SimpleGraph.adj_comm] using saturated_a_not_adj C ha hb hab Q
       (vertex_ne_of_color_eq hg hb (by decide))
@@ -243,7 +217,7 @@ private theorem hard_oriented
             vertex_ne_of_color_eq Q.hd hg (by decide),
             vertex_ne_of_color_eq Q.hd hi (by decide), hgi.ne,
             Q.hfb.symm, Q.hde.symm])
-      exact Or.inl (HasReachableNegativeReduction.of_current_ntr C hntr)
+      exact HasReachableNegativeReduction.of_current_ntr C hntr
     · obtain ⟨j, hfj, hjd, hjg⟩ :=
         exists_third_neighbor_of_degree_three hfdeg
           (vertex_ne_of_color_eq Q.hd hg (by decide))
@@ -294,75 +268,61 @@ private theorem hard_oriented
       · have hgj : ¬ G.Adj g j := by
           exact C.blueSide_not_adj_second_neighbor
             (by simp [hg]) (by simp [hi]) (by simp [hj]) hgi hji.symm
-      
-        have hjCorrect := C.color_correct j
-        rw [hj] at hjCorrect
-        obtain ⟨_, t, htSide, hjt⟩ := hjCorrect
-        have htCases := (C.not_mem_redSide_iff t).1 htSide
-        have ht : C.color t = .blue := by
-          rcases htCases with ht | ht
-          · exact ht
-          · exact (C.bluish_not_adj_blueSide ht (Or.inl hj) hjt.symm).elim
-        have htf : t ≠ Q.f := vertex_ne_of_color_eq ht hf (by decide)
-        obtain ⟨k, hjk, hkf, hkt⟩ := C.exists_third_neighbor (Or.inr hj) htf
-        have hkSide := C.other_neighbor_of_blue_is_redSide hj ht hjt hjk hkf
-        have hhj : ¬ G.Adj h j := nonadj_h j
-          (vertex_ne_of_color_eq hj hr (by decide))
-          hjg
-          (vertex_ne_of_color_eq hj Q.he (by decide))
-        rcases hkSide with hk | hk
-        · by_cases hhk : G.Adj h k
-          · exact Or.inr ⟨⟨h, k, j, g, Q.f, hh, hk, hj, hg, hf,
-              hgh.symm, hhk, hjk.symm, hfj.symm, hfg, hgj, hhj,
-              (by simpa [SimpleGraph.adj_comm] using
-                C.reddish_not_adj_redSide hf (Or.inl hk))⟩⟩
-          · have hfk : ¬ G.Adj Q.f k :=
-              C.reddish_not_adj_redSide hf (Or.inl hk)
-            have hgk : ¬ G.Adj g k := by
-              apply C.not_adj_fourth_neighbor (Or.inr hg) hgi hfg.symm hgh
-              · exact vertex_ne_of_color_eq hi hf (by decide)
-              · exact vertex_ne_of_color_eq hi hh (by decide)
-              · exact vertex_ne_of_color_eq hf hh (by decide)
-              · exact vertex_ne_of_color_eq hk hi (by decide)
-              · exact vertex_ne_of_color_eq hk hf (by decide)
-              · intro hEq; subst k; exact hhj hjk.symm
-            exact Or.inl (HasReachableNegativeReduction.of_current_ce C
-              (containsCutEnhancerB_of C hf hg hh hj hk hfg hfj hgh hjk
-                (by simpa [SimpleGraph.adj_comm] using hhf)
-                hfk hgj hgk hhj hhk))
+        by_cases hhjAdj : G.Adj h j
+        · exact HasReachableNegativeReduction.of_current_ce C
+            (containsCutEnhancerA_of C hh hg hj hgh.symm hhjAdj
+              hjg.symm hgj)
         · have hjdNon := blue_not_adj_bluish_5_4 C hj Q.hd
-          have hdk : ¬ G.Adj Q.d k := by
-            apply not_adj_fourth_neighbor_of_degree_three Q.hdDegree
-              Q.had.symm Q.hbd.symm Q.hdf hab.ne Q.hfa.symm Q.hfb.symm
-              (vertex_ne_of_color_eq hk ha (by decide))
-              (vertex_ne_of_color_eq hk hb (by decide))
-              hkt
-          have hja := by
-            simpa [SimpleGraph.adj_comm] using haj
-          have hjb : ¬ G.Adj j b := by
+          have hjeNon := blue_not_adj_bluish_5_4 C hj Q.he
+          have hgdNon := blue_not_adj_bluish_5_4 C hg Q.hd
+          have hgeNon := blue_not_adj_bluish_5_4 C hg Q.he
+          have hdeNon := C.bluish_not_adj_blueSide Q.hd (Or.inr Q.he)
+          have hjbNon : ¬ G.Adj j b := by
             simpa [SimpleGraph.adj_comm] using saturated_b_not_adj C ha hb hab Q
               (vertex_ne_of_color_eq hj ha (by decide))
               (vertex_ne_of_color_eq hj Q.hd (by decide))
               (vertex_ne_of_color_eq hj Q.he (by decide))
-          have hntrSwap := containsNegativeH C.swapSides
-            (a := j) (b := Q.d) (c := k) (d := Q.f) (e := a) (f := b)
-            (by simp [hj]) (by simp [Q.hd]) (by simp [hk]) (by simp [hf])
-            (by simp [ha]) (by simp [hb]) hjk hfj.symm Q.hdf
-            Q.had.symm Q.hbd.symm hab hjdNon
-            (by simpa [SimpleGraph.adj_comm] using hja) hjb hdk
+          have hhbNon : ¬ G.Adj h b := by
+            simpa [SimpleGraph.adj_comm] using saturated_b_not_adj C ha hb hab Q
+              (by intro hEq; subst h; exact hga hgh)
+              (vertex_ne_of_color_eq hh Q.hd (by decide))
+              (vertex_ne_of_color_eq hh Q.he (by decide))
+          have hceSwap := containsCutEnhancerE_of C.swapSides
+            (a := j) (b := Q.d) (c := g) (d := Q.e)
+            (e := Q.f) (f := h) (g := b)
+            (by simp [hj]) (by simp [Q.hd]) (by simp [hg])
+            (by simp [Q.he]) (by simp [hf]) (by simp [hh]) (by simp [hb])
+            hfj.symm Q.hdf Q.hbd.symm hfg.symm hgh hhe.symm Q.hbe.symm
+            hjdNon (by simpa [SimpleGraph.adj_comm] using hgj)
+            (by simpa [SimpleGraph.adj_comm] using hjeNon)
+            (by simpa [SimpleGraph.adj_comm] using hhjAdj) hjbNon
+            (by simpa [SimpleGraph.adj_comm] using hgdNon)
+            hdeNon (by simpa [SimpleGraph.adj_comm] using hhd)
+            hgeNon hgb (by simpa [SimpleGraph.adj_comm] using hfe)
+            (by simpa [SimpleGraph.adj_comm] using hhf)
+            (C.reddish_not_adj_redSide hf (Or.inl hb)) hhbNon
             (by
-              simp [hjk.ne, Q.hdf.ne, hab.ne,
+              simp [hjg, Q.hde,
                 vertex_ne_of_color_eq hj Q.hd (by decide),
+                vertex_ne_of_color_eq hj Q.he (by decide),
                 vertex_ne_of_color_eq hj hf (by decide),
-                vertex_ne_of_color_eq hj ha (by decide),
+                vertex_ne_of_color_eq hj hh (by decide),
                 vertex_ne_of_color_eq hj hb (by decide),
-                (redSide_ne_bluish_5_4 (Or.inr hk) Q.hd).symm,
-                hkt,
-                vertex_ne_of_color_eq hk ha (by decide),
-                vertex_ne_of_color_eq hk hb (by decide),
-                Q.had.ne.symm, Q.hbd.ne.symm, Q.hfa, Q.hfb])
-          exact Or.inl (HasReachableNegativeReduction.of_current_ntr C
-            ((containsInducedUpToSwap_swapSides IsNegativeTailReducer C).1 hntrSwap))
+                vertex_ne_of_color_eq Q.hd hg (by decide),
+                (redSide_ne_bluish_5_4 (Or.inr hf) Q.hd).symm,
+                (redSide_ne_bluish_5_4 (Or.inl hh) Q.hd).symm,
+                (redSide_ne_bluish_5_4 (Or.inl hb) Q.hd).symm,
+                vertex_ne_of_color_eq hg Q.he (by decide),
+                vertex_ne_of_color_eq hg hf (by decide),
+                vertex_ne_of_color_eq hg hh (by decide),
+                vertex_ne_of_color_eq hg hb (by decide),
+                (redSide_ne_bluish_5_4 (Or.inr hf) Q.he).symm,
+                (redSide_ne_bluish_5_4 (Or.inl hh) Q.he).symm,
+                (redSide_ne_bluish_5_4 (Or.inl hb) Q.he).symm,
+                vertex_ne_of_color_eq hf hh (by decide), Q.hfb,
+                hhbV])
+          exact HasReachableNegativeReduction.of_current_ce C
+            ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hceSwap)
       · have hhj : ¬ G.Adj h j := nonadj_h j
           (redSide_ne_bluish_5_4 (Or.inl hr) hj).symm
           (vertex_ne_of_color_eq hj hg (by decide))
@@ -412,12 +372,10 @@ private theorem hard_oriented
               redSide_ne_bluish_5_4 (Or.inr hf) Q.he,
               vertex_ne_of_color_eq hg Q.he (by decide),
               vertex_ne_of_color_eq hi Q.he (by decide)])
-        exact Or.inl (HasReachableNegativeReduction.of_current_ntr C hntr)
-  · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
+        exact HasReachableNegativeReduction.of_current_ntr C hntr
+  · exact HasReachableNegativeReduction.of_current_ce C hce
 
-/-- Case 2.2.5.  All alternatives in the printed proof are discharged,
-except for `Lemma5_4Residual`, which records precisely the extra red edge
-`h-k` not excluded by the claimed induced cut enhancer in Case 2.2.5.3.3. -/
+/-- Case 2.2.5. -/
 theorem lemma5_4_reddish_f_blue_neighbor
     (C : GoodColoring G) {a b g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
@@ -425,7 +383,7 @@ theorem lemma5_4_reddish_f_blue_neighbor
     (hf : C.color Q.f = .reddish) (hg : C.color g = .blue)
     (hfg : G.Adj Q.f g)
     (hfc : ¬ G.Adj Q.f Q.c) (hfe : ¬ G.Adj Q.f Q.e) :
-    HasReachableNegativeReduction C ∨ Nonempty (Lemma5_4Residual C) := by
+    HasReachableNegativeReduction C := by
   have hgCorrect := C.color_correct g
   rw [hg] at hgCorrect
   obtain ⟨_, i, hiSide, hgi⟩ := hgCorrect
@@ -440,8 +398,8 @@ theorem lemma5_4_reddish_f_blue_neighbor
   have hhCases : C.color h = .reddish ∨ C.color h = .red :=
     hhSide.elim Or.inr Or.inl
   rcases hhCases with hh | hh
-  · exact Or.inl (reddish_second_neighbor_gives_H C ha hb hab Q hf rfl
-      hg hh hfg hgh hhf)
+  · exact reddish_second_neighbor_gives_H C ha hb hab Q hf rfl
+      hg hh hfg hgh hhf
   · have hhCorrect := C.color_correct h
     rw [hh] at hhCorrect
     obtain ⟨_, r, hrSide, hhr⟩ := hhCorrect
@@ -456,7 +414,7 @@ theorem lemma5_4_reddish_f_blue_neighbor
     · by_cases hhc : G.Adj h Q.c
       · exact hard_oriented C hb ha hab.symm Q.reverse hf hg hi hh hr
           hfg hgi hgh hhr hfe hfc hhc
-      · exact Or.inl (flip_when_h_meets_neither C ha hb hab Q hf hg hi hh hr
-          hfg hgi hgh hhr hfc hfe hhc hhe)
+      · exact flip_when_h_meets_neither C ha hb hab Q hf hg hi hh hr
+          hfg hgi hgh hhr hfc hfe hhc hhe
 
 end Subcubic

@@ -13,7 +13,7 @@ theorem lemma4_12_case3_shared_no_other_blue
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     {g : V} (hg : C.color g = .reddish)
     (heg : G.Adj Q.e g) (hdg : G.Adj d g)
     (hNoOtherBlue : ∀ z, G.Adj g z → C.color z = .blue → z = d) :
@@ -105,7 +105,7 @@ theorem lemma4_12_case3_shared_no_other_blue
 neighbor of `e,d`, and its additional blue neighbor `h` lies on a blue edge
 `hi`. -/
 structure Lemma4_12SharedBlueConfiguration (C : GoodColoring G)
-    (a b c d : V) extends Lemma4_12CoreConfiguration C a b c d where
+    (a b c d : V) extends Lemma4_12ThirdNeighborConfiguration C a b c d where
   g : V
   h : V
   i : V
@@ -125,12 +125,12 @@ theorem lemma4_12_case3_shared_setup
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     {g : V} (hg : C.color g = .reddish)
     (heg : G.Adj Q.e g) (hdg : G.Adj d g) :
     HasReachableReduction C ∨
       ∃ R : Lemma4_12SharedBlueConfiguration C a b c d,
-        R.toLemma4_12CoreConfiguration = Q := by
+        R.toLemma4_12ThirdNeighborConfiguration = Q := by
   classical
   by_cases hNoOtherBlue :
       ∀ z, G.Adj g z → C.color z = .blue → z = d

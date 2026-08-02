@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_8.EarlyIJ
+import Subcubic.Lemma4_8.Case3_1
 
 /-! The `ptr-w` case (3.3) of Lemma 4.8. -/
 
@@ -13,7 +13,7 @@ theorem lemma4_8_case_w
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red) (hg : C.color g = .blue)
     (hh : C.color h = .blue)
-    (Q : Lemma4_8DeepConfiguration C a b c d e f g h)
+    (Q : Lemma4_8Case3Configuration C a b c d e f g h)
     (hxy : Q.x ≠ Q.y) (hij : ¬ G.Adj Q.i Q.j)
     (hic : G.Adj Q.i c) (hjf : G.Adj Q.j f) :
     HasReachableReduction C := by

@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 structure Lemma4_12NoShareConfiguration (C : GoodColoring G)
-    (a b c d : V) extends Lemma4_12CoreConfiguration C a b c d where
+    (a b c d : V) extends Lemma4_12ThirdNeighborConfiguration C a b c d where
   x : V
   y : V
   i : V
@@ -36,12 +36,12 @@ theorem lemma4_12_no_share_setup
     (hd : C.color d = .blue) (hc : C.color c = .blue)
     (hcd : G.Adj c d)
     (hNoRedAtD : ∀ v, G.Adj d v → C.color v ≠ .red)
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     (hOnlyRedB : ∀ z, G.Adj Q.e z → C.color z = .red → z = b)
     (hNoShare : ∀ z, C.color z = .reddish →
       G.Adj Q.e z → ¬ G.Adj d z) :
     ∃ R : Lemma4_12NoShareConfiguration C a b c d,
-      R.toLemma4_12CoreConfiguration = Q := by
+      R.toLemma4_12ThirdNeighborConfiguration = Q := by
   classical
   obtain ⟨x, y, hex, hey, hxb, hyb, hxy⟩ :=
     exists_two_other_neighbors_of_degree_three Q.hedeg Q.hbe.symm

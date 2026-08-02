@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_8.EarlyShared
+import Subcubic.Lemma4_8.Case3_2
 import Subcubic.Lemma4_2
 
 /-! The `i-j` case (3.1) of Lemma 4.8. -/
@@ -12,7 +12,7 @@ theorem lemma4_8_case_i_adj_j
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
-    (Q : Lemma4_8DeepConfiguration C a b c d e f g h)
+    (Q : Lemma4_8Case3Configuration C a b c d e f g h)
     (hij : G.Adj Q.i Q.j) : HasReachableReduction C := by
   classical
   rcases Q with ⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,

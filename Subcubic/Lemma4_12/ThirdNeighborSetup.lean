@@ -6,13 +6,13 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-theorem lemma4_12_setup
+theorem lemma4_12_third_neighbor_setup
     (C : GoodColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue) :
     HasReachableReduction C ∨
-      Nonempty (Lemma4_12CoreConfiguration C a b c d) := by
+      Nonempty (Lemma4_12ThirdNeighborConfiguration C a b c d) := by
   classical
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩

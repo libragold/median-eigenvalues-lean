@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_8.EarlyW
+import Subcubic.Lemma4_8.Case3_3
 
 /-! Dispatcher for cases (3.1)--(3.3) of Lemma 4.8. -/
 
@@ -6,16 +6,16 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-theorem lemma4_8_early_cases
+theorem lemma4_8_cases3_1_to_3_3
     (C : GoodColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
     (hg : C.color g = .blue) (hh : C.color h = .blue)
-    (Q : Lemma4_8DeepConfiguration C a b c d e f g h) :
+    (Q : Lemma4_8Case3Configuration C a b c d e f g h) :
     HasReachableReduction C ∨
-      Nonempty (Lemma4_8LateConfiguration C a b c d e f g h) := by
+      Nonempty (Lemma4_8Case3_4Configuration C a b c d e f g h) := by
   by_cases hxy : Q.x = Q.y
   · exact Or.inl (lemma4_8_case_shared_ab_neighbor C hpath ha hb hc hd he hf Q hxy)
   by_cases hij : G.Adj Q.i Q.j

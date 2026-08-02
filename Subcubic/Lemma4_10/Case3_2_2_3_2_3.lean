@@ -2,7 +2,7 @@ import Subcubic.Lemma4_10.CaseJ
 import Subcubic.Lemma4_6
 
 /-!
-# Final cases of Lemma 4.10
+# Lemma 4.10, Case (3.2.2.3.2.3)
 
 This file starts at Case (3.2.2.3.2.3): the bluish vertex `j` has, besides
 its red neighbor `a`, another red neighbor `l`.  The red mate of `l` is
@@ -290,8 +290,8 @@ theorem lemma4_10_other_red_complete
           · exact hlm.ne
           · exact color_ne Q.hl hn (by decide)
         let I' : Lemma4_10IConfiguration D a b c d e f := {
-          toLemma4_10LateConfiguration := {
-            toLemma4_10DeepConfiguration := {
+          toLemma4_10Case3_2Configuration := {
+            toLemma4_10Case3Configuration := {
               g := Q.g
               h := Q.h
               hg := hgD

@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_10.Initial
+import Subcubic.Lemma4_10.Cases1And2Setup3
 
 /-! Case (3.1) of Lemma 4.10. -/
 
@@ -6,9 +6,9 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_10LateConfiguration (C : GoodColoring G)
+structure Lemma4_10Case3_2Configuration (C : GoodColoring G)
     (a b c d e f : V) extends
-    Lemma4_10DeepConfiguration C a b c d e f where
+    Lemma4_10Case3Configuration C a b c d e f where
   hga : ¬ G.Adj g a
   hhf : ¬ G.Adj h f
 
@@ -18,9 +18,9 @@ theorem lemma4_10_case_3_1
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
-    (Q : Lemma4_10DeepConfiguration C a b c d e f) :
+    (Q : Lemma4_10Case3Configuration C a b c d e f) :
     HasReachableReduction C ∨
-      Nonempty (Lemma4_10LateConfiguration C a b c d e f) := by
+      Nonempty (Lemma4_10Case3_2Configuration C a b c d e f) := by
   classical
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩

@@ -38,7 +38,7 @@ theorem FormsInducedPath4.reverse {a b c d : V}
     fin_cases x <;> fin_cases y <;> simp [ρ, graphOfEdges]
 
 /-- The local configuration after introducing the two third neighbors. -/
-structure Lemma4_12CoreConfiguration (C : GoodColoring G)
+structure Lemma4_12ThirdNeighborConfiguration (C : GoodColoring G)
     (a b c d : V) where
   e : V
   f : V

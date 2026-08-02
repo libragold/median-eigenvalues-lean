@@ -1,10 +1,18 @@
-import Subcubic.Lemma4_8.TopCases
+import Subcubic.Lemma4_8.Case2
+
+/-!
+# Lemma 4.8: Cases (1), (2), and setup for Case (3)
+
+Cases (1) and (2) are discharged here.  In Case (3), the proof is oriented
+as in the prose and the third neighbors needed by Cases (3.1)--(3.4) are
+recorded in `Lemma4_8Case3Configuration`.
+-/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_8DeepConfiguration (C : GoodColoring G)
+structure Lemma4_8Case3Configuration (C : GoodColoring G)
     (a b c d e f g h : V) where
   i : V
   j : V
@@ -27,7 +35,7 @@ structure Lemma4_8DeepConfiguration (C : GoodColoring G)
   hig : ¬ G.Adj i g
   hjb : ¬ G.Adj j b
 
-theorem lemma4_8_oriented_initial
+theorem lemma4_8_case3_setup
     (C : GoodColoring G) {a b c d e f g h i j : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
@@ -40,7 +48,7 @@ theorem lemma4_8_oriented_initial
     (hej : G.Adj e j) (hja : G.Adj j a)
     (hig : ¬ G.Adj i g) (hjb : ¬ G.Adj j b) :
     HasReachableReduction C ∨
-      Nonempty (Lemma4_8DeepConfiguration C a b c d e f g h) := by
+      Nonempty (Lemma4_8Case3Configuration C a b c d e f g h) := by
   classical
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
@@ -84,9 +92,9 @@ theorem lemma4_8_oriented_initial
       hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩⟩
   · exact Or.inl (HasReachableReduction.of_current_ce C hce)
 
-/-- Formalization of cases (1)--(3.3), including the color-reversal used by
-"without loss of generality". -/
-theorem lemma4_8_initial_cases
+/-- Formalization of Cases (1) and (2), followed by the orientation and
+third-neighbor setup at the start of Case (3). -/
+theorem lemma4_8_cases1_and_2_setup3
     (C : GoodColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
@@ -96,7 +104,7 @@ theorem lemma4_8_initial_cases
     (hNoBlueAtA : ∀ v, G.Adj a v → C.color v ≠ .blue)
     (hNoRedAtH : ∀ v, G.Adj h v → C.color v ≠ .red) :
     HasReachableReduction C ∨
-      Nonempty (Lemma4_8DeepConfiguration C a b c d e f g h) := by
+      Nonempty (Lemma4_8Case3Configuration C a b c d e f g h) := by
   classical
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
@@ -170,7 +178,7 @@ theorem lemma4_8_initial_cases
                 simp [hebV, hedV, hecV, Ne.symm hje, hbdV, hbcV,
                   Ne.symm hjbV, hdcV, Ne.symm hjd, Ne.symm hjc])
             exact HasReachableReduction.of_swapSides C hptrRev
-          · exact lemma4_8_oriented_initial C hp ha hb hc hd he hf hg hh
+          · exact lemma4_8_case3_setup C hp ha hb hc hd he hf hg hh
               hNoBlueAtA (i := i) (j := j) hi hj hdi hih hej hja hig hjb
         · by_cases hjb : G.Adj j b
           · left

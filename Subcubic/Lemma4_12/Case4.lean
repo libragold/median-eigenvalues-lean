@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_12.Early
+import Subcubic.Lemma4_12.Case1
 
 /-! Case (4.2) of Lemma 4.12. -/
 
@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 structure Lemma4_12RedGConfiguration (C : GoodColoring G)
-    (a b c d : V) extends Lemma4_12CoreConfiguration C a b c d where
+    (a b c d : V) extends Lemma4_12ThirdNeighborConfiguration C a b c d where
   g : V
   h : V
   hg : C.color g = .red
@@ -25,7 +25,7 @@ theorem lemma4_12_case4_reddish
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hNoRedAtD : ∀ v, G.Adj d v → C.color v ≠ .red)
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     {g : V} (hg : C.color g = .reddish) (heg : G.Adj Q.e g)
     (hga : g ≠ a) (hgb : g ≠ b)
     (hea : G.Adj Q.e a) (hfd : G.Adj Q.f d)
@@ -108,7 +108,7 @@ theorem lemma4_12_case4_split
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hNoRedAtD : ∀ v, G.Adj d v → C.color v ≠ .red)
-    (Q : Lemma4_12CoreConfiguration C a b c d)
+    (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     (hea : G.Adj Q.e a) (hfd : G.Adj Q.f d)
     (hef : ¬ G.Adj Q.e Q.f) :
     HasReachableReduction C ∨

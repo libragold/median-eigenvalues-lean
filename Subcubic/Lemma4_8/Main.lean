@@ -11,17 +11,17 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- All completed subcases after the proof has been oriented so that `i` is
-not adjacent to `c`.  The right disjunct is exactly the final mixed case in
-which the prose asks us to flip `np` and return to the all-bluish case. -/
-theorem lemma4_8_oriented_residual
+/-- Split the subcases of Case (3.4) after orienting the proof so that `i` is
+not adjacent to `c`. The right disjunct is precisely Case (3.4.3.3.2.2),
+where the prose flips `np` and returns to the all-bluish case. -/
+theorem lemma4_8_case3_4_split
     (C : GoodColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
     (hg : C.color g = .blue) (hh : C.color h = .blue)
-    (Q : Lemma4_8LateConfiguration C a b c d e f g h)
+    (Q : Lemma4_8Case3_4Configuration C a b c d e f g h)
     (hic : ¬ G.Adj Q.i c) :
     HasReachableReduction C ∨
       Nonempty (Lemma4_8MixedPConfiguration C a b c d e f g h) := by
@@ -60,17 +60,17 @@ theorem lemma4_8_oriented_residual
 /-- Completion of the proof once Case (3.4) has been oriented so that
 `i` is not adjacent to `c`.  In the last mixed case, Case (3.4.3.3.2.2)
 flips `np` and restarts the refactored all-bluish argument. -/
-theorem lemma4_8_oriented_complete
+theorem lemma4_8_case3_4_complete
     (C : GoodColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
     (hg : C.color g = .blue) (hh : C.color h = .blue)
-    (Q : Lemma4_8LateConfiguration C a b c d e f g h)
+    (Q : Lemma4_8Case3_4Configuration C a b c d e f g h)
     (hic : ¬ G.Adj Q.i c) :
     HasReachableReduction C := by
-  rcases lemma4_8_oriented_residual C hpath ha hb hc hd he hf hg hh Q hic with
+  rcases lemma4_8_case3_4_split C hpath ha hb hc hd he hf hg hh Q hic with
     hresult | hP
   · exact hresult
   · obtain ⟨P⟩ := hP
@@ -92,11 +92,11 @@ theorem lemma4_8
     (hNoRedAtH : ∀ v, G.Adj h v → C.color v ≠ .red) :
     HasReachableReduction C := by
   classical
-  rcases lemma4_8_initial_cases C hpath ha hb hc hd he hf hg hh
+  rcases lemma4_8_cases1_and_2_setup3 C hpath ha hb hc hd he hf hg hh
       hNoBlueAtA hNoRedAtH with hresult | hdeep
   · exact hresult
   · obtain ⟨D⟩ := hdeep
-    rcases lemma4_8_early_cases C hpath ha hb hc hd he hf hg hh D with
+    rcases lemma4_8_cases3_1_to_3_3 C hpath ha hb hc hd he hf hg hh D with
       hresult | hlate
     · exact hresult
     · obtain ⟨Q⟩ := hlate
@@ -114,13 +114,13 @@ theorem lemma4_8
           apply hNoBlueAtA v hav
           change (C.color v).swap = .red at hvred
           exact (Color.swap_eq_red _).1 hvred
-        rcases lemma4_8_initial_cases C.swapSides hpath.reverse
+        rcases lemma4_8_cases1_and_2_setup3 C.swapSides hpath.reverse
             (by simp [hh]) (by simp [hg]) (by simp [hf]) (by simp [he])
             (by simp [hd]) (by simp [hc]) (by simp [hb]) (by simp [ha])
             hNoBlueAtHSwap hNoRedAtASwap with hresult | hdeepRev
         · exact HasReachableReduction.of_swapSides C hresult
         · obtain ⟨Drev⟩ := hdeepRev
-          rcases lemma4_8_early_cases C.swapSides hpath.reverse
+          rcases lemma4_8_cases3_1_to_3_3 C.swapSides hpath.reverse
               (by simp [hh]) (by simp [hg]) (by simp [hf]) (by simp [he])
               (by simp [hd]) (by simp [hc]) (by simp [hb]) (by simp [ha])
               Drev with hresult | hlateRev
@@ -157,12 +157,12 @@ theorem lemma4_8
               intro hrif
               apply hjf
               simpa [hRieq] using hrif
-            have hresultRev := lemma4_8_oriented_complete C.swapSides
+            have hresultRev := lemma4_8_case3_4_complete C.swapSides
               hpath.reverse
               (by simp [hh]) (by simp [hg]) (by simp [hf]) (by simp [he])
               (by simp [hd]) (by simp [hc]) (by simp [hb]) (by simp [ha])
               R hRic
             exact HasReachableReduction.of_swapSides C hresultRev
-      · exact lemma4_8_oriented_complete C hpath ha hb hc hd he hf hg hh Q hic
+      · exact lemma4_8_case3_4_complete C hpath ha hb hc hd he hf hg hh Q hic
 
 end Subcubic
