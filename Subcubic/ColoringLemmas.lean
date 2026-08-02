@@ -208,6 +208,33 @@ theorem exists_two_other_neighbors_of_degree_three
   obtain ⟨y, hvy, hym, hyx⟩ := second
   exact ⟨x, y, hvx, hvy, hxm, hym, hyx.symm⟩
 
+/-- A degree-three vertex with three displayed distinct neighbors has no
+fourth neighbor.  This form applies to reddish and bluish vertices as well. -/
+theorem not_adj_fourth_neighbor_of_degree_three
+    {v x y z w : V} (hdeg : vertexDegree G v = 3)
+    (hvx : G.Adj v x) (hvy : G.Adj v y) (hvz : G.Adj v z)
+    (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
+    (hwx : w ≠ x) (hwy : w ≠ y) (hwz : w ≠ z) : ¬ G.Adj v w := by
+  have hcard : (G.neighborSet v).ncard = 3 := by
+    simpa [vertexDegree] using hdeg
+  have htriple : ({x, y, z} : Set V).ncard = 3 := by simp [hxy, hxz, hyz]
+  have hsubset : ({x, y, z} : Set V) ⊆ G.neighborSet v := by
+    intro q hq
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hq
+    rcases hq with rfl | rfl | rfl
+    · exact hvx
+    · exact hvy
+    · exact hvz
+  have heq : ({x, y, z} : Set V) = G.neighborSet v :=
+    Set.eq_of_subset_of_ncard_le hsubset (by omega)
+  intro hvw
+  have hwmem : w ∈ ({x, y, z} : Set V) := by rw [heq]; exact hvw
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hwmem
+  rcases hwmem with h | h | h
+  · exact hwx h
+  · exact hwy h
+  · exact hwz h
+
 /-- If a degree-three red or blue vertex already has three pairwise-distinct
 displayed neighbors, it has no fourth neighbor. -/
 theorem GoodColoring.not_adj_fourth_neighbor
