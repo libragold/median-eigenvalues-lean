@@ -840,6 +840,62 @@ theorem containsNegativeI
     · exact fun h => haf h.symm
     · exact fun h => hbc h.symm
 
+/-- Negative reducer `j-`, in catalog order. -/
+theorem containsNegativeJ
+    (C : GoodColoring G) {a b c d e f g : V}
+    (ha : C.color a = .red) (hb : C.color b = .reddish)
+    (hc : C.color c = .bluish) (hd : C.color d = .blue)
+    (he : C.color e = .blue) (hf : C.color f = .blue)
+    (hg : C.color g = .blue)
+    (hac : G.Adj a c) (hae : G.Adj a e)
+    (hbe : G.Adj b e) (hbf : G.Adj b f) (hbg : G.Adj b g)
+    (hde : G.Adj d e) (hfg : G.Adj f g)
+    (hab : ¬ G.Adj a b) (had : ¬ G.Adj a d)
+    (haf : ¬ G.Adj a f) (hag : ¬ G.Adj a g)
+    (hbc : ¬ G.Adj b c) (hbd : ¬ G.Adj b d)
+    (hn : [a, b, c, d, e, f, g].Nodup) :
+    ContainsNegativeTailReducer C := by
+  refine ⟨negativeTailReducer .j, ⟨.j, rfl⟩, Or.inl ?_⟩
+  apply (negativeTailReducer .j).occursInduced_of_embedding C
+    ([a, b, c, d, e, f, g].get) hn.injective_get
+  · intro x y hxy
+    apply (negativeTailReducerData .j).adj_map_of_edgesMapTo G _ ?_ hxy
+    unfold PatternData.EdgesMapTo
+    dsimp only [negativeTailReducerData]
+    intro edge hedge
+    change edge ∈ [(0, 2), (0, 4), (1, 4), (1, 5), (1, 6),
+      (3, 4), (5, 6)] at hedge
+    simp at hedge
+    rcases hedge with (rfl | rfl | rfl | rfl | rfl | rfl | rfl)
+    all_goals simp
+    all_goals assumption
+  · intro x
+    have hcolors : (negativeTailReducer .j).color =
+        ![.red, .reddish, .bluish, .blue, .blue, .blue, .blue] := by
+      native_decide
+    rw [hcolors]
+    fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg] <;> native_decide
+  · intro x y hne hnon hauto
+    have hp := negativeJ_boundaryNonedges x y hne hnon hauto
+    simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
+    rcases hp with
+        (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |
+          ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩) |
+        (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |
+          ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩)
+    · exact hab
+    · exact had
+    · exact haf
+    · exact hag
+    · exact hbc
+    · exact hbd
+    · exact fun h => hab h.symm
+    · exact fun h => had h.symm
+    · exact fun h => haf h.symm
+    · exact fun h => hag h.symm
+    · exact fun h => hbc h.symm
+    · exact fun h => hbd h.symm
+
 /-- Negative reducer `r-`, in catalog order. -/
 theorem containsNegativeR
     (C : GoodColoring G) {a b c d e f g h : V}
