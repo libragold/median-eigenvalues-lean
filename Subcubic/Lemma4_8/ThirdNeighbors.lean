@@ -1,4 +1,4 @@
-import Subcubic.Lemma4_8.Symmetry
+import Subcubic.Lemma4_8.Basic
 
 namespace Subcubic
 

@@ -3,7 +3,7 @@ import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
 
 /-!
-# Reusable witnesses for tail reducers used in local lemmas
+# Reusable witnesses for positive tail reducers
 
 The catalog remains generated from `data/tail_reducers.txt`.  This file only
 records the mathematical labellings used repeatedly in proofs.

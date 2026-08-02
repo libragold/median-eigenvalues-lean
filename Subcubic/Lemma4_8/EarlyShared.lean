@@ -1,5 +1,5 @@
 import Subcubic.Lemma4_8.Early
-import Subcubic.TailReducerWitnesses
+import Subcubic.PositiveTailReducerWitnesses
 
 /-! The shared-neighbor case (3.2) of Lemma 4.8. -/
 

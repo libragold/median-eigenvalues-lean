@@ -1,40 +1,42 @@
-import Subcubic.PositiveReduction
+import Subcubic.FlipLemmas
+import Subcubic.TailReducers
 
 /-!
-# Reachable negative reductions
+# Reachable positive reductions
 
-The Section 5 analogue of `HasReachableReduction`: after zero or more valid
-cut-preserver flips, the recomputed coloring contains a negative tail reducer
-or a cut enhancer.
+General infrastructure for reaching a positive tail reducer or a cut enhancer
+after zero or more valid cut-preserver flips.  This is independent of any
+particular local lemma.
 -/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-def HasReachableNegativeReduction (C : GoodColoring G) : Prop :=
+def HasReachableReduction (C : GoodColoring G) : Prop :=
   ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-    (ContainsNegativeTailReducer M.toGoodColoring ∨
+    (ContainsPositiveTailReducer M.toGoodColoring ∨
      ContainsCutEnhancer M.toGoodColoring)
 
-theorem HasReachableNegativeReduction.of_current_ntr (C : GoodColoring G)
-    (hntr : ContainsNegativeTailReducer C) :
-    HasReachableNegativeReduction C := by
+theorem HasReachableReduction.of_current_ptr (C : GoodColoring G)
+    (hptr : ContainsPositiveTailReducer C) : HasReachableReduction C := by
   refine ⟨C.toMatchingCut, .refl, Or.inl ?_⟩
-  exact (containsInducedUpToSwap_congr_color IsNegativeTailReducer
-    (by simp)).1 hntr
+  exact (containsInducedUpToSwap_congr_color IsPositiveTailReducer
+    (by simp)).1 hptr
 
-theorem HasReachableNegativeReduction.of_current_ce (C : GoodColoring G)
-    (hce : ContainsCutEnhancer C) : HasReachableNegativeReduction C := by
+theorem HasReachableReduction.of_current_ce (C : GoodColoring G)
+    (hce : ContainsCutEnhancer C) : HasReachableReduction C := by
   refine ⟨C.toMatchingCut, .refl, Or.inr ?_⟩
   exact (containsInducedUpToSwap_congr_color IsCutEnhancer
     (by simp)).1 hce
 
-theorem HasReachableNegativeReduction.after_flip (C : GoodColoring G)
+/-- A reduction reachable after one valid first flip is also reachable from
+the original coloring. -/
+theorem HasReachableReduction.after_flip (C : GoodColoring G)
     {M₁ : MatchingCut G} {r s : V}
     (hflip : C.toMatchingCut.IsFlipAt M₁ r s)
-    (hresult : HasReachableNegativeReduction M₁.toGoodColoring) :
-    HasReachableNegativeReduction C := by
+    (hresult : HasReachableReduction M₁.toGoodColoring) :
+    HasReachableReduction C := by
   rcases hresult with ⟨M, hreach, hfound⟩
   have hround : M₁.toGoodColoring.toMatchingCut = M₁ := by
     apply MatchingCut.ext _ _
@@ -49,9 +51,11 @@ theorem HasReachableNegativeReduction.after_flip (C : GoodColoring G)
     | @step N₁ N₂ x y hN hxy ih => exact .step ih hxy
   exact ⟨M, prepend hreach, hfound⟩
 
-theorem HasReachableNegativeReduction.of_swapSides (C : GoodColoring G)
-    (h : HasReachableNegativeReduction C.swapSides) :
-    HasReachableNegativeReduction C := by
+/-- The reduction conclusion is invariant under exchanging the two sides of
+the cut.  Flip directions reverse, but the underlying toggled pair is the
+same. -/
+theorem HasReachableReduction.of_swapSides (C : GoodColoring G)
+    (h : HasReachableReduction C.swapSides) : HasReachableReduction C := by
   rcases h with ⟨M, hreach, hfound⟩
   have hstart : C.swapSides.toMatchingCut.swapSides = C.toMatchingCut := by
     apply MatchingCut.ext
@@ -65,17 +69,17 @@ theorem HasReachableNegativeReduction.of_swapSides (C : GoodColoring G)
   have hcolor : M.swapSides.toGoodColoring.color = D.swapSides.color := by
     funext v
     simp [D]
-  have hfoundD : ContainsNegativeTailReducer D.swapSides ∨
+  have hfoundD : ContainsPositiveTailReducer D.swapSides ∨
       ContainsCutEnhancer D.swapSides := by
-    rcases hfound with hntr | hce
+    rcases hfound with hptr | hce
     · exact Or.inl
-        ((containsInducedUpToSwap_swapSides IsNegativeTailReducer D).2 hntr)
+        ((containsInducedUpToSwap_swapSides IsPositiveTailReducer D).2 hptr)
     · exact Or.inr
         ((containsInducedUpToSwap_swapSides IsCutEnhancer D).2 hce)
   refine ⟨M.swapSides, hreach', ?_⟩
-  rcases hfoundD with hntr | hce
+  rcases hfoundD with hptr | hce
   · exact Or.inl
-      ((containsInducedUpToSwap_congr_color IsNegativeTailReducer hcolor).2 hntr)
+      ((containsInducedUpToSwap_congr_color IsPositiveTailReducer hcolor).2 hptr)
   · exact Or.inr
       ((containsInducedUpToSwap_congr_color IsCutEnhancer hcolor).2 hce)
 

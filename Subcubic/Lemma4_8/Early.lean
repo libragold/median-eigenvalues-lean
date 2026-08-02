@@ -1,5 +1,5 @@
 import Subcubic.Lemma4_8.Initial
-import Subcubic.TailReducerWitnesses
+import Subcubic.PositiveTailReducerWitnesses
 
 /-!
 # Lemma 4.8: the direct cases (3.1)--(3.3)

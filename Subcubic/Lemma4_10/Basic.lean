@@ -1,6 +1,6 @@
 import Subcubic.Lemma4_8
 import Subcubic.Lemma3_5
-import Subcubic.TailReducerWitnesses
+import Subcubic.PositiveTailReducerWitnesses
 import Mathlib.Data.Fin.VecNotation
 
 /-!
