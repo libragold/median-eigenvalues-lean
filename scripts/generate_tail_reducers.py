@@ -21,6 +21,17 @@ NEGATIVE_REDDISH = {
     "n": [2], "o": [0], "p": [0], "q": [0], "r": [2],
     "s": [2], "t": [2], "u": [0, 1], "v": [0, 1],
     "w": [1], "x": [2], "y": [1], "z": [0],
+    "e0Minus": [1], "s0Minus": [2], "s0Minus2": [2],
+}
+
+SPECIAL_LABELS = {
+    ("+", "mMinus"): "m-minus+",
+    ("-", "e0Minus"): "e0-minus-",
+    ("-", "e1Minus"): "e1-minus-",
+    ("-", "s0Minus"): "s0-minus-",
+    ("-", "s1Minus"): "s1-minus-",
+    ("-", "s0Minus2"): "s0-minus2-",
+    ("-", "s1Minus2"): "s1-minus2-",
 }
 
 
@@ -137,7 +148,7 @@ def parse_rows():
                 side_degrees[u] += 1
                 side_degrees[v] += 1
         assert max(side_degrees) <= 1, (head, "not a matching cut", side_degrees)
-        display_label = "m-minus+" if sign == "+" and name == "mMinus" else f"{name}{sign}"
+        display_label = SPECIAL_LABELS.get((sign, name), f"{name}{sign}")
         rows[sign].append({
             "name": name,
             "label": display_label,
@@ -146,7 +157,7 @@ def parse_rows():
             "edges": edges,
         })
     assert len(rows["+"]) == 26
-    assert len(rows["-"]) == 40
+    assert len(rows["-"]) == 46
     return rows
 
 
@@ -171,7 +182,7 @@ def exact_rows():
             negative.append({**row, "reddish": NEGATIVE_REDDISH.get(name, [])})
 
     assert len(positive) == 26
-    assert len(negative) == 42
+    assert len(negative) == 48
     for row in positive + negative:
         assert all(i < row["side_count"] for i in row["reddish"])
     return positive, negative

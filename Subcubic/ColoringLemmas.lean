@@ -15,6 +15,14 @@ open Set
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
+/-- Vertices carrying two provably different colors are distinct. -/
+theorem vertex_ne_of_color_eq {C : GoodColoring G} {x y : V} {cx cy : Color}
+    (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) : x ≠ y := by
+  intro h
+  subst y
+  rw [hx] at hy
+  exact hxy hy
+
 /-- In a subcubic graph, three displayed distinct neighbors exclude every
 fourth distinct neighbor; no color or exact-degree hypothesis is needed. -/
 theorem not_adj_fourth_neighbor_of_subcubic
@@ -177,6 +185,23 @@ theorem exists_third_neighbor_of_degree_three
   have hle := Set.ncard_le_ncard hsubset
   rw [hcard, Set.ncard_pair hxy] at hle
   omega
+
+/-- A degree-two vertex with one displayed neighbor has exactly one further
+neighbor.  The existence half is useful for the shortened reducer variants. -/
+theorem exists_other_neighbor_of_degree_two
+    {v mate : V} (hdeg : vertexDegree G v = 2) (_hvm : G.Adj v mate) :
+    ∃ x, G.Adj v x ∧ x ≠ mate := by
+  have hcard : (G.neighborSet v).ncard = 2 := by
+    simpa [vertexDegree] using hdeg
+  by_contra h
+  push Not at h
+  have hsubset : G.neighborSet v ⊆ ({mate} : Set V) := by
+    intro z hz
+    simp only [Set.mem_singleton_iff]
+    by_contra hzm
+    exact hzm (h z hz)
+  have hle := Set.ncard_le_ncard hsubset
+  simp [hcard] at hle
 
 /-- A red or blue vertex with one displayed neighbor has two distinct other
 neighbors. -/
