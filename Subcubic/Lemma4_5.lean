@@ -292,7 +292,7 @@ theorem lemma4_5
                 rcases lemma3_3_reversed C hc hb ha huside hbc.symm hcu
                     hab.symm hub.symm hua.symm with hu | hce
                 · obtain ⟨M₁, hflip₁⟩ := exists_flipAt_of_local C
-                    hb hc ha hd (Or.inl hx) hu hab.symm hbc hbx hcd hcu
+                    hb hc ha hd (Or.inl hx) (Or.inl hu) hab.symm hbc hbx hcd hcu
                   let D₁ := M₁.toGoodColoring
                   have hside₁ : M₁.side = C.redSide ∆ ({b, c} : Set V) :=
                     hflip₁.2
@@ -375,7 +375,8 @@ theorem lemma4_5
                     rcases lemma3_3_reversed D₁ hh₁ hi₁ hj₁ hvside hhi hhv
                         hij hvi.symm hvj.symm with hv | hce₁
                     · obtain ⟨M₂, hflip₂⟩ := exists_flipAt_of_local D₁
-                        hi₁ hh₁ hj₁ hg₁ (Or.inl hy) hv hij hhi.symm hiy hgh.symm hhv
+                        hi₁ hh₁ hj₁ hg₁ (Or.inl hy) (Or.inl hv)
+                        hij hhi.symm hiy hgh.symm hhv
                       let D₂ := M₂.toGoodColoring
                       have hflip₂' : M₁.IsFlipAt M₂ i h := by
                         constructor

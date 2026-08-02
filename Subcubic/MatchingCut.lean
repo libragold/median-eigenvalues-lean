@@ -111,20 +111,12 @@ noncomputable def color (M : MatchingCut G) : V → Color :=
   by_cases hv : v ∈ M.side
   · have hv' : v ∉ M.sideᶜ := by simpa
     by_cases hn : ∃ w ∈ M.side, G.Adj v w
-    · have hn' : ∃ w ∉ M.sideᶜ, G.Adj v w := by simpa
-      simp [hv, hv', hn, hn', Color.swap]
-    · have hn' : ¬ ∃ w ∉ M.sideᶜ, G.Adj v w := by
-        rintro ⟨w, hw, hvw⟩
-        exact hn ⟨w, by simpa using hw, hvw⟩
-      simp [hv, hv', hn, hn', Color.swap]
+    · simp [hv, hv', hn, Color.swap]
+    · simp [hv, hv', hn, Color.swap]
   · have hv' : v ∈ M.sideᶜ := by simpa
     by_cases hn : ∃ w ∉ M.side, G.Adj v w
-    · have hn' : ∃ w ∈ M.sideᶜ, G.Adj v w := by simpa
-      simp [hv, hv', hn, hn', Color.swap]
-    · have hn' : ¬ ∃ w ∈ M.sideᶜ, G.Adj v w := by
-        rintro ⟨w, hw, hvw⟩
-        exact hn ⟨w, by simpa using hw, hvw⟩
-      simp [hv, hv', hn, hn', Color.swap]
+    · simp [hv, hv', hn, Color.swap]
+    · simp [hv, hv', hn, Color.swap]
 
 @[simp] theorem redSideOf_color (M : MatchingCut G) :
     redSideOf M.color = M.side := by

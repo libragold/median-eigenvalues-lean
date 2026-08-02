@@ -357,7 +357,7 @@ private theorem two_crossing_edges
 /-- **Lemma 4.2.** If a red edge `ab` and a blue edge `cd` have at least two
 edges between their endpoint pairs, then there is an induced positive tail
 reducer or an induced cut enhancer (in either side orientation). -/
-theorem redEdge_blueEdge_multipleEdges
+theorem lemma4_2
     (C : GoodColoring G) (a b c d : V)
     (hab : G.Adj a b) (ha : C.color a = .red) (hb : C.color b = .red)
     (hcd : G.Adj c d) (hc : C.color c = .blue) (hd : C.color d = .blue)

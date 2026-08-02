@@ -12,3 +12,4 @@ import Subcubic.Lemma4_4
 import Subcubic.Lemma4_5
 import Subcubic.Lemma4_7
 import Subcubic.Lemma4_8
+import Subcubic.Lemma4_10

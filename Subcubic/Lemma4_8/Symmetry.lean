@@ -5,7 +5,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-theorem FormsInducedPath8.reverse {a b c d e f g h : V}
+omit [Fintype V] in theorem FormsInducedPath8.reverse {a b c d e f g h : V}
     (hp : FormsInducedPath8 G a b c d e f g h) :
     FormsInducedPath8 G h g f e d c b a := by
   classical

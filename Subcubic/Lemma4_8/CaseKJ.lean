@@ -70,7 +70,7 @@ theorem lemma4_8_case_k_adj_j
     intro hjgV
     rw [hjgV] at hj
     simp [hg] at hj
-  rcases exists_flipAt_or_cutEnhancer C hf hg he hh hef.symm hfg hgh heg
+  rcases exists_flipAt_or_cutEnhancer C hf hg he hh hef.symm hfg hgh
       with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring

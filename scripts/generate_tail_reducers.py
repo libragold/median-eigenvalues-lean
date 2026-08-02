@@ -14,7 +14,7 @@ import sys
 
 POSITIVE_REDDISH = {
     "l": [0], "m": [0], "o": [0], "p": [0], "q": [0],
-    "r": [0], "s": [0], "t": [0], "w": [3], "mMinus": [0],
+    "r": [0], "s": [0], "t": [0], "u": [0], "x": [3], "mMinus": [0],
 }
 NEGATIVE_REDDISH = {
     "e": [1], "h": [1], "i": [1], "j": [1], "k": [2],
@@ -145,7 +145,7 @@ def parse_rows():
             "vertex_count": vertex_count,
             "edges": edges,
         })
-    assert len(rows["+"]) == 25
+    assert len(rows["+"]) == 26
     assert len(rows["-"]) == 40
     return rows
 
@@ -170,7 +170,7 @@ def exact_rows():
         else:
             negative.append({**row, "reddish": NEGATIVE_REDDISH.get(name, [])})
 
-    assert len(positive) == 25
+    assert len(positive) == 26
     assert len(negative) == 42
     for row in positive + negative:
         assert all(i < row["side_count"] for i in row["reddish"])

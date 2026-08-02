@@ -24,7 +24,7 @@ private theorem redEdge_twoBlueNeighbors
     (hcd_vertices : c ≠ d) :
     ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C := by
   by_cases hcd : G.Adj c d
-  · apply redEdge_blueEdge_multipleEdges C a b c d hab ha hb hcd hc hd
+  · apply lemma4_2 C a b c d hab ha hb hcd hc hd
     classical
     simp [fourVertexCrossEdgeCount, hac, had]
     omega

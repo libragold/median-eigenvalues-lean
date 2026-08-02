@@ -83,42 +83,52 @@ theorem lemma4_6
       (huvTwo : (u = r₀ ∨ u = r₁) ∧ (v = s₀ ∨ v = s₁))
       (hdifferent : (x, y) ≠ (u, v)) : False := by
     apply noCurrent
-    apply redEdge_blueEdge_multipleEdges C r₀ r₁ s₀ s₁
+    apply lemma4_2 C r₀ r₁ s₀ s₁
       hrr hr₀ hr₁ hss hs₀ hs₁
     rcases hxyOne with ⟨rfl | rfl, rfl | rfl⟩ <;>
       rcases huvTwo with ⟨rfl | rfl, rfl | rfl⟩ <;>
-      simp_all [fourVertexCrossEdgeCount]
+      simp_all [fourVertexCrossEdgeCount] <;> omega
+  have pair_ne_left {x y u v : V} (hxu : x ≠ u) : (x, y) ≠ (u, v) :=
+    fun hpair => hxu (congrArg Prod.fst hpair)
+  have pair_ne_right {x y u v : V} (hyv : y ≠ v) : (x, y) ≠ (u, v) :=
+    fun hpair => hyv (congrArg Prod.snd hpair)
   -- Extra crossings between consecutive monochromatic edges invoke Lemma 4.2.
   have hac : ¬ G.Adj a c := fun h => noSecondCrossing ha hb hc hd hab hcd
-    h ⟨Or.inl rfl, Or.inl rfl⟩ hbc ⟨Or.inr rfl, Or.inl rfl⟩ (by simp [hv (by decide)])
+    h ⟨Or.inl rfl, Or.inl rfl⟩ hbc ⟨Or.inr rfl, Or.inl rfl⟩
+      (pair_ne_left (hv (x := (0 : Fin 10)) (y := 1) (by decide)))
   have had : ¬ G.Adj a d := fun h => noSecondCrossing ha hb hc hd hab hcd
-    h ⟨Or.inl rfl, Or.inr rfl⟩ hbc ⟨Or.inr rfl, Or.inl rfl⟩ (by simp [hv (by decide)])
+    h ⟨Or.inl rfl, Or.inr rfl⟩ hbc ⟨Or.inr rfl, Or.inl rfl⟩
+      (pair_ne_left (hv (x := (0 : Fin 10)) (y := 1) (by decide)))
   have hbd : ¬ G.Adj b d := fun h => noSecondCrossing ha hb hc hd hab hcd
-    hbc ⟨Or.inr rfl, Or.inl rfl⟩ h ⟨Or.inr rfl, Or.inr rfl⟩ (by simp [hv (by decide)])
+    hbc ⟨Or.inr rfl, Or.inl rfl⟩ h ⟨Or.inr rfl, Or.inr rfl⟩
+      (pair_ne_right (hv (x := (2 : Fin 10)) (y := 3) (by decide)))
   have hce : ¬ G.Adj c e := fun h => noSecondCrossing he hf hc hd hef hcd
     hde.symm ⟨Or.inl rfl, Or.inr rfl⟩ h.symm ⟨Or.inl rfl, Or.inl rfl⟩
-      (by simp [hv (by decide)])
+      (pair_ne_right (hv (x := (3 : Fin 10)) (y := 2) (by decide)))
   have hcf : ¬ G.Adj c f := fun h => noSecondCrossing he hf hc hd hef hcd
     hde.symm ⟨Or.inl rfl, Or.inr rfl⟩ h.symm ⟨Or.inr rfl, Or.inl rfl⟩
-      (by simp [hv (by decide)])
+      (pair_ne_left (hv (x := (4 : Fin 10)) (y := 5) (by decide)))
   have hdf : ¬ G.Adj d f := fun h => noSecondCrossing he hf hc hd hef hcd
     hde.symm ⟨Or.inl rfl, Or.inr rfl⟩ h.symm ⟨Or.inr rfl, Or.inr rfl⟩
-      (by simp [hv (by decide)])
+      (pair_ne_left (hv (x := (4 : Fin 10)) (y := 5) (by decide)))
   have heg : ¬ G.Adj e g := fun h => noSecondCrossing he hf hg hh hef hgh
-    h ⟨Or.inl rfl, Or.inl rfl⟩ hfg ⟨Or.inr rfl, Or.inl rfl⟩ (by simp [hv (by decide)])
+    h ⟨Or.inl rfl, Or.inl rfl⟩ hfg ⟨Or.inr rfl, Or.inl rfl⟩
+      (pair_ne_left (hv (x := (4 : Fin 10)) (y := 5) (by decide)))
   have heh : ¬ G.Adj e h := fun h => noSecondCrossing he hf hg hh hef hgh
-    h ⟨Or.inl rfl, Or.inr rfl⟩ hfg ⟨Or.inr rfl, Or.inl rfl⟩ (by simp [hv (by decide)])
+    h ⟨Or.inl rfl, Or.inr rfl⟩ hfg ⟨Or.inr rfl, Or.inl rfl⟩
+      (pair_ne_left (hv (x := (4 : Fin 10)) (y := 5) (by decide)))
   have hfh : ¬ G.Adj f h := fun h => noSecondCrossing he hf hg hh hef hgh
-    hfg ⟨Or.inr rfl, Or.inl rfl⟩ h ⟨Or.inr rfl, Or.inr rfl⟩ (by simp [hv (by decide)])
+    hfg ⟨Or.inr rfl, Or.inl rfl⟩ h ⟨Or.inr rfl, Or.inr rfl⟩
+      (pair_ne_right (hv (x := (6 : Fin 10)) (y := 7) (by decide)))
   have hgi : ¬ G.Adj g i := fun h => noSecondCrossing hi hj hg hh hij hgh
     hhi.symm ⟨Or.inl rfl, Or.inr rfl⟩ h.symm ⟨Or.inl rfl, Or.inl rfl⟩
-      (by simp [hv (by decide)])
+      (pair_ne_right (hv (x := (7 : Fin 10)) (y := 6) (by decide)))
   have hgj : ¬ G.Adj g j := fun h => noSecondCrossing hi hj hg hh hij hgh
     hhi.symm ⟨Or.inl rfl, Or.inr rfl⟩ h.symm ⟨Or.inr rfl, Or.inl rfl⟩
-      (by simp [hv (by decide)])
+      (pair_ne_left (hv (x := (8 : Fin 10)) (y := 9) (by decide)))
   have hhj : ¬ G.Adj h j := fun h => noSecondCrossing hi hj hg hh hij hgh
     hhi.symm ⟨Or.inl rfl, Or.inr rfl⟩ h.symm ⟨Or.inr rfl, Or.inr rfl⟩
-      (by simp [hv (by decide)])
+      (pair_ne_left (hv (x := (8 : Fin 10)) (y := 9) (by decide)))
   -- A crossing that skips a monochromatic block gives three neighbors of
   -- one blue edge, so the color-reversed Lemma 4.3 applies.
   have noFarLeft {x : V} (hx : C.color x = .red)
@@ -176,46 +186,47 @@ theorem lemma4_6
       ¬ G.Adj x y := by
     exact C.blueSide_not_adj_second_neighbor
       (by simp [hx]) (by simp [hm]) (by simp [hy]) hxm hmy
+  have hae := redNonedge ha hb he hab
+    (hv (x := (1 : Fin 10)) (y := 4) (by decide))
+  have haf := redNonedge ha hb hf hab
+    (hv (x := (1 : Fin 10)) (y := 5) (by decide))
+  have hai := redNonedge ha hb hi hab
+    (hv (x := (1 : Fin 10)) (y := 8) (by decide))
+  have haj := redNonedge ha hb hj hab
+    (hv (x := (1 : Fin 10)) (y := 9) (by decide))
+  have hbe := redNonedge hb ha he hab.symm
+    (hv (x := (0 : Fin 10)) (y := 4) (by decide))
+  have hbf := redNonedge hb ha hf hab.symm
+    (hv (x := (0 : Fin 10)) (y := 5) (by decide))
+  have hbi := redNonedge hb ha hi hab.symm
+    (hv (x := (0 : Fin 10)) (y := 8) (by decide))
+  have hbj := redNonedge hb ha hj hab.symm
+    (hv (x := (0 : Fin 10)) (y := 9) (by decide))
+  have hei := redNonedge he hf hi hef
+    (hv (x := (5 : Fin 10)) (y := 8) (by decide))
+  have hej := redNonedge he hf hj hef
+    (hv (x := (5 : Fin 10)) (y := 9) (by decide))
+  have hfi := redNonedge hf he hi hef.symm
+    (hv (x := (4 : Fin 10)) (y := 8) (by decide))
+  have hfj := redNonedge hf he hj hef.symm
+    (hv (x := (4 : Fin 10)) (y := 9) (by decide))
+  have hcg := blueNonedge hc hd hg hcd
+    (hv (x := (3 : Fin 10)) (y := 6) (by decide))
+  have hch := blueNonedge hc hd hh hcd
+    (hv (x := (3 : Fin 10)) (y := 7) (by decide))
+  have hdg := blueNonedge hd hc hg hcd.symm
+    (hv (x := (2 : Fin 10)) (y := 6) (by decide))
+  have hdh := blueNonedge hd hc hh hcd.symm
+    (hv (x := (2 : Fin 10)) (y := 7) (by decide))
   have hinduced : FormsInducedPath10 G a b c d e f g h i j := by
     refine ⟨hinj, ?_⟩
     intro x y
     fin_cases x <;> fin_cases y <;>
       simp [graphOfEdges, G.adj_comm, hab, hbc, hcd, hde, hef, hfg, hgh,
         hhi, hij, hac, had, hbd, hce, hcf, hdf, heg, heh, hfh, hgi,
-        hgj, hhj, hag, hah, hbg, hbh, hci, hcj, hdi, hdj]
-    all_goals first
-      | exact redNonedge ha hb he hab (hv (by decide))
-      | exact redNonedge ha hb hf hab (hv (by decide))
-      | exact redNonedge ha hb hi hab (hv (by decide))
-      | exact redNonedge ha hb hj hab (hv (by decide))
-      | exact redNonedge hb ha he hab.symm (hv (by decide))
-      | exact redNonedge hb ha hf hab.symm (hv (by decide))
-      | exact redNonedge hb ha hi hab.symm (hv (by decide))
-      | exact redNonedge hb ha hj hab.symm (hv (by decide))
-      | exact redNonedge he hf ha hef (hv (by decide))
-      | exact redNonedge he hf hb hef (hv (by decide))
-      | exact redNonedge he hf hi hef (hv (by decide))
-      | exact redNonedge he hf hj hef (hv (by decide))
-      | exact redNonedge hf he ha hef.symm (hv (by decide))
-      | exact redNonedge hf he hb hef.symm (hv (by decide))
-      | exact redNonedge hf he hi hef.symm (hv (by decide))
-      | exact redNonedge hf he hj hef.symm (hv (by decide))
-      | exact redNonedge hi hj ha hij (hv (by decide))
-      | exact redNonedge hi hj hb hij (hv (by decide))
-      | exact redNonedge hi hj he hij (hv (by decide))
-      | exact redNonedge hi hj hf hij (hv (by decide))
-      | exact redNonedge hj hi ha hij.symm (hv (by decide))
-      | exact redNonedge hj hi hb hij.symm (hv (by decide))
-      | exact redNonedge hj hi he hij.symm (hv (by decide))
-      | exact redNonedge hj hi hf hij.symm (hv (by decide))
-      | exact blueNonedge hc hd hg hcd (hv (by decide))
-      | exact blueNonedge hc hd hh hcd (hv (by decide))
-      | exact blueNonedge hd hc hg hcd.symm (hv (by decide))
-      | exact blueNonedge hd hc hh hcd.symm (hv (by decide))
-      | exact blueNonedge hg hh hc hgh (hv (by decide))
-      | exact blueNonedge hg hh hd hgh (hv (by decide))
-      | exact blueNonedge hh hg hc hgh.symm (hv (by decide))
-      | exact blueNonedge hh hg hd hgh.symm (hv (by decide))
+        hgj, hhj, hag, hah, hbg, hbh, hci, hcj, hdi, hdj,
+        hae, haf, hai, haj, hbe, hbf, hbi, hbj, hei, hej, hfi, hfj,
+        hcg, hch, hdg, hdh]
   exact hresult (lemma4_5 C hinduced ha hb hc hd he hf hg hh hi hj)
 
 end Subcubic

@@ -56,7 +56,7 @@ theorem lemma3_5
   have degree_of_flip
       (hsafe : C.color d = .bluish ∨ d = ss) : vertexDegree G c = 3 := by
     obtain ⟨M, hflip⟩ := exists_flipAt_of_local C
-      ha hb hrr hss hsafe hc harr hab had hbss hbc
+      ha hb hrr hss hsafe (Or.inl hc) harr hab had hbss hbc
     have hside : M.side = C.redSide ∆ ({a, b} : Set V) := hflip.2
     have hcM : c ∈ M.side := by
       rw [hside]

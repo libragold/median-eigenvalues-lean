@@ -97,7 +97,7 @@ private theorem contains_positiveC
     rw [hcolors]
     fin_cases x <;> simp [ha, hb, hc, hd, he] <;> native_decide
 
-private theorem contains_positiveU
+private theorem contains_positiveV
     (C : GoodColoring G) {a b c d e f g h i j : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
@@ -112,11 +112,11 @@ private theorem contains_positiveU
     (hfg : G.Adj f g) (hhi : G.Adj h i)
     (hn : [a, b, c, d, e, f, g, h, i, j].Nodup) :
     ContainsPositiveTailReducer C := by
-  refine ⟨positiveTailReducer .u, ⟨.u, rfl⟩, Or.inl ?_⟩
-  apply (positiveTailReducer .u).occursInduced_of_embedding C
+  refine ⟨positiveTailReducer .v, ⟨.v, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .v).occursInduced_of_embedding C
     ([a, b, c, d, e, f, g, h, i, j].get) hn.injective_get
   · intro x y hxy
-    apply (positiveTailReducerData .u).adj_map_of_edgesMapTo G _ ?_ hxy
+    apply (positiveTailReducerData .v).adj_map_of_edgesMapTo G _ ?_ hxy
     unfold PatternData.EdgesMapTo
     dsimp only [positiveTailReducerData]
     change ∀ edge : Fin 10 × Fin 10, edge ∈
@@ -131,16 +131,16 @@ private theorem contains_positiveU
     all_goals simp
     all_goals assumption
   · intro x
-    have hcolors : (positiveTailReducer .u).color =
+    have hcolors : (positiveTailReducer .v).color =
         ![.red, .red, .red, .red, .bluish, .blue,
           .blue, .blue, .blue, .bluish] := by native_decide
     rw [hcolors]
     fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg, hh, hi, hj] <;>
       native_decide
   · intro x y hne hnon hnot
-    exact (hnot (positiveU_automaticNonedges x y hne hnon)).elim
+    exact (hnot (positiveV_automaticNonedges x y hne hnon)).elim
 
-private theorem contains_positiveV
+private theorem contains_positiveW
     (C : GoodColoring G) {a b c d e f g h i j k : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
@@ -155,11 +155,11 @@ private theorem contains_positiveV
     (hgh : G.Adj g h) (hij : G.Adj i j)
     (hn : [a, b, c, d, e, f, g, h, i, j, k].Nodup) :
     ContainsPositiveTailReducer C := by
-  refine ⟨positiveTailReducer .v, ⟨.v, rfl⟩, Or.inl ?_⟩
-  apply (positiveTailReducer .v).occursInduced_of_embedding C
+  refine ⟨positiveTailReducer .w, ⟨.w, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .w).occursInduced_of_embedding C
     ([a, b, c, d, e, f, g, h, i, j, k].get) hn.injective_get
   · intro x y hxy
-    apply (positiveTailReducerData .v).adj_map_of_edgesMapTo G _ ?_ hxy
+    apply (positiveTailReducerData .w).adj_map_of_edgesMapTo G _ ?_ hxy
     unfold PatternData.EdgesMapTo
     dsimp only [positiveTailReducerData]
     change ∀ edge : Fin 11 × Fin 11, edge ∈
@@ -174,16 +174,16 @@ private theorem contains_positiveV
     all_goals simp
     all_goals assumption
   · intro x
-    have hcolors : (positiveTailReducer .v).color =
+    have hcolors : (positiveTailReducer .w).color =
         ![.red, .red, .red, .red, .bluish, .bluish,
           .blue, .blue, .blue, .blue, .bluish] := by native_decide
     rw [hcolors]
     fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg, hh, hi, hj, hk] <;>
       native_decide
   · intro x y hne hnon hnot
-    exact (hnot (positiveV_automaticNonedges x y hne hnon)).elim
+    exact (hnot (positiveW_automaticNonedges x y hne hnon)).elim
 
-private theorem contains_positiveX
+private theorem contains_positiveY
     (C : GoodColoring G) {a b c d e f g h i j k l : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
@@ -198,11 +198,11 @@ private theorem contains_positiveX
     (hgh : G.Adj g h) (hij : G.Adj i j)
     (hn : [a, b, c, d, e, f, g, h, i, j, k, l].Nodup) :
     ContainsPositiveTailReducer C := by
-  refine ⟨positiveTailReducer .x, ⟨.x, rfl⟩, Or.inl ?_⟩
-  apply (positiveTailReducer .x).occursInduced_of_embedding C
+  refine ⟨positiveTailReducer .y, ⟨.y, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .y).occursInduced_of_embedding C
     ([a, b, c, d, e, f, g, h, i, j, k, l].get) hn.injective_get
   · intro x y hxy
-    apply (positiveTailReducerData .x).adj_map_of_edgesMapTo G _ ?_ hxy
+    apply (positiveTailReducerData .y).adj_map_of_edgesMapTo G _ ?_ hxy
     unfold PatternData.EdgesMapTo
     dsimp only [positiveTailReducerData]
     change ∀ edge : Fin 12 × Fin 12, edge ∈
@@ -217,7 +217,7 @@ private theorem contains_positiveX
     all_goals simp
     all_goals assumption
   · intro x
-    have hcolors : (positiveTailReducer .x).color =
+    have hcolors : (positiveTailReducer .y).color =
         ![.red, .red, .red, .red, .bluish, .bluish,
           .blue, .blue, .blue, .blue, .bluish, .bluish] := by native_decide
     rw [hcolors]
@@ -225,7 +225,7 @@ private theorem contains_positiveX
       simp [ha, hb, hc, hd, he, hf, hg, hh, hi, hj, hk, hl] <;>
       native_decide
   · intro x y hne hnon hnot
-    exact (hnot (positiveX_automaticNonedges x y hne hnon)).elim
+    exact (hnot (positiveY_automaticNonedges x y hne hnon)).elim
 
 /-- **Lemma 4.7.** An induced eight-cycle whose colors occur in two red
 edges and two blue edges contains a positive tail reducer or a cut enhancer. -/
@@ -362,13 +362,13 @@ theorem lemma4_7
                     by_cases hrs : r = s
                     · subst s
                       apply Or.inl
-                      apply contains_positiveU C ha hb he hf hp hc hd hg hh hr
+                      apply contains_positiveV C ha hb he hf hp hc hd hg hh hr
                         hab hap hha.symm hbq hbc hef hde.symm her hfg hfs hcd hgh
                       simp only [List.nodup_cons, List.mem_cons,
                         not_or, List.nodup_nil] at hcycleDistinct hpout hrout ⊢
                       grind
                     · apply Or.inl
-                      apply contains_positiveV C he hf ha hb hr hs hg hh hc hd hp
+                      apply contains_positiveW C he hf ha hb hr hs hg hh hc hd hp
                         hef her hde.symm hfs hfg hab hha.symm hap hbc hbq hgh hcd
                       simp only [List.nodup_cons, List.mem_cons,
                         not_or, List.nodup_nil] at hcycleDistinct hpout hrout hsout ⊢
@@ -376,13 +376,13 @@ theorem lemma4_7
                   · by_cases hrs : r = s
                     · subst s
                       apply Or.inl
-                      apply contains_positiveV C ha hb he hf hp hq hc hd hg hh hr
+                      apply contains_positiveW C ha hb he hf hp hq hc hd hg hh hr
                         hab hap hha.symm hbq hbc hef hde.symm her hfg hfs hcd hgh
                       simp only [List.nodup_cons, List.mem_cons,
                         not_or, List.nodup_nil] at hcycleDistinct hpout hqout hrout ⊢
                       grind
                     · apply Or.inl
-                      apply contains_positiveX C ha hb he hf hp hq hc hd hg hh hs hr
+                      apply contains_positiveY C ha hb he hf hp hq hc hd hg hh hs hr
                         hab hap hha.symm hbq hbc hef hde.symm her hfg hfs hcd hgh
                       simp only [List.nodup_cons, List.mem_cons,
                         not_or, List.nodup_nil] at hcycleDistinct hpout hqout hrout hsout ⊢

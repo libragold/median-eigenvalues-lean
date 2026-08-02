@@ -30,8 +30,8 @@ theorem lemma4_8_setup_k
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
-    (he : C.color e = .red) (hf : C.color f = .red)
-    (hg : C.color g = .blue) (hh : C.color h = .blue)
+    (_he : C.color e = .red) (hf : C.color f = .red)
+    (hg : C.color g = .blue) (_hh : C.color h = .blue)
     (Q : Lemma4_8LateConfiguration C a b c d e f g h)
     (hic : ¬ G.Adj Q.i c) :
     HasReachableReduction C ∨

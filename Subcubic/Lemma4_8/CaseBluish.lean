@@ -200,13 +200,13 @@ theorem lemma4_8_case_lm_bluish
         color_ne hb Q.hj (by decide), hbc.ne,
         hbdV,
         color_ne hb Q.hy (by decide), Q.hlm,
-        hal, hlj, Q.hlc, color_ne hl hd (by decide), hly,
-        ham, hmj, Q.hmc, color_ne hm hd (by decide), hmy,
+        hlj, Q.hlc, color_ne hl hd (by decide), hly,
+        hmj, Q.hmc, color_ne hm hd (by decide), hmy,
         hlx, hmx, Q.hxj, color_ne Q.hx hc (by decide), color_ne Q.hx hd (by decide),
         Q.hxy, color_ne Q.hj hc (by decide), color_ne Q.hj hd (by decide),
         hyj.symm, hcd.ne, Q.hyc.symm, (color_ne Q.hy hd (by decide)).symm]
     exact Or.inl (HasReachableReduction.of_current_ptr C
-      (containsPositiveT C Q.hk ha hb hl hm Q.hx Q.hj hc hd Q.hy
+      (containsPositiveU C Q.hk ha hb hl hm Q.hx Q.hj hc hd Q.hy
         Q.hkl Q.hkm Q.hck.symm hab Q.hax Q.hja.symm hbc Q.hby hcd
         hkx Q.hkj (by simpa [SimpleGraph.adj_comm] using hdk) hky hn))
 

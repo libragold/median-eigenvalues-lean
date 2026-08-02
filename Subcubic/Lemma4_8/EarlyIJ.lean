@@ -30,7 +30,7 @@ theorem lemma4_8_case_i_adj_j
   have hde : G.Adj d e := by simpa using edge 3 4 (by native_decide)
   have hef : G.Adj e f := by simpa using edge 4 5 (by native_decide)
   obtain ⟨M, hflip⟩ := exists_flipAt_of_local C
-    he hd hf hc (Or.inl hj) hi hef hde.symm hej hcd.symm hdi
+    he hd hf hc (Or.inl hj) (Or.inl hi) hef hde.symm hej hcd.symm hdi
   let D := M.toGoodColoring
   have hie : i ≠ e := by
     intro hie
@@ -60,7 +60,7 @@ theorem lemma4_8_case_i_adj_j
     unfold fourVertexCrossEdgeCount
     rw [if_pos hde, if_pos hij]
     omega
-  have hout := redEdge_blueEdge_multipleEdges D d i e j hdi hdD hiD
+  have hout := lemma4_2 D d i e j hdi hdD hiD
     hej heD hjD hmulti
   exact HasReachableReduction.after_flip C hflip
     (hout.elim (HasReachableReduction.of_current_ptr D)

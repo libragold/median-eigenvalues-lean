@@ -175,7 +175,7 @@ neighbors.  Unlike `GoodColoring.exists_two_other_neighbors`, this version
 also applies to a reddish or bluish vertex once its degree has separately
 been established (as in Lemma 3.5). -/
 theorem exists_two_other_neighbors_of_degree_three
-    {v mate : V} (hdeg : vertexDegree G v = 3) (hvm : G.Adj v mate) :
+    {v mate : V} (hdeg : vertexDegree G v = 3) (_hvm : G.Adj v mate) :
     ∃ x y, G.Adj v x ∧ G.Adj v y ∧
       x ≠ mate ∧ y ≠ mate ∧ x ≠ y := by
   have hcard : (G.neighborSet v).ncard = 3 := by

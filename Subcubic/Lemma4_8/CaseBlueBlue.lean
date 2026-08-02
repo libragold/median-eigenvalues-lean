@@ -43,7 +43,7 @@ theorem lemma4_8_case_lm_blue
     exact (by native_decide : ¬ (graphOfEdges
       [(0, 1), (1, 2), (2, 3), (3, 4),
        (4, 5), (5, 6), (6, 7)]).Adj (2 : Fin 8) 0) ((hedge 2 0).mpr hca)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd hca
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd
       with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -119,7 +119,7 @@ theorem lemma4_8_case_lm_blue
         unfold fourVertexCrossEdgeCount
         rw [if_pos hkl, if_pos hkm]
         omega
-      have hout := redEdge_blueEdge_multipleEdges D c k l m
+      have hout := lemma4_2 D c k l m
         hck hcD hkD hlm hlD hmD hmulti
       exact HasReachableReduction.after_flip C hflip
         (hout.elim (HasReachableReduction.of_current_ptr D)

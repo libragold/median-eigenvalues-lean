@@ -25,7 +25,8 @@ theorem exists_flipAt_of_local
     (C : GoodColoring G) {r s rr ss rb sr : V}
     (hr : C.color r = .red) (hs : C.color s = .blue)
     (hrr : C.color rr = .red) (hss : C.color ss = .blue)
-    (hrb : C.color rb = .bluish ∨ rb = ss) (hsr : C.color sr = .reddish)
+    (hrb : C.color rb = .bluish ∨ rb = ss)
+    (hsr : C.color sr = .reddish ∨ sr = rr)
     (hrrEdge : G.Adj r rr) (hrsEdge : G.Adj r s)
     (hrbEdge : G.Adj r rb) (hssEdge : G.Adj s ss)
     (hsrEdge : G.Adj s sr) :
@@ -41,7 +42,10 @@ theorem exists_flipAt_of_local
     rcases hrb with hrb | rfl
     · simp [A, hrb]
     · exact hssA
-  have hsrA : sr ∈ A := by simp [A, hsr]
+  have hsrA : sr ∈ A := by
+    rcases hsr with hsr | rfl
+    · simp [A, hsr]
+    · exact hrrA
   have hrs : rr ≠ s := by intro h; subst s; simp_all
   have hrrb : rr ≠ rb := by
     intro h
@@ -51,8 +55,14 @@ theorem exists_flipAt_of_local
     · subst ss; simp_all
   have hsrb : s ≠ rb := by intro h; subst rb; simp_all
   have hssr : ss ≠ r := by intro h; subst ss; simp_all
-  have hsssr : ss ≠ sr := by intro h; subst sr; simp_all
-  have hrsr : r ≠ sr := by intro h; subst sr; simp_all
+  have hsssr : ss ≠ sr := by
+    rcases hsr with hsr | rfl
+    · intro h; subst sr; simp_all
+    · intro h; subst ss; simp_all
+  have hrsr : r ≠ sr := by
+    rcases hsr with hsr | rfl
+    · intro h; subst sr; simp_all
+    · exact hrrEdge.ne
   have hA' : A' = (A \ {r}) ∪ {s} := by
     ext z
     by_cases hzr : z = r
@@ -96,9 +106,12 @@ theorem exists_flipAt_of_local
               ((z ∈ A ∧ z ≠ r) ∨ z = s) → z = s := by
             intro z hsz hz
             rcases hz with hz | hz
-            · have hcorrect := C.color_correct sr
-              rw [hsr] at hcorrect
-              exact (hcorrect.2 ⟨z, hz.1, hsz⟩).elim
+            · rcases hsr with hsr | rfl
+              · have hcorrect := C.color_correct sr
+                rw [hsr] at hcorrect
+                exact (hcorrect.2 ⟨z, hz.1, hsz⟩).elim
+              · exact (C.redSide_not_adj_second_neighbor hrrA hrA hz.1
+                  hrrEdge.symm hz.2.symm) hsz |>.elim
             · exact hz
           exact (one_neighbor hqx hxA').trans
             (one_neighbor hqy hyA').symm
@@ -192,7 +205,7 @@ theorem exists_flipAt_or_cutEnhancer
     (hr : C.color r = .red) (hs : C.color s = .blue)
     (hrr : C.color rr = .red) (hss : C.color ss = .blue)
     (hrrEdge : G.Adj r rr) (hrsEdge : G.Adj r s)
-    (hssEdge : G.Adj s ss) (hsrr : ¬ G.Adj s rr) :
+    (hssEdge : G.Adj s ss) :
     (∃ M' : MatchingCut G, C.toMatchingCut.IsFlipAt M' r s) ∨
       ContainsCutEnhancer C := by
   have hrrs : rr ≠ s := by intro h; subst rr; simp_all
@@ -203,6 +216,9 @@ theorem exists_flipAt_or_cutEnhancer
   have finish (hrbSafe : C.color rb = .bluish ∨ rb = ss) :
       (∃ M' : MatchingCut G, C.toMatchingCut.IsFlipAt M' r s) ∨
         ContainsCutEnhancer C := by
+    by_cases hsrr : G.Adj s rr
+    · exact Or.inl (exists_flipAt_of_local C hr hs hrr hss hrbSafe
+        (Or.inr rfl) hrrEdge hrsEdge hrbEdge hssEdge hsrr)
     have hssr : ss ≠ r := by intro h; subst ss; simp_all
     obtain ⟨sr, hsrEdge, hsrss, hsrrV⟩ :=
       C.exists_third_neighbor (Or.inr hs) hssr
@@ -214,7 +230,7 @@ theorem exists_flipAt_or_cutEnhancer
       exact hsrr hsrEdge
     rcases lemma3_3_reversed C hs hr hrr hsrSide hrsEdge.symm hsrEdge
         hrrEdge hsrrV.symm hsrrr with hsr | hce
-    · exact Or.inl (exists_flipAt_of_local C hr hs hrr hss hrbSafe hsr
+    · exact Or.inl (exists_flipAt_of_local C hr hs hrr hss hrbSafe (Or.inl hsr)
         hrrEdge hrsEdge hrbEdge hssEdge hsrEdge)
     · exact Or.inr hce
   by_cases hrbss : rb = ss

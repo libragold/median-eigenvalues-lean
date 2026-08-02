@@ -157,17 +157,17 @@ theorem lemma4_8_case_w
     have hjd := color_ne hj hd (by decide)
     have hjg := color_ne hj hg (by decide)
     have hjh := color_ne hj hh (by decide)
-    simp [habV, hacV, hadV, haeV, hafV, hagV, hahV,
-      hbcV, hbdV, hbeV, hbfV, hbgV, hbhV,
-      hcdV, hceV, hcfV, hcgV, hchV, hdeV, hdfV, hdgV, hdhV,
-      hefV, hegV, hehV, hfgV, hfhV, hghV,
+    simp [habV, hacV, hadV, hafV, hagV, hahV,
+      hbcV, hbdV, hbfV, hbgV, hbhV,
+      hcdV, hcgV, hchV, hdgV, hdhV,
+      hfgV, hfhV, hghV,
       hai, haxV, hay, haj, hbi, hbx, hbyV, hbj,
       hfiV, hfxV, hfyV, hfj, hfc, hfdV,
       hixV, hiyV, hijV, hicV, hidV, higV, hihV,
       hxc, hxd, hxg, hxh, hyd, hyg, hyh, hjc, hjd, hjg, hjh,
       hxy, hxj, hyj, hyc]
   exact HasReachableReduction.of_current_ptr C
-    (containsPositiveW C ha hb hf hi hx hy hj hc hd hg hh
+    (containsPositiveX C ha hb hf hi hx hy hj hc hd hg hh
       hab hax hja.symm hby hbc hjf.symm hfg hic hdi.symm hih hcd hgh
       hfi hfx hfy hfd hfh hix hiy hij hig hn)
 

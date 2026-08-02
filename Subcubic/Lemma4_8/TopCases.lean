@@ -39,7 +39,7 @@ theorem lemma4_8_case_i_not_adj_g_h
         (![a, b, c, d, e, f, g, h] y) :=
     fun hxyG => hxy ((hedge x y).mpr hxyG)
   obtain ⟨M, hflip⟩ := exists_flipAt_of_local C
-    he hd hf hc (Or.inl hj) hi hef hde.symm hej hcd.symm hdi
+    he hd hf hc (Or.inl hj) (Or.inl hi) hef hde.symm hej hcd.symm hdi
   let D := M.toGoodColoring
   have hgD : D.color g = .blue := by
     apply blue_of_untouched_blue_edge C hflip

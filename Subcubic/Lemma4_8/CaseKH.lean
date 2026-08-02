@@ -67,7 +67,7 @@ theorem lemma4_8_case_k_not_adj_j_adj_h
     intro hjcV
     rw [hjcV] at hj
     simp [hc] at hj
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd hca
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd
       with hflip1 | hce
   · obtain ⟨M₁, hflip1⟩ := hflip1
     let D := M₁.toGoodColoring
@@ -112,7 +112,7 @@ theorem lemma4_8_case_k_not_adj_j_adj_h
       · exact hcd.ne.symm
     have hhc : ¬ G.Adj h c := by
       simpa using nonedge 7 2 (by native_decide)
-    rcases exists_flipAt_or_cutEnhancer D hkD hhD hcD hgD hck.symm hkh hgh.symm hhc
+    rcases exists_flipAt_or_cutEnhancer D hkD hhD hcD hgD hck.symm hkh hgh.symm
         with hflip2 | hceD
     · obtain ⟨M₂, hflip2⟩ := hflip2
       let E := M₂.toGoodColoring

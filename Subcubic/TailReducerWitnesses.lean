@@ -87,7 +87,7 @@ theorem containsPositiveN
           List Color).get := by
       native_decide
     rw [hcolors]
-    fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg] <;> native_decide
+    fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg]
   · intro x y hne hnon hauto
     have hp := positiveN_boundaryNonedges x y hne hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
@@ -98,8 +98,8 @@ theorem containsPositiveN
     · exact fun h => hcd h.symm
     · exact fun h => hcf h.symm
 
-/-- Reducer `w+`, with ambient vertices listed in catalog order. -/
-theorem containsPositiveW
+/-- Reducer `x+`, with ambient vertices listed in catalog order. -/
+theorem containsPositiveX
     (C : GoodColoring G) {a b c d e f g h i j k : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .reddish)
@@ -119,11 +119,11 @@ theorem containsPositiveW
     (hdj : ¬ G.Adj d j)
     (hn : [a, b, c, d, e, f, g, h, i, j, k].Nodup) :
     ContainsPositiveTailReducer C := by
-  refine ⟨positiveTailReducer .w, ⟨.w, rfl⟩, Or.inl ?_⟩
-  apply (positiveTailReducer .w).occursInduced_of_embedding C
+  refine ⟨positiveTailReducer .x, ⟨.x, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .x).occursInduced_of_embedding C
     ([a, b, c, d, e, f, g, h, i, j, k].get) hn.injective_get
   · intro x y hxy
-    apply (positiveTailReducerData .w).adj_map_of_edgesMapTo G _ ?_ hxy
+    apply (positiveTailReducerData .x).adj_map_of_edgesMapTo G _ ?_ hxy
     unfold PatternData.EdgesMapTo
     dsimp only [positiveTailReducerData]
     intro edge hedge
@@ -136,14 +136,14 @@ theorem containsPositiveW
     all_goals simp
     all_goals assumption
   · intro x
-    have hcolors : (positiveTailReducer .w).color =
+    have hcolors : (positiveTailReducer .x).color =
         ([.red, .red, .red, .reddish, .bluish, .bluish, .bluish,
           .blue, .blue, .blue, .blue] : List Color).get := by native_decide
     rw [hcolors]
     fin_cases x <;>
-      simp [ha, hb, hc, hd, he, hf, hg, hh, hi, hj, hk] <;> native_decide
+      simp [ha, hb, hc, hd, he, hf, hg, hh, hi, hj, hk]
   · intro x y hne hnon hauto
-    have hp := positiveW_boundaryNonedges x y hne hnon hauto
+    have hp := positiveX_boundaryNonedges x y hne hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
     rcases hp with
       (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |
@@ -343,8 +343,8 @@ theorem containsPositiveG
       | (intro h; exact hae h.symm)
       | (intro h; exact hbc h.symm)
 
-/-- Reducer `t+`, with its four generated boundary nonedges exposed. -/
-theorem containsPositiveT
+/-- Reducer `u+`, with its four generated boundary nonedges exposed. -/
+theorem containsPositiveU
     (C : GoodColoring G) {a b c d e f g h i j : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
@@ -358,11 +358,11 @@ theorem containsPositiveT
     (hai : ¬ G.Adj a i) (haj : ¬ G.Adj a j)
     (hn : [a, b, c, d, e, f, g, h, i, j].Nodup) :
     ContainsPositiveTailReducer C := by
-  refine ⟨positiveTailReducer .t, ⟨.t, rfl⟩, Or.inl ?_⟩
-  apply (positiveTailReducer .t).occursInduced_of_embedding C
+  refine ⟨positiveTailReducer .u, ⟨.u, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .u).occursInduced_of_embedding C
     ([a, b, c, d, e, f, g, h, i, j].get) hn.injective_get
   · intro x y hxy
-    apply (positiveTailReducerData .t).adj_map_of_edgesMapTo G _ ?_ hxy
+    apply (positiveTailReducerData .u).adj_map_of_edgesMapTo G _ ?_ hxy
     unfold PatternData.EdgesMapTo
     dsimp only [positiveTailReducerData]
     intro edge hedge
@@ -374,14 +374,14 @@ theorem containsPositiveT
     all_goals simp
     all_goals assumption
   · intro x
-    have hcolors : (positiveTailReducer .t).color =
+    have hcolors : (positiveTailReducer .u).color =
         ([.reddish, .red, .red, .bluish, .bluish, .bluish,
           .bluish, .blue, .blue, .bluish] : List Color).get := by
       native_decide
     rw [hcolors]
     fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg, hh, hi, hj]
   · intro x y hne hnon hauto
-    have hp := positiveT_boundaryNonedges x y hne hnon hauto
+    have hp := positiveU_boundaryNonedges x y hne hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
     rcases hp with
       (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩) |
@@ -393,5 +393,192 @@ theorem containsPositiveT
       | (intro h; exact hag h.symm)
       | (intro h; exact hai h.symm)
       | (intro h; exact haj h.symm)
+
+/-- Reducer `p+`, in catalog order. -/
+theorem containsPositiveP
+    (C : GoodColoring G) {a b c d e f g h : V}
+    (ha : C.color a = .reddish) (hb : C.color b = .red)
+    (hc : C.color c = .red) (hd : C.color d = .bluish)
+    (he : C.color e = .blue) (hf : C.color f = .blue)
+    (hg : C.color g = .bluish) (hh : C.color h = .bluish)
+    (had : G.Adj a d) (hae : G.Adj a e) (haf : G.Adj a f)
+    (hbe : G.Adj b e) (hbg : G.Adj b g)
+    (hcf : G.Adj c f) (hch : G.Adj c h) (hef : G.Adj e f)
+    (hab : ¬ G.Adj a b) (hac : ¬ G.Adj a c)
+    (hag : ¬ G.Adj a g) (hah : ¬ G.Adj a h)
+    (hbc : ¬ G.Adj b c) (hbd : ¬ G.Adj b d)
+    (hbh : ¬ G.Adj b h) (hcd : ¬ G.Adj c d)
+    (hcg : ¬ G.Adj c g)
+    (hn : [a, b, c, d, e, f, g, h].Nodup) :
+    ContainsPositiveTailReducer C := by
+  refine ⟨positiveTailReducer .p, ⟨.p, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .p).occursInduced_of_embedding C
+    ([a, b, c, d, e, f, g, h].get) hn.injective_get
+  · intro x y hxy
+    apply (positiveTailReducerData .p).adj_map_of_edgesMapTo G _ ?_ hxy
+    unfold PatternData.EdgesMapTo
+    dsimp only [positiveTailReducerData]
+    intro edge hedge
+    change edge ∈
+      [(0, 3), (0, 4), (0, 5), (1, 4),
+       (1, 6), (2, 5), (2, 7), (4, 5)] at hedge
+    simp at hedge
+    rcases hedge with (rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl)
+    all_goals simp
+    all_goals assumption
+  · intro x
+    have hcolors : (positiveTailReducer .p).color =
+        ([.reddish, .red, .red, .bluish, .blue, .blue,
+          .bluish, .bluish] : List Color).get := by native_decide
+    rw [hcolors]
+    fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg, hh]
+  · intro x y hne hnon hauto
+    have hp := positiveP_boundaryNonedges x y hne hnon hauto
+    simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
+    rcases hp with
+      (h | h | h | h | h | h | h | h | h) |
+      (h | h | h | h | h | h | h | h | h)
+    all_goals rcases h with ⟨rfl, rfl⟩
+    all_goals first
+      | exact hab
+      | exact hac
+      | exact hag
+      | exact hah
+      | exact hbc
+      | exact hbd
+      | exact hbh
+      | exact hcd
+      | exact hcg
+      | exact fun h => hab h.symm
+      | exact fun h => hac h.symm
+      | exact fun h => hag h.symm
+      | exact fun h => hah h.symm
+      | exact fun h => hbc h.symm
+      | exact fun h => hbd h.symm
+      | exact fun h => hbh h.symm
+      | exact fun h => hcd h.symm
+      | exact fun h => hcg h.symm
+
+/-- The new reducer `r+`, inserted before the former `r+` in the catalog. -/
+theorem containsPositiveR
+    (C : GoodColoring G) {a b c d e f g h i : V}
+    (ha : C.color a = .reddish) (hb : C.color b = .red)
+    (hc : C.color c = .red) (hd : C.color d = .bluish)
+    (he : C.color e = .blue) (hf : C.color f = .blue)
+    (hg : C.color g = .blue) (hh : C.color h = .blue)
+    (hi : C.color i = .bluish)
+    (had : G.Adj a d) (hae : G.Adj a e) (hag : G.Adj a g)
+    (hbd : G.Adj b d) (hbf : G.Adj b f)
+    (hcg : G.Adj c g) (hci : G.Adj c i)
+    (hef : G.Adj e f) (hgh : G.Adj g h)
+    (hab : ¬ G.Adj a b) (hac : ¬ G.Adj a c)
+    (haf : ¬ G.Adj a f) (hah : ¬ G.Adj a h)
+    (hai : ¬ G.Adj a i) (hbc : ¬ G.Adj b c)
+    (hbe : ¬ G.Adj b e) (hbh : ¬ G.Adj b h)
+    (hbi : ¬ G.Adj b i) (hcd : ¬ G.Adj c d)
+    (hce : ¬ G.Adj c e) (hcf : ¬ G.Adj c f)
+    (hch : ¬ G.Adj c h)
+    (hn : [a, b, c, d, e, f, g, h, i].Nodup) :
+    ContainsPositiveTailReducer C := by
+  refine ⟨positiveTailReducer .r, ⟨.r, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .r).occursInduced_of_embedding C
+    ([a, b, c, d, e, f, g, h, i].get) hn.injective_get
+  · intro x y hxy
+    apply (positiveTailReducerData .r).adj_map_of_edgesMapTo G _ ?_ hxy
+    unfold PatternData.EdgesMapTo
+    dsimp only [positiveTailReducerData]
+    intro edge hedge
+    change edge ∈
+      [(0, 3), (0, 4), (0, 6), (1, 3), (1, 5),
+       (2, 6), (2, 8), (4, 5), (6, 7)] at hedge
+    simp at hedge
+    rcases hedge with (rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl)
+    all_goals simp
+    all_goals assumption
+  · intro x
+    have hcolors : (positiveTailReducer .r).color =
+        ([.reddish, .red, .red, .bluish, .blue, .blue,
+          .blue, .blue, .bluish] : List Color).get := by native_decide
+    rw [hcolors]
+    fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg, hh, hi]
+  · intro x y hne hnon hauto
+    have hp := positiveR_boundaryNonedges x y hne hnon hauto
+    simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
+    rcases hp with
+      (h | h | h | h | h | h | h | h | h | h | h | h | h) |
+      (h | h | h | h | h | h | h | h | h | h | h | h | h)
+    all_goals rcases h with ⟨rfl, rfl⟩
+    all_goals first
+      | exact hab | exact hac | exact haf | exact hah | exact hai
+      | exact hbc | exact hbe | exact hbh | exact hbi
+      | exact hcd | exact hce | exact hcf | exact hch
+      | exact fun h => hab h.symm | exact fun h => hac h.symm
+      | exact fun h => haf h.symm | exact fun h => hah h.symm
+      | exact fun h => hai h.symm | exact fun h => hbc h.symm
+      | exact fun h => hbe h.symm | exact fun h => hbh h.symm
+      | exact fun h => hbi h.symm | exact fun h => hcd h.symm
+      | exact fun h => hce h.symm | exact fun h => hcf h.symm
+      | exact fun h => hch h.symm
+
+/-- Reducer `s+` (the former `r+`), in catalog order. -/
+theorem containsPositiveS
+    (C : GoodColoring G) {a b c d e f g h i : V}
+    (ha : C.color a = .reddish) (hb : C.color b = .red)
+    (hc : C.color c = .red) (hd : C.color d = .bluish)
+    (he : C.color e = .blue) (hf : C.color f = .blue)
+    (hg : C.color g = .blue) (hh : C.color h = .blue)
+    (hi : C.color i = .bluish)
+    (had : G.Adj a d) (hae : G.Adj a e) (hag : G.Adj a g)
+    (hbd : G.Adj b d) (hbf : G.Adj b f)
+    (hch : G.Adj c h) (hci : G.Adj c i)
+    (hef : G.Adj e f) (hgh : G.Adj g h)
+    (hab : ¬ G.Adj a b) (hac : ¬ G.Adj a c)
+    (haf : ¬ G.Adj a f) (hah : ¬ G.Adj a h)
+    (hai : ¬ G.Adj a i) (hbc : ¬ G.Adj b c)
+    (hbe : ¬ G.Adj b e) (hbg : ¬ G.Adj b g)
+    (hbh : ¬ G.Adj b h) (hbi : ¬ G.Adj b i)
+    (hcd : ¬ G.Adj c d) (hce : ¬ G.Adj c e)
+    (hcf : ¬ G.Adj c f) (hcg : ¬ G.Adj c g)
+    (hn : [a, b, c, d, e, f, g, h, i].Nodup) :
+    ContainsPositiveTailReducer C := by
+  refine ⟨positiveTailReducer .s, ⟨.s, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .s).occursInduced_of_embedding C
+    ([a, b, c, d, e, f, g, h, i].get) hn.injective_get
+  · intro x y hxy
+    apply (positiveTailReducerData .s).adj_map_of_edgesMapTo G _ ?_ hxy
+    unfold PatternData.EdgesMapTo
+    dsimp only [positiveTailReducerData]
+    intro edge hedge
+    change edge ∈
+      [(0, 3), (0, 4), (0, 6), (1, 3), (1, 5),
+       (2, 7), (2, 8), (4, 5), (6, 7)] at hedge
+    simp at hedge
+    rcases hedge with (rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl)
+    all_goals simp
+    all_goals assumption
+  · intro x
+    have hcolors : (positiveTailReducer .s).color =
+        ([.reddish, .red, .red, .bluish, .blue, .blue,
+          .blue, .blue, .bluish] : List Color).get := by native_decide
+    rw [hcolors]
+    fin_cases x <;> simp [ha, hb, hc, hd, he, hf, hg, hh, hi]
+  · intro x y hne hnon hauto
+    have hp := positiveS_boundaryNonedges x y hne hnon hauto
+    simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
+    rcases hp with
+      (h | h | h | h | h | h | h | h | h | h | h | h | h | h) |
+      (h | h | h | h | h | h | h | h | h | h | h | h | h | h)
+    all_goals rcases h with ⟨rfl, rfl⟩
+    all_goals first
+      | exact hab | exact hac | exact haf | exact hah | exact hai
+      | exact hbc | exact hbe | exact hbg | exact hbh | exact hbi
+      | exact hcd | exact hce | exact hcf | exact hcg
+      | exact fun h => hab h.symm | exact fun h => hac h.symm
+      | exact fun h => haf h.symm | exact fun h => hah h.symm
+      | exact fun h => hai h.symm | exact fun h => hbc h.symm
+      | exact fun h => hbe h.symm | exact fun h => hbg h.symm
+      | exact fun h => hbh h.symm | exact fun h => hbi h.symm
+      | exact fun h => hcd h.symm | exact fun h => hce h.symm
+      | exact fun h => hcf h.symm | exact fun h => hcg h.symm
 
 end Subcubic

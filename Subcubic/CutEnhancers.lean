@@ -216,4 +216,36 @@ theorem containsCutEnhancerC_of {V : Type*} [Fintype V] {G : SimpleGraph V}
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
 
+/-- Exact constructor for cut enhancer `d`. -/
+theorem containsCutEnhancerD_of {V : Type*} [Fintype V] {G : SimpleGraph V}
+    (C : GoodColoring G) {a b c d e : V}
+    (ha : C.color a = .red) (hb : C.color b = .reddish)
+    (hc : C.color c = .blue) (hd : C.color d = .bluish)
+    (he : C.color e = .red)
+    (hac : G.Adj a c) (had : G.Adj a d)
+    (hbc : G.Adj b c) (hbd : G.Adj b d) (hde : G.Adj d e)
+    (hab : ¬ G.Adj a b) (hae : ¬ G.Adj a e)
+    (hbe : ¬ G.Adj b e) (hcd : ¬ G.Adj c d)
+    (hce : ¬ G.Adj c e) (haeV : a ≠ e) : ContainsCutEnhancer C := by
+  have hn : [a, b, c, d, e].Nodup := by
+    have hacV := hac.ne
+    have hadV := had.ne
+    have hbcV := hbc.ne
+    have hbdV := hbd.ne
+    have hdeV := hde.ne
+    have habV : a ≠ b := by intro h; subst b; simp_all
+    have hbeV : b ≠ e := by intro h; subst e; simp_all
+    have hcdV : c ≠ d := by intro h; subst d; simp_all
+    have hceV : c ≠ e := by intro h; subst e; simp_all
+    simp [habV, hacV, hadV, haeV, hbcV, hbdV, hbeV,
+      hcdV, hceV, hdeV]
+  refine ⟨cutEnhancer .d, ⟨.d, rfl⟩, Or.inl ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  · intro x y
+    fin_cases x <;> fin_cases y <;>
+      simp [cutEnhancer, graphOfEdges, G.adj_comm, hac, had, hbc, hbd,
+        hde, hab, hae, hbe, hcd, hce]
+  · intro x
+    fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
+
 end Subcubic
