@@ -143,6 +143,18 @@ theorem GoodColoring.other_neighbor_of_blue_is_redSide
   have hx' : x ∉ C.redSide := by simp [hx]
   exact (C.blueSide_not_adj_second_neighbor hv' hx' hy hvx hyx.symm) hvy
 
+/-- Every blue vertex has its unique same-side (blue) mate. -/
+theorem GoodColoring.exists_blue_mate
+    (C : GoodColoring G) {v : V} (hv : C.color v = .blue) :
+    ∃ m, C.color m = .blue ∧ G.Adj v m := by
+  have hcorrect := C.color_correct v
+  rw [hv] at hcorrect
+  obtain ⟨_, m, hmSide, hvm⟩ := hcorrect
+  have hmCases := (C.not_mem_redSide_iff m).1 hmSide
+  rcases hmCases with hm | hm
+  · exact ⟨m, hm, hvm⟩
+  · exact (C.bluish_not_adj_blueSide hm (Or.inl hv) hvm.symm).elim
+
 /-- A red or blue vertex has degree three, so outside any two distinct
 vertices it has another neighbor. -/
 theorem GoodColoring.exists_third_neighbor

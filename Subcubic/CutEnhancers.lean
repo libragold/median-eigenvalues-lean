@@ -276,4 +276,60 @@ theorem containsCutEnhancerE_of {V : Type*} [Fintype V] {G : SimpleGraph V}
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he, hf, hg]
 
+/-- Exact constructor for cut enhancer `f`. -/
+theorem containsCutEnhancerF_of {V : Type*} [Fintype V] {G : SimpleGraph V}
+    (C : GoodColoring G) {a b c d e f g : V}
+    (ha : C.color a = .red) (hb : C.color b = .reddish)
+    (hc : C.color c = .reddish) (hd : C.color d = .red)
+    (he : C.color e = .blue) (hf : C.color f = .blue)
+    (hg : C.color g = .blue)
+    (hae : G.Adj a e) (hbe : G.Adj b e) (hbf : G.Adj b f)
+    (hcf : G.Adj c f) (hcg : G.Adj c g) (hdg : G.Adj d g)
+    (hab : ¬ G.Adj a b) (hac : ¬ G.Adj a c)
+    (had : ¬ G.Adj a d) (haf : ¬ G.Adj a f)
+    (hag : ¬ G.Adj a g) (hbc : ¬ G.Adj b c)
+    (hbd : ¬ G.Adj b d) (hbg : ¬ G.Adj b g)
+    (hcd : ¬ G.Adj c d) (hce : ¬ G.Adj c e)
+    (hde : ¬ G.Adj d e) (hdf : ¬ G.Adj d f)
+    (hef : ¬ G.Adj e f) (heg : ¬ G.Adj e g)
+    (hfg : ¬ G.Adj f g)
+    (hn : [a, b, c, d, e, f, g].Nodup) : ContainsCutEnhancer C := by
+  refine ⟨cutEnhancer .f, ⟨.f, rfl⟩, Or.inl ?_⟩
+  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_⟩
+  · intro x y
+    fin_cases x <;> fin_cases y <;>
+      simp [cutEnhancer, graphOfEdges, G.adj_comm, hae, hbe, hbf, hcf,
+        hcg, hdg, hab, hac, had, haf, hag, hbc, hbd, hbg, hcd, hce,
+        hde, hdf, hef, heg, hfg]
+  · intro x
+    fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he, hf, hg]
+
+/-- Exact constructor for cut enhancer `g`. -/
+theorem containsCutEnhancerG_of {V : Type*} [Fintype V] {G : SimpleGraph V}
+    (C : GoodColoring G) {a b c d e f g : V}
+    (ha : C.color a = .red) (hb : C.color b = .red)
+    (hc : C.color c = .reddish) (hd : C.color d = .red)
+    (he : C.color e = .bluish) (hf : C.color f = .blue)
+    (hg : C.color g = .blue)
+    (hae : G.Adj a e) (hbe : G.Adj b e) (hce : G.Adj c e)
+    (hcf : G.Adj c f) (hcg : G.Adj c g) (hdg : G.Adj d g)
+    (hab : ¬ G.Adj a b) (hac : ¬ G.Adj a c)
+    (had : ¬ G.Adj a d) (haf : ¬ G.Adj a f)
+    (hag : ¬ G.Adj a g) (hbc : ¬ G.Adj b c)
+    (hbd : ¬ G.Adj b d) (hbf : ¬ G.Adj b f)
+    (hbg : ¬ G.Adj b g) (hcd : ¬ G.Adj c d)
+    (hde : ¬ G.Adj d e) (hdf : ¬ G.Adj d f)
+    (hef : ¬ G.Adj e f) (heg : ¬ G.Adj e g)
+    (hfg : ¬ G.Adj f g)
+    (hn : [a, b, c, d, e, f, g].Nodup) : ContainsCutEnhancer C := by
+  refine ⟨cutEnhancer .g, ⟨.g, rfl⟩, Or.inl ?_⟩
+  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_⟩
+  · intro x y
+    fin_cases x <;> fin_cases y <;>
+      simp [cutEnhancer, graphOfEdges, G.adj_comm, hae, hbe, hce, hcf,
+        hcg, hdg, hab, hac, had, haf, hag, hbc, hbd, hbf, hbg, hcd,
+        hde, hdf, hef, heg, hfg]
+  · intro x
+    fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he, hf, hg]
+
 end Subcubic
