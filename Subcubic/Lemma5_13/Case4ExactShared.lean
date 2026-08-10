@@ -20,6 +20,14 @@ theorem lemma5_13_case4_exact_shared_i_blue_red
     a ≠ j → b ≠ j → c ≠ i → d ≠ i →
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact fun _ _ _ _ => hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   intro haj hbj hci hdi
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
@@ -43,7 +51,8 @@ theorem lemma5_13_case4_exact_shared_i_blue_red
     · exact ht
     · exact (C.reddish_not_adj_redSide ht (Or.inl hj) hjt.symm).elim
   obtain ⟨k, hk, hik⟩ := C.exists_blue_mate hi
-  rcases exists_flipAt_or_cutEnhancer C hj hi ht hk hjt hij.symm hik with
+  rcases exists_flipAt_or_cutEnhancer C hj hi ht hk
+      (degreeC (Or.inl hj)) (degreeC (Or.inr hi)) hjt hij.symm hik with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -68,6 +77,7 @@ theorem lemma5_13_case4_exact_shared_i_blue_red
         (color_ne hh hj (by decide)) (color_ne hh hi (by decide))
     have hiD : D.color i = .red :=
       red_of_flipped_blue_endpoint C hflip hk hik
+        (degreeC (Or.inr hi))
         (color_ne hk hj (by decide))
     have hn : [a, b, c, d, h, i].Nodup := by
       simp [hab.ne, hbc.ne, hcd.ne, hdh.ne, hhi.ne,
@@ -75,7 +85,7 @@ theorem lemma5_13_case4_exact_shared_i_blue_red
         color_ne ha hh (by decide), color_ne ha hi (by decide),
         color_ne hb hd (by decide), color_ne hb hh (by decide),
         color_ne hb hi (by decide), color_ne hc hh (by decide),
-        hci, color_ne hd hh (by decide), hdi, color_ne hh hi (by decide)]
+        hci, hdi]
     have hsub : FormsNegativePath6Subgraph G a b c d h i := by
       refine ⟨?_, ?_⟩
       · have hvec : (![a, b, c, d, h, i] : Fin 6 → V) =

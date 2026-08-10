@@ -31,6 +31,14 @@ theorem lemma4_12_case4_reddish
     (hea : G.Adj Q.e a) (hfd : G.Adj Q.f d)
     (hef : ¬ G.Adj Q.e Q.f) : HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 4} (hxy : x ≠ y) :
@@ -64,7 +72,7 @@ theorem lemma4_12_case4_reddish
       color_ne hd hg (by decide), color_ne hd Q.hf (by decide),
       color_ne ha Q.hf (by decide), color_ne hb Q.hf (by decide)]
   · obtain ⟨k, hdk, hkc, hkf⟩ :=
-      C.exists_third_neighbor (Or.inr hd)
+      C.exists_third_neighbor (degreeC (Or.inr hd))
         (color_ne hc Q.hf (by decide))
     have hkSide := C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdk hkc
     have hk : C.color k = .reddish := by

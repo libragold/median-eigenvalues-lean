@@ -14,12 +14,15 @@ open Set
 
 namespace Subcubic
 
-/-- Names of the seven supplied cut enhancers. -/
+/-- Names of the seven supplied cut enhancers and the two low-degree
+enhancers used in Lemma 3.4. -/
 inductive CutEnhancerName
   | a | b | c | d | e | f | g
+  | degreeOne | degreeTwoCross
   deriving DecidableEq, Repr
 
-/-- The seven cut enhancers, with their edges and colors written explicitly. -/
+/-- The nine cut enhancers, with their edges, colors, and any ambient-degree
+guards written explicitly. -/
 def cutEnhancer : CutEnhancerName → ColoredPattern
   | .a => {
       vertexCount := 3
@@ -49,6 +52,16 @@ def cutEnhancer : CutEnhancerName → ColoredPattern
       vertexCount := 7
       graph := graphOfEdges [(0, 4), (1, 4), (2, 4), (2, 5), (2, 6), (3, 6)]
       color := ![.red, .red, .reddish, .red, .bluish, .blue, .blue] }
+  | .degreeOne => {
+      vertexCount := 1
+      graph := graphOfEdges []
+      color := ![.red]
+      ambientDegree := ![some 1] }
+  | .degreeTwoCross => {
+      vertexCount := 2
+      graph := graphOfEdges [(0, 1)]
+      color := ![.red, .blue]
+      ambientDegree := ![some 2, none] }
 
 /-- Every supplied cut enhancer graph is subcubic. -/
 theorem cutEnhancer_subcubic (name : CutEnhancerName) :
@@ -60,7 +73,7 @@ theorem cutEnhancer_subcubic (name : CutEnhancerName) :
     rw [Set.ncard_eq_toFinset_card'] <;>
     native_decide +revert
 
-/-- Membership in the complete seven-element cut-enhancer catalog. -/
+/-- Membership in the complete nine-element cut-enhancer catalog. -/
 def IsCutEnhancer (P : ColoredPattern) : Prop :=
   ∃ name, P = cutEnhancer name
 
@@ -129,7 +142,7 @@ theorem containsCutEnhancerA_of {V : Type*} [Fintype V] {G : SimpleGraph V}
   have hab_ne : a ≠ b := hab.ne
   have hac_ne : a ≠ c := hac.ne
   refine ⟨cutEnhancer .a, ⟨.a, rfl⟩, Or.inl ?_⟩
-  refine ⟨![a, b, c], ?_, ?_, ?_⟩
+  refine ⟨![a, b, c], ?_, ?_, ?_, ?_⟩
   · intro x y hxy
     fin_cases x <;> fin_cases y
     · rfl
@@ -146,6 +159,59 @@ theorem containsCutEnhancerA_of {V : Type*} [Fintype V] {G : SimpleGraph V}
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hab, hac, hbc]
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc]
+  · intro x d hdegree
+    fin_cases x <;> simp [cutEnhancer] at hdegree
+
+/-- The one-vertex cut enhancer from Lemma 3.4(1). -/
+theorem containsCutEnhancerDegreeOne_of
+    {V : Type*} [Fintype V] {G : SimpleGraph V}
+    (C : GoodColoring G) {a : V}
+    (ha : C.color a = .red) (haDegree : vertexDegree G a = 1) :
+    ContainsCutEnhancer C := by
+  refine ⟨cutEnhancer .degreeOne, ⟨.degreeOne, rfl⟩, Or.inl ?_⟩
+  refine ⟨![a], ?_, ?_, ?_, ?_⟩
+  · intro x y hxy
+    fin_cases x
+    fin_cases y
+    rfl
+  · intro x y
+    fin_cases x
+    fin_cases y
+    simp [cutEnhancer, graphOfEdges]
+  · intro x
+    fin_cases x
+    simpa [cutEnhancer] using ha
+  · intro x d hdegree
+    fin_cases x
+    have hd : d = 1 := by simpa [cutEnhancer] using hdegree.symm
+    simpa [hd] using haDegree
+
+/-- The red--blue degree-two cut enhancer from Lemma 3.4(2.1). -/
+theorem containsCutEnhancerDegreeTwoCross_of
+    {V : Type*} [Fintype V] {G : SimpleGraph V}
+    (C : GoodColoring G) {a b : V}
+    (ha : C.color a = .red) (hb : C.color b = .blue)
+    (hab : G.Adj a b) (haDegree : vertexDegree G a = 2) :
+    ContainsCutEnhancer C := by
+  refine ⟨cutEnhancer .degreeTwoCross, ⟨.degreeTwoCross, rfl⟩, Or.inl ?_⟩
+  refine ⟨![a, b], ?_, ?_, ?_, ?_⟩
+  · intro x y hxy
+    fin_cases x <;> fin_cases y
+    · rfl
+    · exact (hab.ne hxy).elim
+    · exact (hab.ne hxy.symm).elim
+    · rfl
+  · intro x y
+    fin_cases x <;> fin_cases y <;>
+      simp [cutEnhancer, graphOfEdges, G.adj_comm, hab]
+  · intro x
+    fin_cases x <;> simp [cutEnhancer, ha, hb]
+  · intro x d hdegree
+    fin_cases x
+    · have hd : d = 2 := by simpa [cutEnhancer] using hdegree.symm
+      change vertexDegree G a = d
+      simpa [hd] using haDegree
+    · simp [cutEnhancer] at hdegree
 
 /-- Exact constructor for cut enhancer `b`. -/
 theorem containsCutEnhancerB_of {V : Type*} [Fintype V] {G : SimpleGraph V}
@@ -173,13 +239,15 @@ theorem containsCutEnhancerB_of {V : Type*} [Fintype V] {G : SimpleGraph V}
     simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
       hcd_ne, hce_ne, hde_ne]
   refine ⟨cutEnhancer .b, ⟨.b, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, ?_⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hab, had, hbc, hde,
         hac, hae, hbd, hbe, hcd, hce]
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
+  · intro x d hdegree
+    fin_cases x <;> simp [cutEnhancer] at hdegree
 
 /-- Exact constructor for cut enhancer `c`. -/
 theorem containsCutEnhancerC_of {V : Type*} [Fintype V] {G : SimpleGraph V}
@@ -208,13 +276,15 @@ theorem containsCutEnhancerC_of {V : Type*} [Fintype V] {G : SimpleGraph V}
     simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
       hcd_ne, hce_ne, hde_ne]
   refine ⟨cutEnhancer .c, ⟨.c, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, ?_⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hac, had, hbd, hde,
         hab, hae, hbc, hbe, hcd, hce]
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
+  · intro x d hdegree
+    fin_cases x <;> simp [cutEnhancer] at hdegree
 
 /-- Exact constructor for cut enhancer `d`. -/
 theorem containsCutEnhancerD_of {V : Type*} [Fintype V] {G : SimpleGraph V}
@@ -240,13 +310,15 @@ theorem containsCutEnhancerD_of {V : Type*} [Fintype V] {G : SimpleGraph V}
     simp [habV, hacV, hadV, haeV, hbcV, hbdV, hbeV,
       hcdV, hceV, hdeV]
   refine ⟨cutEnhancer .d, ⟨.d, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, ?_⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hac, had, hbc, hbd,
         hde, hab, hae, hbe, hcd, hce]
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
+  · intro x d hdegree
+    fin_cases x <;> simp [cutEnhancer] at hdegree
 
 /-- Exact constructor for cut enhancer `e`. -/
 theorem containsCutEnhancerE_of {V : Type*} [Fintype V] {G : SimpleGraph V}
@@ -267,7 +339,7 @@ theorem containsCutEnhancerE_of {V : Type*} [Fintype V] {G : SimpleGraph V}
     (heg : ¬ G.Adj e g) (hfg : ¬ G.Adj f g)
     (hn : [a, b, c, d, e, f, g].Nodup) : ContainsCutEnhancer C := by
   refine ⟨cutEnhancer .e, ⟨.e, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_, ?_⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hae, hbe, hbg, hce, hcf,
@@ -275,6 +347,8 @@ theorem containsCutEnhancerE_of {V : Type*} [Fintype V] {G : SimpleGraph V}
         hef, heg, hfg]
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he, hf, hg]
+  · intro x d hdegree
+    fin_cases x <;> simp [cutEnhancer] at hdegree
 
 /-- Exact constructor for cut enhancer `f`. -/
 theorem containsCutEnhancerF_of {V : Type*} [Fintype V] {G : SimpleGraph V}
@@ -295,7 +369,7 @@ theorem containsCutEnhancerF_of {V : Type*} [Fintype V] {G : SimpleGraph V}
     (hfg : ¬ G.Adj f g)
     (hn : [a, b, c, d, e, f, g].Nodup) : ContainsCutEnhancer C := by
   refine ⟨cutEnhancer .f, ⟨.f, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_, ?_⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hae, hbe, hbf, hcf,
@@ -303,6 +377,8 @@ theorem containsCutEnhancerF_of {V : Type*} [Fintype V] {G : SimpleGraph V}
         hde, hdf, hef, heg, hfg]
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he, hf, hg]
+  · intro x d hdegree
+    fin_cases x <;> simp [cutEnhancer] at hdegree
 
 /-- Exact constructor for cut enhancer `g`. -/
 theorem containsCutEnhancerG_of {V : Type*} [Fintype V] {G : SimpleGraph V}
@@ -323,7 +399,7 @@ theorem containsCutEnhancerG_of {V : Type*} [Fintype V] {G : SimpleGraph V}
     (hfg : ¬ G.Adj f g)
     (hn : [a, b, c, d, e, f, g].Nodup) : ContainsCutEnhancer C := by
   refine ⟨cutEnhancer .g, ⟨.g, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e, f, g].get, hn.injective_get, ?_, ?_, ?_⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hae, hbe, hce, hcf,
@@ -331,5 +407,7 @@ theorem containsCutEnhancerG_of {V : Type*} [Fintype V] {G : SimpleGraph V}
         hde, hdf, hef, heg, hfg]
   · intro x
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he, hf, hg]
+  · intro x d hdegree
+    fin_cases x <;> simp [cutEnhancer] at hdegree
 
 end Subcubic

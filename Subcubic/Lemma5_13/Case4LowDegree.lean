@@ -49,12 +49,11 @@ theorem lemma5_13_case4_low_degree
     · exact color_ne Q.hr hb (by decide)
     · exact hrf
   have baseNodup : [Q.g, Q.e, c, Q.r, a, b, Q.f].Nodup := by
-    simp [Q.hge, Q.hag.ne, Q.her.ne, Q.heaEdge.ne, Q.hbe.ne,
-      hab.ne, Q.hcf.ne, Q.hef,
+    simp [Q.hge, Q.her.ne, Q.heaEdge.ne,
+      hab.ne, Q.hcf.ne,
       color_ne Q.hg hc (by decide), color_ne Q.hg Q.hr (by decide),
       color_ne Q.hg ha (by decide), color_ne Q.hg hb (by decide),
       color_ne Q.hg Q.hf (by decide), color_ne Q.he hc (by decide),
-      color_ne Q.he Q.hr (by decide), color_ne Q.he ha (by decide),
       color_ne Q.he hb (by decide), color_ne Q.he Q.hf (by decide),
       color_ne hc Q.hr (by decide), color_ne hc ha (by decide),
       color_ne hc hb (by decide), color_ne Q.hr ha (by decide),
@@ -63,7 +62,7 @@ theorem lemma5_13_case4_low_degree
   rcases hdeg with hdeg1 | hdeg2
   · apply HasReachableNegativeReduction.of_current_ntr C
     apply (containsInducedUpToSwap_swapSides IsNegativeTailReducer C).1
-    apply containsNegative_of_embedding_with_degree C.swapSides .w0Minus
+    apply containsNegative_of_embedding_with_degree C.swapSides .dcH
       (![Q.g, Q.e, c, Q.r, a, b, Q.f])
     · change vertexDegree G Q.g = 1
       exact hdeg1
@@ -73,7 +72,7 @@ theorem lemma5_13_case4_low_degree
       rw [hvec]
       exact baseNodup.injective_get
     · intro i j hij
-      apply (negativeTailReducerData .w0Minus).adj_map_of_edgesMapTo G _ ?_ hij
+      apply (negativeTailReducerData .dcH).adj_map_of_edgesMapTo G _ ?_ hij
       unfold PatternData.EdgesMapTo
       dsimp only [negativeTailReducerData]
       intro e he
@@ -89,7 +88,7 @@ theorem lemma5_13_case4_low_degree
       · exact Q.hcf
       · exact hab
     · intro i
-      have hcolors : (negativeTailReducer .w0Minus).color =
+      have hcolors : (negativeTailReducer .dcH).color =
           ![.reddish, .reddish, .red, .bluish, .blue, .blue, .bluish] := by
         native_decide
       rw [hcolors]
@@ -102,7 +101,7 @@ theorem lemma5_13_case4_low_degree
       · change (C.color b).swap = .blue; simp [hb]
       · change (C.color Q.f).swap = .bluish; simp [Q.hf]
     · intro i j hne hnon hauto
-      have hp := negativeW0Minus_boundaryNonedges i j hne hnon hauto
+      have hp := negativeDcH_boundaryNonedges i j hne hnon hauto
       simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
       rcases hp with
           (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |
@@ -139,13 +138,12 @@ theorem lemma5_13_case4_low_degree
       intro e; subst x; exact hgr hgx
     have hxf : x ≠ Q.f := by intro e; subst x; exact hgf hgx
     have hn : [Q.g, Q.e, c, x, Q.r, a, b, Q.f].Nodup := by
-      simp [Q.hge, hgx.ne, Q.hag.ne, Q.her.ne,
-        Q.heaEdge.ne, Q.hbe.ne, hab.ne, Q.hcf.ne, hxr, hxf, Q.hef,
+      simp [Q.hge, hgx.ne, Q.her.ne,
+        Q.heaEdge.ne, hab.ne, Q.hcf.ne, hxr, hxf,
         color_ne Q.hg hc (by decide), color_ne Q.hg Q.hr (by decide),
         color_ne Q.hg ha (by decide), color_ne Q.hg hb (by decide),
         color_ne Q.hg Q.hf (by decide), color_ne Q.he hc (by decide),
-        color_ne Q.he hx (by decide), color_ne Q.he Q.hr (by decide),
-        color_ne Q.he ha (by decide), color_ne Q.he hb (by decide),
+        color_ne Q.he hx (by decide), color_ne Q.he hb (by decide),
         color_ne Q.he Q.hf (by decide), color_ne hc hx (by decide),
         color_ne hc Q.hr (by decide), color_ne hc ha (by decide),
         color_ne hc hb (by decide), color_ne hx ha (by decide),
@@ -154,7 +152,7 @@ theorem lemma5_13_case4_low_degree
         color_ne hb Q.hf (by decide)]
     apply HasReachableNegativeReduction.of_current_ntr C
     apply (containsInducedUpToSwap_swapSides IsNegativeTailReducer C).1
-    apply containsNegative_of_embedding_with_degree C.swapSides .w0
+    apply containsNegative_of_embedding_with_degree C.swapSides .dcG
       (![Q.g, Q.e, c, x, Q.r, a, b, Q.f])
     · change vertexDegree G Q.g = 2
       exact hdeg2
@@ -164,7 +162,7 @@ theorem lemma5_13_case4_low_degree
       rw [hvec]
       exact hn.injective_get
     · intro i j hij
-      apply (negativeTailReducerData .w0).adj_map_of_edgesMapTo G _ ?_ hij
+      apply (negativeTailReducerData .dcG).adj_map_of_edgesMapTo G _ ?_ hij
       unfold PatternData.EdgesMapTo
       dsimp only [negativeTailReducerData]
       intro e he
@@ -181,7 +179,7 @@ theorem lemma5_13_case4_low_degree
       · exact Q.hcf
       · exact hab
     · intro i
-      have hcolors : (negativeTailReducer .w0).color =
+      have hcolors : (negativeTailReducer .dcG).color =
           ![.reddish, .reddish, .red, .bluish, .bluish,
             .blue, .blue, .bluish] := by native_decide
       rw [hcolors]
@@ -195,7 +193,7 @@ theorem lemma5_13_case4_low_degree
       · change (C.color b).swap = .blue; simp [hb]
       · change (C.color Q.f).swap = .bluish; simp [Q.hf]
     · intro i j hne hnon hauto
-      have hp := negativeW0_boundaryNonedges i j hne hnon hauto
+      have hp := negativeDcG_boundaryNonedges i j hne hnon hauto
       simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
       rcases hp with
           (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |

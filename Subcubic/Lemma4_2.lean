@@ -32,7 +32,8 @@ private theorem contains_positiveA
   have hn : [a, b, c, d].Nodup := by
     simp [hab_ne, hac_ne, had_ne, hbc_ne, hbd_ne, hcd_ne]
   refine ⟨positiveTailReducer .a, ⟨.a, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -53,9 +54,15 @@ private theorem three_crossing_edges
     (hac : G.Adj a c) (had : G.Adj a d)
     (hbd : G.Adj b d) (hbc : ¬ G.Adj b c) :
     ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C := by
+  by_contra hno
+  apply hno
+  have hbDegree : vertexDegree G b = 3 := by
+    rcases lemma3_4_positive C (Or.inl hb) with hdegree | hfound
+    · exact hdegree
+    · exact (hno hfound).elim
   have had_vertices : a ≠ d := by intro h; subst d; simp_all
   obtain ⟨e, hbe, hea, hed⟩ :=
-    C.exists_third_neighbor (Or.inl hb) had_vertices
+    C.exists_third_neighbor hbDegree had_vertices
   have he_side : C.color e = .blue ∨ C.color e = .bluish :=
     C.other_neighbor_of_red_is_blueSide hb ha hab.symm hbe hea
   have hde : d ≠ e := hed.symm
@@ -86,7 +93,8 @@ private theorem three_crossing_edges
       simp [hab_ne, hac_ne, had_vertices, hae_vertices, hbc_ne, hbd_ne, hbe_vertices,
         hcd_ne, hce, hde]
     refine ⟨positiveTailReducer .d, ⟨.d, rfl⟩, Or.inl ?_⟩
-    refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+    refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, by
+      intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
     · intro x y
       fin_cases x <;> fin_cases y <;>
         simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -108,8 +116,14 @@ private theorem two_crossing_matching
     (hac : G.Adj a c) (hbd : G.Adj b d)
     (had : ¬ G.Adj a d) (hbc : ¬ G.Adj b c) :
     ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C := by
+  by_contra hno
+  apply hno
+  have haDegree : vertexDegree G a = 3 := by
+    rcases lemma3_4_positive C (Or.inl ha) with hdegree | hfound
+    · exact hdegree
+    · exact (hno hfound).elim
   have hbc_vertices : b ≠ c := by intro h; subst c; simp_all
-  obtain ⟨x, hax, hxb, hxc⟩ := C.exists_third_neighbor (Or.inl ha) hbc_vertices
+  obtain ⟨x, hax, hxb, hxc⟩ := C.exists_third_neighbor haDegree hbc_vertices
   have hxside := C.other_neighbor_of_red_is_blueSide ha hb hab hax hxb
   have hdx : d ≠ x := by
     intro h
@@ -118,7 +132,11 @@ private theorem two_crossing_matching
   rcases lemma3_3 C ha hc hd hxside hac hax hcd hxc.symm hdx with
       hx | henhancer
   · have had_vertices : a ≠ d := by intro h; subst d; simp_all
-    obtain ⟨y, hby, hya, hyd⟩ := C.exists_third_neighbor (Or.inl hb) had_vertices
+    have hbDegree : vertexDegree G b = 3 := by
+      rcases lemma3_4_positive C (Or.inl hb) with hdegree | hfound
+      · exact hdegree
+      · exact (hno hfound).elim
+    obtain ⟨y, hby, hya, hyd⟩ := C.exists_third_neighbor hbDegree had_vertices
     have hyside := C.other_neighbor_of_red_is_blueSide hb ha hab.symm hby hya
     have hcy : c ≠ y := by
       intro h
@@ -160,7 +178,8 @@ private theorem two_crossing_matching
           simp [hab_ne, hac_ne, had_vertices, hax_vertices, hbc_vertices, hbd_ne,
             hbx_vertices, hcd_ne, hcx_vertices, hdx_vertices]
         refine ⟨positiveTailReducer .f, ⟨.f, rfl⟩, Or.inl ?_⟩
-        refine ⟨[a, b, c, d, x].get, hn.injective_get, ?_, ?_⟩
+        refine ⟨[a, b, c, d, x].get, hn.injective_get, ?_, ?_, by
+          intro p d hdegree; exfalso; revert hdegree; native_decide +revert⟩
         · intro p q
           fin_cases p <;> fin_cases q <;>
             simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -190,7 +209,8 @@ private theorem two_crossing_matching
             hxb_vertices, hxc', hxd, hxy, hbc_vertices, hbd_ne,
             hby_vertices, hcd_ne, hcy_vertices, hdy_vertices]
         refine ⟨positiveTailReducer .i, ⟨.i, rfl⟩, Or.inl ?_⟩
-        refine ⟨[a, b, x, c, d, y].get, hn.injective_get, ?_, ?_⟩
+        refine ⟨[a, b, x, c, d, y].get, hn.injective_get, ?_, ?_, by
+          intro p d hdegree; exfalso; revert hdegree; native_decide +revert⟩
         · intro p q
           fin_cases p <;> fin_cases q <;>
             simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -214,8 +234,14 @@ private theorem two_crossing_adjacent
     (hac : G.Adj a c) (had : G.Adj a d)
     (hbc : ¬ G.Adj b c) (hbd : ¬ G.Adj b d) :
     ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C := by
+  by_contra hno
+  apply hno
+  have hcDegree : vertexDegree G c = 3 := by
+    rcases lemma3_4_positive C (Or.inr hc) with hdegree | hfound
+    · exact hdegree
+    · exact (hno hfound).elim
   have had_vertices : a ≠ d := by intro h; subst d; simp_all
-  obtain ⟨x, hcx, hxd, hxa⟩ := C.exists_third_neighbor (Or.inr hc) had_vertices.symm
+  obtain ⟨x, hcx, hxd, hxa⟩ := C.exists_third_neighbor hcDegree had_vertices.symm
   have hxside := C.other_neighbor_of_blue_is_redSide hc hd hcd hcx hxd
   have hbx : b ≠ x := by
     intro h
@@ -224,7 +250,11 @@ private theorem two_crossing_adjacent
   rcases lemma3_3_reversed C hc ha hb hxside hac.symm hcx hab hxa.symm hbx with
       hx | henhancer
   · have hac_vertices : a ≠ c := by intro h; subst c; simp_all
-    obtain ⟨y, hdy, hyc, hya⟩ := C.exists_third_neighbor (Or.inr hd) hac_vertices.symm
+    have hdDegree : vertexDegree G d = 3 := by
+      rcases lemma3_4_positive C (Or.inr hd) with hdegree | hfound
+      · exact hdegree
+      · exact (hno hfound).elim
+    obtain ⟨y, hdy, hyc, hya⟩ := C.exists_third_neighbor hdDegree hac_vertices.symm
     have hyside := C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdy hyc
     have hby : b ≠ y := by
       intro h
@@ -268,7 +298,8 @@ private theorem two_crossing_adjacent
           simp [hcd_ne, hca_vertices, hcb_vertices, hcx_ne, hda_vertices,
             hdb_vertices, hdx_vertices, hab_ne, hax_vertices, hbx_vertices]
         refine ⟨positiveTailReducer .e, ⟨.e, rfl⟩, Or.inr ?_⟩
-        refine ⟨[c, d, a, b, x].get, hn.injective_get, ?_, ?_⟩
+        refine ⟨[c, d, a, b, x].get, hn.injective_get, ?_, ?_, by
+          intro p d hdegree; exfalso; revert hdegree; native_decide +revert⟩
         · intro p q
           fin_cases p <;> fin_cases q <;>
             simp [ColoredPattern.swapSides, positiveTailReducer,
@@ -299,7 +330,8 @@ private theorem two_crossing_adjacent
             hdx_vertices, hda_vertices, hdb_vertices, hdy_ne, hxy,
             hxa', hxb', hay_vertices, hby_vertices, hab_ne]
         refine ⟨positiveTailReducer .j, ⟨.j, rfl⟩, Or.inr ?_⟩
-        refine ⟨[c, d, x, a, b, y].get, hn.injective_get, ?_, ?_⟩
+        refine ⟨[c, d, x, a, b, y].get, hn.injective_get, ?_, ?_, by
+          intro p d hdegree; exfalso; revert hdegree; native_decide +revert⟩
         · intro p q
           fin_cases p <;> fin_cases q <;>
             simp [ColoredPattern.swapSides, positiveTailReducer,

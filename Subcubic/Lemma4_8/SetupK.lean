@@ -37,6 +37,15 @@ theorem lemma4_8_setup_k
     HasReachableReduction C ∨
       Nonempty (Lemma4_8KConfiguration C a b c d e f g h) := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact Or.inl hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases Q with ⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
     hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩, hxy, hij, hnotBoth⟩
   dsimp [FormsInducedPath8] at hpath
@@ -64,7 +73,7 @@ theorem lemma4_8_setup_k
   have hfg := edge 5 6 (by native_decide)
   have hbd : b ≠ d := hv (u := (1 : Fin 8)) (v := 3) (by decide)
   obtain ⟨k, hck, hkb, hkd⟩ :=
-    C.exists_third_neighbor (Or.inr hc) hbd
+    C.exists_third_neighbor (degree_of_color (Or.inr hc)) hbd
   have hkSide : C.color k = .red ∨ C.color k = .reddish :=
     C.other_neighbor_of_blue_is_redSide hc hd hcd hck hkd
   have hak : a ≠ k := by
@@ -101,7 +110,7 @@ theorem lemma4_8_setup_k
             hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩,
             hxy, hij, hnotBoth⟩
           hic k hk hck hkb hkd hkg hkdeg⟩
-      · exact Or.inl (HasReachableReduction.of_current_ce C hce)
+      · exact Or.inl (HasReachableReduction.of_lemma3_4 C hce)
   · exact Or.inl (HasReachableReduction.of_current_ce C hce)
 
 end Subcubic

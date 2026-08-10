@@ -100,7 +100,18 @@ private theorem flip_when_h_meets_neither
     (hfc : ¬ G.Adj Q.f Q.c) (hfe : ¬ G.Adj Q.f Q.e)
     (hhc : ¬ G.Adj h Q.c) (hhe : ¬ G.Adj h Q.e) :
     HasReachableNegativeReduction C := by
-  rcases exists_flipAt_or_cutEnhancer C hh hg hr hi hhr hgh.symm hgi with
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
+  rcases exists_flipAt_or_cutEnhancer C hh hg hr hi
+      (degree_of_color (Or.inl hh)) (degree_of_color (Or.inr hg))
+      hhr hgh.symm hgi with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -156,7 +167,15 @@ private theorem flip_when_h_meets_neither
     · obtain ⟨z, hz, hfz⟩ := hblue
       exact lemma5_4_red_f_blue_neighbor D haD hbD hab R hfD hz hfz
     · apply HasReachableNegativeReduction.of_current_ntr D
+      have hfDDegree : vertexDegree G Q.f = 3 := by
+        rcases lemma3_4_negative D (Or.inl hfD) with hdegree | hntr | hce
+        · exact hdegree
+        · exact (hdone (HasReachableNegativeReduction.after_flip C hflip
+            (.of_current_ntr D hntr))).elim
+        · exact (hdone (HasReachableNegativeReduction.after_flip C hflip
+            (.of_current_ce D hce))).elim
       apply lemma5_4_noBlue_meets_neither D haD hbD hab R
+        (fun _ ↦ hfDDegree)
         (by simpa [R] using hfc) (by simpa [R] using hfe)
       intro z hfz hz
       exact hblue ⟨z, hz, hfz⟩
@@ -339,7 +358,7 @@ private theorem hard_oriented
           intro hEq
           subst j
           exact hfe hfj
-        have hntr := containsNegativeY C ha hf hh Q.hc Q.hd hj hg hi Q.he
+        have hntr := containsNegativeZ C ha hf hh Q.hc Q.hd hj hg hi Q.he
           Q.hac Q.had Q.hdf.symm hfj hfg hgh.symm hhe hgi
           (by simpa [SimpleGraph.adj_comm] using
             C.reddish_not_adj_redSide hf (Or.inl ha))
@@ -373,7 +392,7 @@ private theorem hard_oriented
               vertex_ne_of_color_eq hg Q.he (by decide),
               vertex_ne_of_color_eq hi Q.he (by decide)])
         exact HasReachableNegativeReduction.of_current_ntr C hntr
-  · exact HasReachableNegativeReduction.of_current_ce C hce
+  · exact HasReachableNegativeReduction.of_lemma3_4 C hce
 
 /-- Case 2.2.5. -/
 theorem lemma5_4_reddish_f_blue_neighbor
@@ -384,6 +403,15 @@ theorem lemma5_4_reddish_f_blue_neighbor
     (hfg : G.Adj Q.f g)
     (hfc : ¬ G.Adj Q.f Q.c) (hfe : ¬ G.Adj Q.f Q.e) :
     HasReachableNegativeReduction C := by
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   have hgCorrect := C.color_correct g
   rw [hg] at hgCorrect
   obtain ⟨_, i, hiSide, hgi⟩ := hgCorrect
@@ -393,7 +421,8 @@ theorem lemma5_4_reddish_f_blue_neighbor
     · exact hi
     · exact (C.bluish_not_adj_blueSide hi (Or.inl hg) hgi.symm).elim
   have hif : i ≠ Q.f := vertex_ne_of_color_eq hi hf (by decide)
-  obtain ⟨h, hgh, hhi, hhf⟩ := C.exists_third_neighbor (Or.inr hg) hif
+  obtain ⟨h, hgh, hhi, hhf⟩ :=
+    C.exists_third_neighbor (degree_of_color (Or.inr hg)) hif
   have hhSide := C.other_neighbor_of_blue_is_redSide hg hi hgi hgh hhi
   have hhCases : C.color h = .reddish ∨ C.color h = .red :=
     hhSide.elim Or.inr Or.inl

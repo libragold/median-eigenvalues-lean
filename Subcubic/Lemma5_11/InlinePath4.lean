@@ -65,7 +65,7 @@ theorem lemma5_10_inline
       {u v : V} (htwo : G.Adj u v)
       (huvTwo : (u = r₀ ∨ u = r₁) ∧ (v = s₀ ∨ v = s₁))
       (hdifferent : (x, y) ≠ (u, v)) : False := by
-    apply noCurrent
+    apply hresult
     apply lemma5_2 C r₀ r₁ s₀ s₁
       hrr hr₀ hr₁ hss hs₀ hs₁
     rcases hxyOne with ⟨rfl | rfl, rfl | rfl⟩ <;>
@@ -117,7 +117,8 @@ theorem lemma5_10_inline
   have noFarLeft {x : V} (hx : C.color x = .red)
       (hxf : x ≠ f) (hxi : x ≠ i)
       (hcross : G.Adj g x ∨ G.Adj h x) : False := by
-    apply noSwapped
+    apply hresult
+    apply HasReachableNegativeReduction.of_swapSides C
     apply lemma5_3_of_three_neighbors C.swapSides
       (by simp [hg]) (by simp [hh]) hgh
       (by simp [hf]) (by simp [hi]) (by simp [hx])
@@ -126,7 +127,8 @@ theorem lemma5_10_inline
   have noFarRight {x : V} (hx : C.color x = .red)
       (hxb : x ≠ b) (hxe : x ≠ e)
       (hcross : G.Adj c x ∨ G.Adj d x) : False := by
-    apply noSwapped
+    apply hresult
+    apply HasReachableNegativeReduction.of_swapSides C
     apply lemma5_3_of_three_neighbors C.swapSides
       (by simp [hc]) (by simp [hd]) hcd
       (by simp [hb]) (by simp [he]) (by simp [hx])

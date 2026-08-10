@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Case (3.1.1): the shared reddish neighbor has no blue neighbor other
-than `d`.  Degree two gives `m-minus+`; degree three gives `m+`. -/
+than `d`.  Degree two gives `ptr-dc-a`; degree three gives `ptr-m`. -/
 theorem lemma4_12_case3_shared_no_other_blue
     (C : GoodColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
@@ -18,6 +18,14 @@ theorem lemma4_12_case3_shared_no_other_blue
     (heg : G.Adj Q.e g) (hdg : G.Adj d g)
     (hNoOtherBlue : ∀ z, G.Adj g z → C.color z = .blue → z = d) :
     HasReachableReduction C := by
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   classical
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
@@ -57,7 +65,7 @@ theorem lemma4_12_case3_shared_no_other_blue
     simpa [hed] using Set.ncard_le_ncard hs
   by_cases hgdeg2 : vertexDegree G g = 2
   · apply HasReachableReduction.of_current_ptr C
-    apply containsPositiveMMinus C (a := g) (b := b) (c := Q.e)
+    apply containsPositiveDcA C (a := g) (b := b) (c := Q.e)
       (d := d) (e := c) hg hb Q.he hd hc hgdeg2 heg.symm hdg.symm
       Q.hbe hbc hcd.symm hgb hgc hbd
     simp [List.nodup_cons, color_ne hg hb (by decide),
@@ -156,6 +164,14 @@ theorem lemma4_12_case3_shared_blue_isolated
     (hNoRedH : ∀ z, G.Adj R.h z → C.color z ≠ .red)
     (hNoRedI : ∀ z, G.Adj R.i z → C.color z ≠ .red) :
     HasReachableReduction C := by
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   have hOtherH : ∀ z, G.Adj R.h z → z ≠ R.i →
       C.swapSides.color z = .bluish := by
     intro z hhz hzi
@@ -175,6 +191,6 @@ theorem lemma4_12_case3_shared_blue_isolated
   apply HasReachableReduction.of_current_ptr C
   apply (containsInducedUpToSwap_swapSides IsPositiveTailReducer C).1
   exact lemma4_4 C.swapSides (by simp [R.hh]) (by simp [R.hi])
-    R.hhi hOtherH hOtherI
+    R.hhi (degreeC (Or.inr R.hh)) (degreeC (Or.inr R.hi)) hOtherH hOtherI
 
 end Subcubic

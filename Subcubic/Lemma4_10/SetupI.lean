@@ -32,6 +32,15 @@ theorem lemma4_10_setup_i
     HasReachableReduction C ∨
       Nonempty (Lemma4_10IConfiguration C a b c d e f) := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact Or.inl hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 6} (hxy : x ≠ y) :
@@ -49,7 +58,7 @@ theorem lemma4_10_setup_i
   have hcd := edge 2 3 (by native_decide)
   have hbdV : b ≠ d := hv (x := (1 : Fin 6)) (y := 3) (by decide)
   obtain ⟨i, hci, hib, hid⟩ :=
-    C.exists_third_neighbor (Or.inr hc) hbdV
+    C.exists_third_neighbor (degree_of_color (Or.inr hc)) hbdV
   have hiSide := C.other_neighbor_of_blue_is_redSide hc hd hcd hci hid
   have hca : ¬ G.Adj c a := by simpa using nonedge 2 0 (by native_decide)
   have hia : i ≠ a := by intro h; subst i; exact hca hci
@@ -73,7 +82,7 @@ theorem lemma4_10_setup_i
             Q.hgf hbi hbf hif hcg hcf
             (hv (x := (1 : Fin 6)) (y := 5) (by decide)))
       · exact Or.inr ⟨⟨Q, i, hi, hci, hib, hid, hideg, hig⟩⟩
-    · exact Or.inl (HasReachableReduction.of_current_ce C hce)
+    · exact Or.inl (HasReachableReduction.of_lemma3_4 C hce)
   · exact Or.inl (HasReachableReduction.of_current_ce C hce)
 
 end Subcubic

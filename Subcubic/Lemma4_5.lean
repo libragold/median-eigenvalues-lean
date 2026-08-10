@@ -1,5 +1,6 @@
 import Subcubic.Lemma4_4
 import Subcubic.FlipLemmas
+import Subcubic.PositiveReduction
 import Mathlib.Tactic.FinCases
 
 /-!
@@ -52,7 +53,8 @@ private theorem contains_cutEnhancerB
     simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
       hcd_ne, hce_ne, hde_ne]
   refine ⟨cutEnhancer .b, ⟨.b, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [cutEnhancer, graphOfEdges, G.adj_comm, hab, had, hbc, hde,
@@ -87,7 +89,8 @@ private theorem contains_positiveC
   have hde : ¬ G.Adj d e := fun h =>
     C.bluish_not_adj_blueSide he (Or.inl hd) h.symm
   refine ⟨positiveTailReducer .c, ⟨.c, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -114,6 +117,15 @@ theorem lemma4_5
       (ContainsPositiveTailReducer M.toGoodColoring ∨
        ContainsCutEnhancer M.toGoodColoring) := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degreeC {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath10] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have path_vertices_ne {x y : Fin 10} (hxy : x ≠ y) :
@@ -174,7 +186,7 @@ theorem lemma4_5
     have hidx : (3 : Fin 10) = 5 := hinj (by simpa using h)
     exact (by decide : (3 : Fin 10) ≠ 5) hidx
   obtain ⟨k, hek, hkd, hkf⟩ :=
-    C.exists_third_neighbor (Or.inl he) hdf
+    C.exists_third_neighbor (degreeC (Or.inl he)) hdf
   have hkside : C.color k = .blue ∨ C.color k = .bluish :=
     C.other_neighbor_of_red_is_blueSide he hf hef hek hkf
   have hec : ¬ G.Adj e c := by
@@ -223,7 +235,7 @@ theorem lemma4_5
           have hidx : (4 : Fin 10) = 6 := hinj (by simpa using h)
           exact (by decide : (4 : Fin 10) ≠ 6) hidx
         obtain ⟨l, hfl, hle, hlg⟩ :=
-          C.exists_third_neighbor (Or.inl hf) heg
+          C.exists_third_neighbor (degreeC (Or.inl hf)) heg
         have hlside : C.color l = .blue ∨ C.color l = .bluish :=
           C.other_neighbor_of_red_is_blueSide hf he hef.symm hfl hle
         have hfh : ¬ G.Adj f h := by
@@ -265,7 +277,7 @@ theorem lemma4_5
                 have hidx : (0 : Fin 10) = 2 := hinj (by simpa using h)
                 exact (by decide : (0 : Fin 10) ≠ 2) hidx
               obtain ⟨x, hbx, hxa, hxc⟩ :=
-                C.exists_third_neighbor (Or.inl hb) hac_vertices
+                C.exists_third_neighbor (degreeC (Or.inl hb)) hac_vertices
               have hxside :=
                 C.other_neighbor_of_red_is_blueSide hb ha hab.symm hbx hxa
               have hbd_path : ¬ G.Adj b d := by
@@ -282,7 +294,7 @@ theorem lemma4_5
                   have hidx : (1 : Fin 10) = 3 := hinj (by simpa using h')
                   exact (by decide : (1 : Fin 10) ≠ 3) hidx
                 obtain ⟨u, hcu, hub, hud⟩ :=
-                  C.exists_third_neighbor (Or.inr hc) hbd_vertices
+                  C.exists_third_neighbor (degreeC (Or.inr hc)) hbd_vertices
                 have huside :=
                   C.other_neighbor_of_blue_is_redSide hc hd hcd hcu hud
                 have hca_path : ¬ G.Adj c a := by
@@ -345,12 +357,19 @@ theorem lemma4_5
                         (ContainsPositiveTailReducer M.toGoodColoring ∨
                          ContainsCutEnhancer M.toGoodColoring) := by
                     exact ⟨M₁, .step .refl hflip₁, Or.inr hce₁⟩
+                  have degreeD₁ {z : V}
+                      (hz : D₁.color z = .red ∨ D₁.color z = .blue) :
+                      vertexDegree G z = 3 := by
+                    rcases lemma3_4_positive D₁ hz with hdegree | hptr | hce
+                    · exact hdegree
+                    · exact (hdone ⟨M₁, .step .refl hflip₁, Or.inl hptr⟩).elim
+                    · exact (hdone ⟨M₁, .step .refl hflip₁, Or.inr hce⟩).elim
                   have hhj_vertices : h ≠ j := by
                     intro h'
                     have hidx : (7 : Fin 10) = 9 := hinj (by simpa using h')
                     exact (by decide : (7 : Fin 10) ≠ 9) hidx
                   obtain ⟨y, hiy, hyh, hyj⟩ :=
-                    D₁.exists_third_neighbor (Or.inl hi₁) hhj_vertices
+                    D₁.exists_third_neighbor (degreeD₁ (Or.inl hi₁)) hhj_vertices
                   have hyside :=
                     D₁.other_neighbor_of_red_is_blueSide hi₁ hj₁ hij hiy hyj
                   have hig_path : ¬ G.Adj i g := by
@@ -364,7 +383,7 @@ theorem lemma4_5
                       have hidx : (8 : Fin 10) = 6 := hinj (by simpa using h')
                       exact (by decide : (8 : Fin 10) ≠ 6) hidx
                     obtain ⟨v, hhv, hvi, hvg⟩ :=
-                      D₁.exists_third_neighbor (Or.inr hh₁) hig_vertices
+                      D₁.exists_third_neighbor (degreeD₁ (Or.inr hh₁)) hig_vertices
                     have hvside :=
                       D₁.other_neighbor_of_blue_is_redSide hh₁ hg₁
                         hgh.symm hhv hvg
@@ -534,8 +553,18 @@ theorem lemma4_5
                         rw [hl] at hcorrect
                         exact hcorrect.2
                           ⟨z, not_final_implies_old_blue hz hzb hzi, hlz⟩
+                      have degreeD₂ {z : V}
+                          (hz : D₂.color z = .red ∨ D₂.color z = .blue) :
+                          vertexDegree G z = 3 := by
+                        rcases lemma3_4_positive D₂ hz with hdegree | hptr | hce
+                        · exact hdegree
+                        · exact (hdone ⟨M₂, .step (.step .refl hflip₁) hflip₂',
+                              Or.inl hptr⟩).elim
+                        · exact (hdone ⟨M₂, .step (.step .refl hflip₁) hflip₂',
+                              Or.inr hce⟩).elim
                       have hptr₂ : ContainsPositiveTailReducer D₂ :=
                         lemma4_4 D₂ he₂ hf₂ hef
+                          (degreeD₂ (Or.inl he₂)) (degreeD₂ (Or.inl hf₂))
                           (by
                             intro z hez hzf
                             rcases C.neighbor_eq_of_three_neighbors (Or.inl he)

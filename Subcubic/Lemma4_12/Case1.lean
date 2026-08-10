@@ -27,15 +27,24 @@ theorem lemma4_12_case_ef
   have hcd : G.Adj c d := edge 2 3 (by native_decide)
   have noCurrentCE (hce : ContainsCutEnhancer C) : False :=
     hresult (HasReachableReduction.of_current_ce C hce)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hresult (.of_current_ptr C hptr)).elim
+    · exact (hresult (.of_current_ce C hce)).elim
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
     have hbD : D.color b = .blue :=
       blue_of_flipped_red_endpoint C hflip ha hab.symm
+        (degreeC (Or.inl hb))
         (hv (x := (0 : Fin 4)) (y := 2) (by decide))
     have hcD : D.color c = .red :=
       red_of_flipped_blue_endpoint C hflip hd hcd
+        (degreeC (Or.inr hc))
         (hv (x := (3 : Fin 4)) (y := 1) (by decide))
     have heD : D.color Q.e = .blue := by
       apply blue_of_bluish_gains_flipped_red C hflip Q.he Q.hbe.symm

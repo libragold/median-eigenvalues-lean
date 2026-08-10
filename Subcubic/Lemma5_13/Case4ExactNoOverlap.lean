@@ -40,7 +40,7 @@ theorem lemma5_13_case4_exact_no_overlap
   classical
   apply HasReachableNegativeReduction.of_current_ntr C
   apply (containsInducedUpToSwap_swapSides IsNegativeTailReducer C).1
-  apply containsNegative_of_embedding C.swapSides .ao
+  apply containsNegative_of_embedding C.swapSides .ap
     (![i, Q.g, Q.e, c, d, u, v, x, h, Q.r, a, b, Q.f, s])
   · simp [NegativeTailReducerAmbientDegreeCondition]
   · have hvec :
@@ -52,7 +52,7 @@ theorem lemma5_13_case4_exact_no_overlap
     rw [hvec]
     exact hn.injective_get
   · intro p q hpq
-    apply (negativeTailReducerData .ao).adj_map_of_edgesMapTo G _ ?_ hpq
+    apply (negativeTailReducerData .ap).adj_map_of_edgesMapTo G _ ?_ hpq
     unfold PatternData.EdgesMapTo
     dsimp only [negativeTailReducerData]
     intro edge hedge
@@ -79,7 +79,7 @@ theorem lemma5_13_case4_exact_no_overlap
     · exact hds
     · exact hab
   · intro z
-    have hcolors : (negativeTailReducer .ao).color =
+    have hcolors : (negativeTailReducer .ap).color =
         ![.reddish, .reddish, .reddish, .red, .red,
           .bluish, .bluish, .bluish, .bluish, .bluish,
           .blue, .blue, .bluish, .bluish] := by native_decide
@@ -100,7 +100,7 @@ theorem lemma5_13_case4_exact_no_overlap
     · change (C.color Q.f).swap = .bluish; simp [Q.hf]
     · change (C.color s).swap = .bluish; simp [hs]
   · intro p q hpq hnon hauto
-    have hp := negativeAo_boundaryNonedges p q hpq hnon hauto
+    have hp := negativeAp_boundaryNonedges p q hpq hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
     rcases hp with
         (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |

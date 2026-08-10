@@ -30,6 +30,15 @@ theorem HasReachableNegativeReduction.of_current_ce (C : GoodColoring G)
   exact (containsInducedUpToSwap_congr_color IsCutEnhancer
     (by simp)).1 hce
 
+/-- An absolute reducer or cut enhancer reachable in the sense of Lemma 3.4
+is a reachable negative reduction. -/
+theorem HasReachableNegativeReduction.of_lemma3_4
+    (C : GoodColoring G) (h : HasReachableLemma3_4Obstruction C) :
+    HasReachableNegativeReduction C := by
+  rcases h with ⟨M, hreach, habsolute | hce⟩
+  · exact ⟨M, hreach, Or.inl habsolute.2⟩
+  · exact ⟨M, hreach, Or.inr hce⟩
+
 theorem HasReachableNegativeReduction.after_flip (C : GoodColoring G)
     {M₁ : MatchingCut G} {r s : V}
     (hflip : C.toMatchingCut.IsFlipAt M₁ r s)

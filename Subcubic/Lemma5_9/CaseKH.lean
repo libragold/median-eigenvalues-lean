@@ -19,6 +19,14 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
     (hkj : ¬ G.Adj Q.k Q.j) (hkh : G.Adj Q.k h) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases Q with ⟨⟨⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
     hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩, hxy, hij, hnotBoth⟩,
     hic, hideg, t, ht, hit, htd, hth⟩,
@@ -70,10 +78,19 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
     intro hjcV
     rw [hjcV] at hj
     simp [hc] at hj
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd
       with hflip1 | hce
   · obtain ⟨M₁, hflip1⟩ := hflip1
     let D := M₁.toGoodColoring
+    have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
+        vertexDegree G v = 3 := by
+      rcases lemma3_4_negative D hv with hdegree | hntr | hce
+      · exact hdegree
+      · exact (hdone (HasReachableNegativeReduction.after_flip C hflip1
+          (.of_current_ntr D hntr))).elim
+      · exact (hdone (HasReachableNegativeReduction.after_flip C hflip1
+          (.of_current_ce D hce))).elim
     have hcD : D.color c = .red := by
       apply red_of_flipped_blue_with_reddish_neighbor C hflip1 hk hck
       · exact hkb
@@ -115,10 +132,21 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
       · exact hcd.ne.symm
     have hhc : ¬ G.Adj h c := by
       simpa using nonedge 7 2 (by native_decide)
-    rcases exists_flipAt_or_cutEnhancer D hkD hhD hcD hgD hck.symm hkh hgh.symm
+    rcases exists_flipAt_or_cutEnhancer D hkD hhD hcD hgD
+        (degreeD (Or.inl hkD)) (degreeD (Or.inr hhD)) hck.symm hkh hgh.symm
         with hflip2 | hceD
     · obtain ⟨M₂, hflip2⟩ := hflip2
       let E := M₂.toGoodColoring
+      have degreeE {v : V} (hv : E.color v = .red ∨ E.color v = .blue) :
+          vertexDegree G v = 3 := by
+        rcases lemma3_4_negative E hv with hdegree | hntr | hce
+        · exact hdegree
+        · exact (hdone (HasReachableNegativeReduction.after_flip C hflip1
+            (HasReachableNegativeReduction.after_flip D hflip2
+              (.of_current_ntr E hntr)))).elim
+        · exact (hdone (HasReachableNegativeReduction.after_flip C hflip1
+            (HasReachableNegativeReduction.after_flip D hflip2
+              (.of_current_ce E hce)))).elim
       have heD : D.color e = .red := by
         apply red_of_untouched_red_edge C hflip1 (by simp [he]) (by simp [hf]) hef
         · exact hv (u := (4 : Fin 8)) (v := 1) (by decide)
@@ -169,9 +197,11 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
         · exact hih.ne
       have hhE : E.color h = .red := by
         apply red_of_flipped_blue_endpoint D hflip2 hgD hgh.symm
+        · exact degreeD (Or.inr hhD)
         exact hgkV
       have hkE : E.color k = .blue := by
         apply blue_of_flipped_red_endpoint D hflip2 hcD hck.symm
+        · exact degreeD (Or.inl hkD)
         exact hv (u := (2 : Fin 8)) (v := 7) (by decide)
       have hcE : E.color c = .reddish := by
         apply reddish_of_red_loses_flipped_mate D hflip2 hcD hck
@@ -247,14 +277,14 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
             exact hfk hfl
         by_cases hlk : G.Adj l k
         · obtain ⟨m, hlm, hmk, hmf⟩ :=
-            E.exists_third_neighbor (Or.inr hlE) hfkV.symm
+            E.exists_third_neighbor (degreeE (Or.inr hlE)) hfkV.symm
           have hmSide := E.other_neighbor_of_blue_is_redSide
             hlE hkE hlk hlm hmk
           rcases hmSide with hm | hm
           · have hle : ¬ G.Adj l e := by
               rw [SimpleGraph.adj_comm]
               apply not_adj_fourth_neighbor_of_degree_three
-                (E.red_or_blue_degree e (Or.inl heE)) hef hde.symm hej
+                (degreeE (Or.inl heE)) hef hde.symm hej
               · exact hv (u := (5 : Fin 8)) (v := 3) (by decide)
               · exact vertex_ne_of_color_eq hfE hjE (by decide)
               · exact vertex_ne_of_color_eq hd hj (by decide)
@@ -275,7 +305,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
                   ((containsInducedUpToSwap_swapSides IsCutEnhancer E).1 hceSwap)))
           · obtain ⟨q, hgq, hqf, hqh⟩ :=
               exists_third_neighbor_of_degree_three
-                (C.red_or_blue_degree g (Or.inr hg))
+                (degreeC (Or.inr hg))
                 (hv (u := (5 : Fin 8)) (v := 7) (by decide))
             have hqSide : E.color q = .red ∨ E.color q = .reddish := by
               rw [← E.mem_redSide_iff]
@@ -285,7 +315,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
             rcases hqSide with hq | hq
             · have hhq : ¬ G.Adj h q := by
                 apply not_adj_fourth_neighbor_of_degree_three
-                  (E.red_or_blue_degree h (Or.inl hhE)) hih.symm hgh.symm hkh.symm
+                  (degreeE (Or.inl hhE)) hih.symm hgh.symm hkh.symm
                 · exact vertex_ne_of_color_eq hiE hgE (by decide)
                 · exact hik
                 · exact hgkV
@@ -295,7 +325,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
               have hqk : ¬ G.Adj q k := by
                 rw [SimpleGraph.adj_comm]
                 apply not_adj_fourth_neighbor_of_degree_three
-                  (E.red_or_blue_degree k (Or.inr hkE)) hck.symm hkh hlk.symm
+                  (degreeE (Or.inr hkE)) hck.symm hkh hlk.symm
                 · exact (hv (u := (2 : Fin 8)) (v := 7) (by decide))
                 · exact vertex_ne_of_color_eq hcE hlE (by decide)
                 · exact vertex_ne_of_color_eq hhE hlE (by decide)
@@ -389,23 +419,17 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
                 · subst z
                   exact vertex_ne_of_color_eq hq hz (by decide) rfl
                 exact (not_adj_fourth_neighbor_of_degree_three
-                  (C.red_or_blue_degree g (Or.inr hg)) hfg.symm hgh hgq
+                  (degreeC (Or.inr hg)) hfg.symm hgh hgq
                   (hv (u := (5 : Fin 8)) (v := 7) (by decide))
                   hqf.symm hqh.symm hzf' hzh' hzq) hgz
-              rcases lemma5_5 E.swapSides hpent
+              have hswap := lemma5_5 E.swapSides hpent
                   (by simp [hkE]) (by simp [hlE]) (by simp [hgE])
                   (by simp [hhE]) (Or.inl (by simp [hfE]))
                   (by simpa using hkNoRed) (by simpa using hlNoRed)
-                  (by simpa using hgNoRed) with hntr | hceSwap
-              · exact HasReachableNegativeReduction.after_flip C hflip1
-                  (HasReachableNegativeReduction.after_flip D hflip2
-                    (HasReachableNegativeReduction.of_current_ntr E
-                      ((containsInducedUpToSwap_swapSides
-                        IsNegativeTailReducer E).1 hntr)))
-              · exact HasReachableNegativeReduction.after_flip C hflip1
-                  (HasReachableNegativeReduction.after_flip D hflip2
-                    (HasReachableNegativeReduction.of_current_ce E
-                      ((containsInducedUpToSwap_swapSides IsCutEnhancer E).1 hceSwap)))
+                  (by simpa using hgNoRed)
+              exact HasReachableNegativeReduction.after_flip C hflip1
+                (HasReachableNegativeReduction.after_flip D hflip2
+                  (HasReachableNegativeReduction.of_swapSides E hswap))
         · have hceSwap := containsCutEnhancerB_of E.swapSides
               (by simp [hgE]) (by simp [hfE]) (by simp [hlE])
               (by simp [hhE]) (by simp [hkE]) hgf hgh' hfl hkh.symm

@@ -163,10 +163,8 @@ theorem lemma5_9_case_lm_bluish
         Q.hck.symm hkl hkm
         (color_ne hc hl (by decide)) (color_ne hc hm (by decide)) hlm
         hvc hvl hvm) hkv
-    rcases lemma5_5 C hpent hb ha hk hc (Or.inr hl)
-        hbNoBlue haNoBlue hkNoBlue with hntr | hce
-    · exact HasReachableNegativeReduction.of_current_ntr C hntr
-    · exact HasReachableNegativeReduction.of_current_ce C hce
+    exact lemma5_5 C hpent hb ha hk hc (Or.inr hl)
+      hbNoBlue haNoBlue hkNoBlue
   by_cases hal : G.Adj a Q.l
   · exact finish Q.l Q.m hl hm Q.hkl Q.hkm hbl hbm hal Q.hlm
   by_cases ham : G.Adj a Q.m
@@ -245,7 +243,7 @@ theorem lemma5_9_case_lm_bluish
         Q.hxy, color_ne hj hc (by decide), color_ne hj hd (by decide),
         hyj.symm, hcd.ne, Q.hyc.symm, (color_ne hy hd (by decide)).symm]
     exact HasReachableNegativeReduction.of_current_ntr C
-      (containsNegativeAf C hk ha hb hl hm hx hj hc hd hy
+      (containsNegativeAg C hk ha hb hl hm hx hj hc hd hy
         Q.hkl Q.hkm Q.hck.symm hab Q.hax Q.hja.symm hbc Q.hby hcd
         hkx Q.hkj (by simpa [SimpleGraph.adj_comm] using hdk) hky hn)
 

@@ -143,11 +143,7 @@ theorem lemma5_9_case_k_adj_j
           hck.symm hkj hkl
           (vertex_ne_of_color_eq hc hj (by decide)) hlc.symm hlj.symm
           hvc hvj hvl hkV).elim
-    rcases lemma5_5 C hpent hb ha hk hc (Or.inr hj)
-        hbNoBlue
-        (fun v hav _ _ => hNoBlueAtA v hav)
-        hkNoBlue with hntr | hce
-    · exact HasReachableNegativeReduction.of_current_ntr C hntr
-    · exact HasReachableNegativeReduction.of_current_ce C hce
+    exact lemma5_5 C hpent hb ha hk hc (Or.inr hj)
+      hbNoBlue (fun v hav _ _ => hNoBlueAtA v hav) hkNoBlue
 
 end Subcubic

@@ -69,7 +69,7 @@ theorem lemma5_11_case_j_adj_a
       color_ne Q.hh hc (by decide), color_ne Q.hh hd (by decide),
       color_ne hc Q.hg (by decide), color_ne hd Q.hg (by decide)]
   apply HasReachableNegativeReduction.of_current_ntr C
-  apply containsNegativeZ C Q.hi ha hb Q.hk Q.hj Q.hh hc hd Q.hg
+  apply containsNegativeAa C Q.hi ha hb Q.hk Q.hj Q.hh hc hd Q.hg
     Q.hik Q.hij Q.hci.symm hab Q.hja.symm Q.hha.symm hbc Q.hbg hcd
     hih hid hig hn
 

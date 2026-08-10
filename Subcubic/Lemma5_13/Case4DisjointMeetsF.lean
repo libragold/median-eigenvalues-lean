@@ -38,7 +38,7 @@ theorem lemma5_13_case4_disjoint_meets_f_no_share
   classical
   apply HasReachableNegativeReduction.of_current_ntr C
   apply (containsInducedUpToSwap_swapSides IsNegativeTailReducer C).1
-  apply containsNegative_of_embedding C.swapSides .an
+  apply containsNegative_of_embedding C.swapSides .ao
     (![Q.g, Q.e, c, d, h, x, y, Q.r, a, b, Q.f, s, u, v])
   · simp [NegativeTailReducerAmbientDegreeCondition]
   · have hvec :
@@ -49,7 +49,7 @@ theorem lemma5_13_case4_disjoint_meets_f_no_share
     rw [hvec]
     exact hn.injective_get
   · intro p q hpq
-    apply (negativeTailReducerData .an).adj_map_of_edgesMapTo G _ ?_ hpq
+    apply (negativeTailReducerData .ao).adj_map_of_edgesMapTo G _ ?_ hpq
     unfold PatternData.EdgesMapTo
     dsimp only [negativeTailReducerData]
     intro edge hedge
@@ -62,7 +62,7 @@ theorem lemma5_13_case4_disjoint_meets_f_no_share
        rfl | rfl | rfl | rfl | rfl | rfl | rfl)
     all_goals first | assumption | exact hbc.symm
   · intro z
-    have hcolors : (negativeTailReducer .an).color =
+    have hcolors : (negativeTailReducer .ao).color =
         ![.reddish, .reddish, .red, .red, .reddish,
           .bluish, .bluish, .bluish, .blue, .blue,
           .bluish, .bluish, .bluish, .bluish] := by native_decide
@@ -83,7 +83,7 @@ theorem lemma5_13_case4_disjoint_meets_f_no_share
     · change (C.color u).swap = .bluish; simp [hu]
     · change (C.color v).swap = .bluish; simp [hv]
   · intro p q hpq hnon hauto
-    have hp := negativeAn_boundaryNonedges p q hpq hnon hauto
+    have hp := negativeAo_boundaryNonedges p q hpq hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
     rcases hp with
         (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |

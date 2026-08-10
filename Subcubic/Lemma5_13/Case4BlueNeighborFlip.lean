@@ -32,6 +32,14 @@ theorem lemma5_13_case4_blue_neighbor_flip
     (hci : c ≠ i) (hqc : q ≠ c) (hqd : q ≠ d) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath4 G a b c d := ⟨hinj, hedge⟩
@@ -48,7 +56,8 @@ theorem lemma5_13_case4_blue_neighbor_flip
   have hrb : r ≠ b := by intro e; subst r; exact hib hir
   have hqa : q ≠ a := color_ne hq ha (by decide)
   have hqb : q ≠ b := color_ne hq hb (by decide)
-  rcases exists_flipAt_or_cutEnhancer C hr hq ht hqm hrt hrq hqqm with
+  rcases exists_flipAt_or_cutEnhancer C hr hq ht hqm
+      (degreeC (Or.inl hr)) (degreeC (Or.inr hq)) hrt hrq hqqm with
     ⟨M, hflip⟩ | hce
   · let D := M.toGoodColoring
     have haD : D.color a = .red :=
@@ -95,6 +104,7 @@ theorem lemma5_13_case4_blue_neighbor_flip
           (color_ne hh hr (by decide)) (color_ne hh hq (by decide))
       have hqD : D.color q = .red :=
         red_of_flipped_blue_endpoint C hflip hqm hqqm
+          (degreeC (Or.inr hq))
           (color_ne hqm hr (by decide))
       have hah : a ≠ h := color_ne ha hh (by decide)
       have hbh : b ≠ h := color_ne hb hh (by decide)
@@ -121,6 +131,7 @@ theorem lemma5_13_case4_blue_neighbor_flip
             (color_ne hs hr (by decide)) (color_ne hs hq (by decide))
         have hqD : D.color q = .red :=
           red_of_flipped_blue_endpoint C hflip hqm hqqm
+            (degreeC (Or.inr hq))
             (color_ne hqm hr (by decide))
         have has : a ≠ s := color_ne ha hs (by decide)
         have hbs : b ≠ s := color_ne hb hs (by decide)

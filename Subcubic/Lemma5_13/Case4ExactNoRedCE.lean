@@ -28,7 +28,7 @@ theorem lemma5_13_case4_exact_no_red_meets_f
   classical
   apply HasReachableNegativeReduction.of_current_ntr C
   apply (containsInducedUpToSwap_swapSides IsNegativeTailReducer C).1
-  apply containsNegative_of_embedding C.swapSides .ac
+  apply containsNegative_of_embedding C.swapSides .ad
     (![i, g, c, u, x, h, f, a, b])
   · simp [NegativeTailReducerAmbientDegreeCondition]
   · have hvec : (![i, g, c, u, x, h, f, a, b] : Fin 9 → V) =
@@ -36,7 +36,7 @@ theorem lemma5_13_case4_exact_no_red_meets_f
     rw [hvec]
     exact hn.injective_get
   · intro p q hpq
-    apply (negativeTailReducerData .ac).adj_map_of_edgesMapTo G _ ?_ hpq
+    apply (negativeTailReducerData .ad).adj_map_of_edgesMapTo G _ ?_ hpq
     unfold PatternData.EdgesMapTo
     dsimp only [negativeTailReducerData]
     intro edge hedge
@@ -46,7 +46,7 @@ theorem lemma5_13_case4_exact_no_red_meets_f
     rcases hedge with (rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl)
     all_goals assumption
   · intro z
-    have hcolors : (negativeTailReducer .ac).color =
+    have hcolors : (negativeTailReducer .ad).color =
         ![.reddish, .reddish, .red, .bluish, .bluish,
           .bluish, .bluish, .blue, .blue] := by native_decide
     rw [hcolors]
@@ -61,7 +61,7 @@ theorem lemma5_13_case4_exact_no_red_meets_f
     · change (C.color a).swap = .blue; simp [ha]
     · change (C.color b).swap = .blue; simp [hb]
   · intro p q hpq hnon hauto
-    have hp := negativeAc_boundaryNonedges p q hpq hnon hauto
+    have hp := negativeAd_boundaryNonedges p q hpq hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
     rcases hp with
         (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |
@@ -102,7 +102,7 @@ theorem lemma5_13_case4_exact_no_red_shared_e
   classical
   apply HasReachableNegativeReduction.of_current_ntr C
   apply (containsInducedUpToSwap_swapSides IsNegativeTailReducer C).1
-  apply containsNegative_of_embedding C.swapSides .ad
+  apply containsNegative_of_embedding C.swapSides .ae
     (![i, e, d, u, h, z, a, b, s])
   · simp [NegativeTailReducerAmbientDegreeCondition]
   · have hvec : (![i, e, d, u, h, z, a, b, s] : Fin 9 → V) =
@@ -110,7 +110,7 @@ theorem lemma5_13_case4_exact_no_red_shared_e
     rw [hvec]
     exact hn.injective_get
   · intro p q hpq
-    apply (negativeTailReducerData .ad).adj_map_of_edgesMapTo G _ ?_ hpq
+    apply (negativeTailReducerData .ae).adj_map_of_edgesMapTo G _ ?_ hpq
     unfold PatternData.EdgesMapTo
     dsimp only [negativeTailReducerData]
     intro edge hedge
@@ -120,7 +120,7 @@ theorem lemma5_13_case4_exact_no_red_shared_e
     rcases hedge with (rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl)
     all_goals assumption
   · intro q
-    have hcolors : (negativeTailReducer .ad).color =
+    have hcolors : (negativeTailReducer .ae).color =
         ![.reddish, .reddish, .red, .bluish, .bluish,
           .bluish, .blue, .blue, .bluish] := by native_decide
     rw [hcolors]
@@ -135,7 +135,7 @@ theorem lemma5_13_case4_exact_no_red_shared_e
     · change (C.color b).swap = .blue; simp [hb]
     · change (C.color s).swap = .bluish; simp [hs]
   · intro p q hpq hnon hauto
-    have hp := negativeAd_boundaryNonedges p q hpq hnon hauto
+    have hp := negativeAe_boundaryNonedges p q hpq hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
     rcases hp with
         (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |

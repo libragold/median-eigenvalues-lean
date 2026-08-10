@@ -17,6 +17,10 @@ structure ColoredPattern where
   vertexCount : Nat
   graph : SimpleGraph (Fin vertexCount)
   color : Fin vertexCount → Color
+  /-- Optional ambient-degree requirements.  These are needed for shortened
+  patterns whose drawing alone does not record that an omitted neighbor is
+  genuinely absent. -/
+  ambientDegree : Fin vertexCount → Option Nat := fun _ => none
 
 namespace ColoredPattern
 
@@ -28,6 +32,7 @@ def swapSides : ColoredPattern where
   vertexCount := P.vertexCount
   graph := P.graph
   color i := (P.color i).swap
+  ambientDegree := P.ambientDegree
 
 @[simp] theorem swapSides_swapSides : P.swapSides.swapSides = P := by
   cases P
@@ -38,7 +43,8 @@ def OccursInduced (C : GoodColoring G) : Prop :=
   ∃ f : Fin P.vertexCount → V,
     Function.Injective f ∧
     (∀ x y, P.graph.Adj x y ↔ G.Adj (f x) (f y)) ∧
-    (∀ x, C.color (f x) = P.color x)
+    (∀ x, C.color (f x) = P.color x) ∧
+    (∀ x d, P.ambientDegree x = some d → vertexDegree G (f x) = d)
 
 /-- A pattern vertex is saturated when it has three displayed neighbors and
 its color forces ambient degree three. -/
@@ -79,16 +85,18 @@ instance [DecidableRel P.graph.Adj] (x y : Fin P.vertexCount) :
 color-preserving embedding. Degree saturation and the matching-cut condition
 prove the automatic nonedges; `hboundary` supplies only the remaining
 cross-side nonedges. -/
-theorem occursInduced_of_embedding
+theorem occursInduced_of_embedding_with_degrees
     (C : GoodColoring G)
     (f : Fin P.vertexCount → V)
     (hinj : Function.Injective f)
     (hedge : ∀ {x y}, P.graph.Adj x y → G.Adj (f x) (f y))
     (hcolor : ∀ x, C.color (f x) = P.color x)
     (hboundary : ∀ x y, x ≠ y → ¬ P.graph.Adj x y →
-      ¬ P.AutomaticallyForcesNonedge x y → ¬ G.Adj (f x) (f y)) :
+      ¬ P.AutomaticallyForcesNonedge x y → ¬ G.Adj (f x) (f y))
+    (hdegree : ∀ x d, P.ambientDegree x = some d →
+      vertexDegree G (f x) = d) :
     P.OccursInduced C := by
-  refine ⟨f, hinj, ?_, hcolor⟩
+  refine ⟨f, hinj, ?_, hcolor, hdegree⟩
   intro x y
   constructor
   · exact hedge
@@ -167,6 +175,25 @@ theorem occursInduced_of_embedding
                 (hedge hxz) (hinj.ne hzy)) hxy
     · exact hboundary x y hne hpattern hauto hxy
 
+/-- The common constructor for patterns without ambient-degree requirements.
+Degree-sensitive catalogue entries use `occursInduced_of_embedding_with_degrees`
+instead. Keeping the two APIs separate makes the ordinary witnesses small and
+fast to elaborate. -/
+theorem occursInduced_of_embedding
+    (C : GoodColoring G)
+    (f : Fin P.vertexCount → V)
+    (hinj : Function.Injective f)
+    (hedge : ∀ {x y}, P.graph.Adj x y → G.Adj (f x) (f y))
+    (hcolor : ∀ x, C.color (f x) = P.color x)
+    (hboundary : ∀ x y, x ≠ y → ¬ P.graph.Adj x y →
+      ¬ P.AutomaticallyForcesNonedge x y → ¬ G.Adj (f x) (f y))
+    (hdegreeNone : ∀ x, P.ambientDegree x = none := by native_decide) :
+    P.OccursInduced C := by
+  apply P.occursInduced_of_embedding_with_degrees C f hinj hedge hcolor hboundary
+  intro x d hdegree
+  rw [hdegreeNone x] at hdegree
+  contradiction
+
 /-- Induced colored occurrence depends only on the color function, not on the
 proof fields of `GoodColoring`. -/
 theorem occursInduced_congr_color {C D : GoodColoring G}
@@ -178,18 +205,20 @@ theorem occursInduced_congr_color {C D : GoodColoring G}
 theorem swapSides_occursInduced_iff (C : GoodColoring G) :
     P.swapSides.OccursInduced C ↔ P.OccursInduced C.swapSides := by
   constructor
-  · rintro ⟨f, hf, hedge, hcolor⟩
-    refine ⟨f, hf, ?_, ?_⟩
+  · rintro ⟨f, hf, hedge, hcolor, hdegree⟩
+    refine ⟨f, hf, ?_, ?_, ?_⟩
     · simpa [swapSides] using hedge
     · intro x
       have := congrArg Color.swap (hcolor x)
       simpa [swapSides] using this
-  · rintro ⟨f, hf, hedge, hcolor⟩
-    refine ⟨f, hf, ?_, ?_⟩
+    · simpa [swapSides] using hdegree
+  · rintro ⟨f, hf, hedge, hcolor, hdegree⟩
+    refine ⟨f, hf, ?_, ?_, ?_⟩
     · simpa [swapSides] using hedge
     · intro x
       have := congrArg Color.swap (hcolor x)
       simpa [swapSides] using this
+    · simpa [swapSides] using hdegree
 
 /-- `P` occurs in its displayed orientation or with all colors exchanged. -/
 def OccursInducedUpToSwap (C : GoodColoring G) : Prop :=
@@ -258,6 +287,7 @@ structure PatternData where
   sideCount : Nat
   edges : List (Fin vertexCount × Fin vertexCount)
   reddish : List (Fin vertexCount) := []
+  ambientDegree : List (Fin vertexCount × Nat) := []
 
 namespace PatternData
 
@@ -291,6 +321,7 @@ def toPattern (D : PatternData) : ColoredPattern where
   vertexCount := D.vertexCount
   graph := graphOfEdges D.edges
   color := D.color
+  ambientDegree i := D.ambientDegree.lookup i
 
 end PatternData
 

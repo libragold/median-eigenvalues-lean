@@ -4,6 +4,7 @@ import Subcubic.MatchingCut
 import Subcubic.Pattern
 import Subcubic.TailReducers
 import Subcubic.CutEnhancers
+import Subcubic.Lemma3_4
 import Subcubic.Lemma3_3
 import Subcubic.Lemma3_5
 import Subcubic.Lemma4_2
@@ -25,3 +26,4 @@ import Subcubic.Lemma5_8
 import Subcubic.Lemma5_9
 import Subcubic.Lemma5_11
 import Subcubic.Lemma5_13.Main
+import Subcubic.Lemma2_8

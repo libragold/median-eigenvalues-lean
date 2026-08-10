@@ -65,19 +65,19 @@ theorem lemma5_8_case2_1
   by_cases hpq : p = q
   · subst q
     have hrs : r ≠ s := hfailure.resolve_left (by simp)
-    apply containsNegativeAj C he hf ha hb hr hs hg hh hc hd hp
+    apply containsNegativeAk C he hf ha hb hr hs hg hh hc hd hp
       hef her hde.symm hfs hfg hab hha.symm hap hbc hbq hgh hcd
     simp only [List.nodup_cons, List.mem_cons, not_or, List.nodup_nil]
       at hcycleNodup hpout hrout hsout ⊢
     grind
   · by_cases hrs : r = s
     · subst s
-      apply containsNegativeAj C ha hb he hf hp hq hc hd hg hh hr
+      apply containsNegativeAk C ha hb he hf hp hq hc hd hg hh hr
         hab hap hha.symm hbq hbc hef hde.symm her hfg hfs hcd hgh
       simp only [List.nodup_cons, List.mem_cons, not_or, List.nodup_nil]
         at hcycleNodup hpout hqout hrout ⊢
       grind
-    · apply containsNegativeAk C ha hb he hf hp hq hc hd hg hh hs hr
+    · apply containsNegativeAl C ha hb he hf hp hq hc hd hg hh hs hr
         hab hap hha.symm hbq hbc hef hde.symm her hfg hfs hcd hgh
       simp only [List.nodup_cons, List.mem_cons, not_or, List.nodup_nil]
         at hcycleNodup hpout hqout hrout hsout ⊢

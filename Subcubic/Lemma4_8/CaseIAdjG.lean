@@ -23,7 +23,8 @@ theorem lemma4_8_case_i_adj_g
   have heg : ¬ G.Adj e g := fun heg => hge heg.symm
   have hptr : ContainsPositiveTailReducer C := by
     refine ⟨positiveTailReducer .c, ⟨.c, rfl⟩, Or.inr ?_⟩
-    refine ⟨[d, g, e, f, i].get, hn.injective_get, ?_, ?_⟩
+    refine ⟨[d, g, e, f, i].get, hn.injective_get, ?_, ?_, by
+      intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
     · intro x y
       fin_cases x <;> fin_cases y <;>
         simp [ColoredPattern.swapSides, positiveTailReducer,

@@ -155,15 +155,16 @@ theorem GoodColoring.exists_blue_mate
   · exact ⟨m, hm, hvm⟩
   · exact (C.bluish_not_adj_blueSide hm (Or.inl hv) hvm.symm).elim
 
-/-- A red or blue vertex has degree three, so outside any two distinct
-vertices it has another neighbor. -/
+/-- A degree-three vertex has a neighbor outside any two distinct vertices.
+The degree proof is explicit: red/blue vertices obtain it from Lemma 3.4,
+whose other branch is a reducer or cut enhancer. -/
 theorem GoodColoring.exists_third_neighbor
-    (C : GoodColoring G) {v x y : V}
-    (hv : C.color v = .red ∨ C.color v = .blue)
+    (_C : GoodColoring G) {v x y : V}
+    (hdegree : vertexDegree G v = 3)
     (hxy : x ≠ y) :
     ∃ z, G.Adj v z ∧ z ≠ x ∧ z ≠ y := by
   have hdegree : (G.neighborSet v).ncard = 3 := by
-    simpa [vertexDegree] using C.red_or_blue_degree v hv
+    simpa [vertexDegree] using hdegree
   by_contra h
   push Not at h
   have hsubset : G.neighborSet v ⊆ ({x, y} : Set V) := by
@@ -195,8 +196,8 @@ theorem GoodColoring.degree_eq_two_or_three_of_two_neighbors
   omega
 
 /-- A degree-three vertex has a neighbor outside any two distinct vertices.
-Unlike `GoodColoring.exists_third_neighbor`, this also applies to a reddish
-or bluish vertex once degree three has been established separately. -/
+This standalone form is retained for callers which do not otherwise need a
+`GoodColoring`. -/
 theorem exists_third_neighbor_of_degree_three
     {v x y : V} (hdeg : vertexDegree G v = 3) (hxy : x ≠ y) :
     ∃ z, G.Adj v z ∧ z ≠ x ∧ z ≠ y := by
@@ -277,24 +278,21 @@ theorem neighbor_eq_of_degree_two
   rw [htriple, hcard] at hle
   omega
 
-/-- A red or blue vertex with one displayed neighbor has two distinct other
+/-- A degree-three vertex with one displayed neighbor has two distinct other
 neighbors. -/
 theorem GoodColoring.exists_two_other_neighbors
     (C : GoodColoring G) {v mate : V}
-    (hv : C.color v = .red ∨ C.color v = .blue)
+    (hdegree : vertexDegree G v = 3)
     (hvm : G.Adj v mate) :
     ∃ x y, G.Adj v x ∧ G.Adj v y ∧
       x ≠ mate ∧ y ≠ mate ∧ x ≠ y := by
   obtain ⟨x, hvx, hxmate, _⟩ :=
-    C.exists_third_neighbor hv hvm.ne.symm
+    C.exists_third_neighbor hdegree hvm.ne.symm
   obtain ⟨y, hvy, hymate, hyx⟩ :=
-    C.exists_third_neighbor hv hxmate.symm
+    C.exists_third_neighbor hdegree hxmate.symm
   exact ⟨x, y, hvx, hvy, hxmate, hymate, hyx.symm⟩
 
-/-- A degree-three vertex with one displayed neighbor has two distinct other
-neighbors.  Unlike `GoodColoring.exists_two_other_neighbors`, this version
-also applies to a reddish or bluish vertex once its degree has separately
-been established (as in Lemma 3.5). -/
+/-- Standalone version of `GoodColoring.exists_two_other_neighbors`. -/
 theorem exists_two_other_neighbors_of_degree_three
     {v mate : V} (hdeg : vertexDegree G v = 3) (_hvm : G.Adj v mate) :
     ∃ x y, G.Adj v x ∧ G.Adj v y ∧
@@ -377,13 +375,11 @@ theorem neighbor_eq_of_degree_three
 displayed neighbors, it has no fourth neighbor. -/
 theorem GoodColoring.not_adj_fourth_neighbor
     (C : GoodColoring G) {v x y z w : V}
-    (hv : C.color v = .red ∨ C.color v = .blue)
+    (_hv : C.color v = .red ∨ C.color v = .blue)
     (hvx : G.Adj v x) (hvy : G.Adj v y) (hvz : G.Adj v z)
     (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
     (hwx : w ≠ x) (hwy : w ≠ y) (hwz : w ≠ z) :
     ¬ G.Adj v w := by
-  have hdegree : (G.neighborSet v).ncard = 3 := by
-    simpa [vertexDegree] using C.red_or_blue_degree v hv
   have htriple : ({x, y, z} : Set V).ncard = 3 := by
     simp [hxy, hxz, hyz]
   have hsubset : ({x, y, z} : Set V) ⊆ G.neighborSet v := by
@@ -393,6 +389,11 @@ theorem GoodColoring.not_adj_fourth_neighbor
     · exact hvx
     · exact hvy
     · exact hvz
+  have hge := Set.ncard_le_ncard hsubset
+  have hdegree : (G.neighborSet v).ncard = 3 := by
+    have hle := C.subcubic v
+    change (G.neighborSet v).ncard ≤ 3 at hle
+    omega
   have heq : ({x, y, z} : Set V) = G.neighborSet v :=
     Set.eq_of_subset_of_ncard_le hsubset (by omega)
   intro hvw

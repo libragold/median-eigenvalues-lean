@@ -68,7 +68,7 @@ private theorem case2_2_al
       color_ne hk he (by decide), color_ne hk hf (by decide),
       color_ne hk hg (by decide), color_ne hk hh (by decide)⟩
   have hlout := outBluish hl
-  apply containsNegativeAm C hk ha hb he hf hl hi hc hd hg hh hj
+  apply containsNegativeAn C hk ha hb he hf hl hi hc hd hg hh hj
     hkl hck.symm hdk.symm hab hai hha.symm hbi hbc
     hef hde.symm hej hfg hfj hcd hgh
     hki hkg hkh hkj
@@ -84,6 +84,8 @@ private theorem case2_2_o_left
     (he : C.color e = .red) (hf : C.color f = .red)
     (hi : C.color i = .bluish) (hj : C.color j = .bluish)
     (hk : C.color k = .reddish)
+    (hbDegree : vertexDegree G b = 3)
+    (heDegree : vertexDegree G e = 3)
     (hbi : G.Adj b i) (hei : G.Adj e j)
     (hck : G.Adj c k) (hdk : G.Adj d k) (hki : G.Adj k i)
     (hkj : ¬ G.Adj k j) : ContainsNegativeTailReducer C := by
@@ -111,7 +113,7 @@ private theorem case2_2_o_left
   have hkb : ¬ G.Adj k b := fun h => C.reddish_not_adj_redSide hk (Or.inl hb) h
   have hke : ¬ G.Adj k e := fun h => C.reddish_not_adj_redSide hk (Or.inl he) h
   have hbj : ¬ G.Adj b j := by
-    apply not_adj_fourth_neighbor_of_degree_three (C.red_or_blue_degree b (Or.inl hb))
+    apply not_adj_fourth_neighbor_of_degree_three hbDegree
       hab.symm hbc hbi
     · exact hinj.ne (show (0 : Fin 8) ≠ 2 by decide)
     · exact color_ne ha hi (by decide)
@@ -122,7 +124,7 @@ private theorem case2_2_o_left
       subst j
       exact hkj hki
   have hei' : ¬ G.Adj e i := by
-    apply not_adj_fourth_neighbor_of_degree_three (C.red_or_blue_degree e (Or.inl he))
+    apply not_adj_fourth_neighbor_of_degree_three heDegree
       hde.symm hef hei
     · exact hinj.ne (show (3 : Fin 8) ≠ 5 by decide)
     · exact color_ne hd hj (by decide)
@@ -146,7 +148,7 @@ private theorem case2_2_o_left
       color_ne hi hc (by decide), color_ne hi hd (by decide),
       color_ne hc hj (by decide), color_ne hd hj (by decide),
       hbeV, hcdV, hijV]
-  exact containsNegativeO C hk hb he hi hc hd hj hki hck.symm hdk.symm hbi hbc
+  exact containsNegativeP C hk hb he hi hc hd hj hki hck.symm hdk.symm hbi hbc
     hde.symm hei hcd hkb hke hkj hbe hbj hei' hn
 
 /-- The CE(b) exclusion used twice in Case (2.2.2.2.2). -/
@@ -156,6 +158,9 @@ private theorem red_neighbor_not_shared_or_ce
     (hb : C.color b = .blue) (hbMate : C.color bMate = .blue)
     (hx : C.color x = .bluish) (hl : C.color l = .blue)
     (hy : C.color y = .blue) (hm : C.color m = .blue) (ho : C.color o = .red)
+    (hrDegree : vertexDegree G r = 3)
+    (hrMateDegree : vertexDegree G rMate = 3)
+    (hoDegree : vertexDegree G o = 3)
     (hrMateR : G.Adj rMate r) (hrb : G.Adj r b) (hrx : G.Adj r x)
     (hrMateY : G.Adj rMate y) (hrMateX : G.Adj rMate x)
     (hbMateEdge : G.Adj b bMate) (hlm : G.Adj l m)
@@ -172,7 +177,7 @@ private theorem red_neighbor_not_shared_or_ce
         (by simp [hbMate]) (by simp [hl]) hbMateEdge hbl) hlm.symm
     have hrm : ¬ G.Adj r m := by
       apply not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree r (Or.inl hr)) hrMateR.symm hrb hrx
+        hrDegree hrMateR.symm hrb hrx
       · exact color_ne hrMate hb (by decide)
       · exact color_ne hrMate hx (by decide)
       · exact color_ne hb hx (by decide)
@@ -182,7 +187,7 @@ private theorem red_neighbor_not_shared_or_ce
     have hor : o ≠ r := by intro q; subst o; exact hrm hmo.symm
     have hrMateM : ¬ G.Adj rMate m := by
       apply not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree rMate (Or.inl hrMate)) hrMateR hrMateY hrMateX
+        hrMateDegree hrMateR hrMateY hrMateX
       · exact color_ne hr hy (by decide)
       · exact color_ne hr hx (by decide)
       · exact color_ne hy hx (by decide)
@@ -203,7 +208,7 @@ private theorem red_neighbor_not_shared_or_ce
         · exact ht
         · exact (C.reddish_not_adj_redSide ht (Or.inl ho) hot.symm).elim
       apply not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree o (Or.inl ho)) hot hmo.symm hox
+        hoDegree hot hmo.symm hox
       · exact color_ne ht hm (by decide)
       · exact color_ne ht hx (by decide)
       · exact color_ne hm hx (by decide)
@@ -245,6 +250,15 @@ private theorem case2_2_blue
     (hij : i ≠ j) (hkdeg : vertexDegree G k = 3) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedCycle8] at hcycle
   rcases hcycle with ⟨hinj, hedge⟩
   have hp : FormsInducedCycle8 G a b c d e f g h := ⟨hinj, hedge⟩
@@ -288,7 +302,7 @@ private theorem case2_2_blue
     · exact hmd
     · exact hlm.ne.symm
   obtain ⟨n, hln, hnk, hnm⟩ :=
-    exists_third_neighbor_of_degree_three (C.red_or_blue_degree l (Or.inr hl))
+    exists_third_neighbor_of_degree_three (degree_of_color (Or.inr hl))
       (color_ne hk hm (by decide))
   have hnSide := C.other_neighbor_of_blue_is_redSide hl hm hlm hln hnm
   rcases hnSide with hn | hn
@@ -298,7 +312,7 @@ private theorem case2_2_blue
     have hle : ¬ G.Adj l e := by
       intro hle
       exact (not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree e (Or.inl he)) hde.symm hef hej
+        (degree_of_color (Or.inl he)) hde.symm hef hej
         (hinj.ne (show (3 : Fin 8) ≠ 5 by decide))
         (color_ne hd hj (by decide)) (color_ne hf hj (by decide))
         hldV (color_ne hl hf (by decide))
@@ -306,14 +320,14 @@ private theorem case2_2_blue
     have hnd : ¬ G.Adj n d := by
       intro hnd
       exact (not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hde hdk
+        (degree_of_color (Or.inr hd)) hcd.symm hde hdk
         (color_ne hc he (by decide)) (color_ne hc hk (by decide))
         (color_ne he hk (by decide)) (color_ne hn hc (by decide))
         (by intro hne; subst n; exact hle hln) hnk) hnd.symm
     have hlf : ¬ G.Adj l f := by
       intro hlf
       exact (not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree f (Or.inl hf)) hef.symm hfg hfj
+        (degree_of_color (Or.inl hf)) hef.symm hfg hfj
         (color_ne he hg (by decide)) (color_ne he hj (by decide))
         (color_ne hg hj (by decide)) (color_ne hl he (by decide))
         (by intro q; subst l; exact hkg hkl) (color_ne hl hj (by decide))) hlf.symm
@@ -341,9 +355,13 @@ private theorem case2_2_blue
         exact (C.blueSide_not_adj_second_neighbor (by simp [hh]) (by simp [hg])
           (by simp [hl]) hgh.symm (by intro q; subst l; exact hkg hkl)) hlm.symm
       rcases red_neighbor_not_shared_or_ce C ha hb hc hd hi hl hh hm ho
+          (degree_of_color (Or.inl hb)) (degree_of_color (Or.inl ha))
+          (degree_of_color (Or.inl ho))
           hab hbc hbi hha.symm hai hcd hlm hmo hldV.symm hlc.symm hmh with
         hoi | hce
       · rcases red_neighbor_not_shared_or_ce C he hf hg hh hj hl hd hm ho
+            (degree_of_color (Or.inl hf)) (degree_of_color (Or.inl he))
+            (degree_of_color (Or.inl ho))
             hef hfg hfj hde.symm hej hgh hlm hmo
             (by intro q; subst l; exact hkh hkl)
             (by intro q; subst l; exact hkg hkl) hmd with hoj | hce
@@ -355,7 +373,9 @@ private theorem case2_2_blue
             rcases ht' with ht | ht
             · exact ht
             · exact (C.reddish_not_adj_redSide ht (Or.inl ho) hot.symm).elim
-          rcases exists_flipAt_or_cutEnhancer C ho hm ht hl hot hmo.symm hlm.symm with
+          rcases exists_flipAt_or_cutEnhancer C ho hm ht hl
+              (degree_of_color (Or.inl ho)) (degree_of_color (Or.inr hm))
+              hot hmo.symm hlm.symm with
             ⟨M, hflip⟩ | hce
           · let D := M.toGoodColoring
             have hoa : o ≠ a := by intro q; subst o; exact hoi hai
@@ -401,7 +421,7 @@ private theorem case2_2_blue
                 (color_ne hk ho (by decide)) (color_ne hk hm (by decide))
             have hlo : ¬ G.Adj l o := by
               apply not_adj_fourth_neighbor_of_degree_three
-                (C.red_or_blue_degree l (Or.inr hl)) hkl.symm hlm hln
+                (degree_of_color (Or.inr hl)) hkl.symm hlm hln
               · exact color_ne hk hm (by decide)
               · exact hnk.symm
               · exact hnm.symm
@@ -477,6 +497,15 @@ theorem lemma5_8_case2_2
     (hkg : ¬ G.Adj k g) (hkh : ¬ G.Adj k h) (hij : i ≠ j) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedCycle8] at hcycle
   rcases hcycle with ⟨hinj, hedge⟩
   have hp : FormsInducedCycle8 G a b c d e f g h := ⟨hinj, hedge⟩
@@ -498,6 +527,7 @@ theorem lemma5_8_case2_2
     HasReachableNegativeReduction.of_current_ntr C hntr
   by_cases hki : G.Adj k i
   · exact current_ntr (case2_2_o_left C hp ha hb hc hd he hf hi hj hk
+      (degree_of_color (Or.inl hb)) (degree_of_color (Or.inl he))
       hbi hej hck hdk hki (by
         intro hkj
         have hdeg := C.subcubic k
@@ -517,7 +547,8 @@ theorem lemma5_8_case2_2
         omega))
   · by_cases hkj : G.Adj k j
     · exact current_ntr (case2_2_o_left C hp.reverseShift hf he hd hc hb ha
-        hj hi hk hej hbi hdk hck hkj hki)
+        hj hi hk (degree_of_color (Or.inl he)) (degree_of_color (Or.inl hb))
+        hej hbi hdk hck hkj hki)
     · rcases lemma3_5 C hb hc hk hbc hck with hkdeg | hce
       · obtain ⟨l, hkl, hlc, hld⟩ :=
           exists_third_neighbor_of_degree_three hkdeg hcd.ne
@@ -531,6 +562,6 @@ theorem lemma5_8_case2_2
             hai hbi hej hfj hck hdk hkl hlc hld hki hkg hkh hkj hij hkdeg
         · exact current_ntr (case2_2_al C hp ha hb hc hd he hf hg hh hi hj
             hk hl hai hbi hej hfj hck hdk hkl hki hkg hkh hkj hij)
-      · exact HasReachableNegativeReduction.of_current_ce C hce
+      · exact HasReachableNegativeReduction.of_lemma3_4 C hce
 
 end Subcubic

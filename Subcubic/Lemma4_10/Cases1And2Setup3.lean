@@ -35,6 +35,15 @@ theorem lemma4_10_cases1_and_2_setup3
     HasReachableReduction C ∨
       Nonempty (Lemma4_10Case3Configuration C a b c d e f) := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact Or.inl hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath6 G a b c d e f := ⟨hinj, hedge⟩
@@ -59,7 +68,7 @@ theorem lemma4_10_cases1_and_2_setup3
   have hec : ¬ G.Adj e c := by simpa using nonedge 4 2 (by native_decide)
   have hacV : a ≠ c := hv (x := (0 : Fin 6)) (y := 2) (by decide)
   obtain ⟨g, hbg, hga, hgc⟩ :=
-    C.exists_third_neighbor (Or.inl hb) hacV
+    C.exists_third_neighbor (degree_of_color (Or.inl hb)) hacV
   have hgSide := C.other_neighbor_of_red_is_blueSide hb ha hab.symm hbg hga
   have hgd : g ≠ d := by intro h; subst g; exact hbd hbg
   rcases lemma3_3 C hb hc hd hgSide hbc hbg hcd
@@ -74,7 +83,7 @@ theorem lemma4_10_cases1_and_2_setup3
     · by_cases hgf : G.Adj g f
       · have hfdV : f ≠ d := hv (x := (5 : Fin 6)) (y := 3) (by decide)
         obtain ⟨h, heh, hhf, hhd⟩ :=
-          C.exists_third_neighbor (Or.inl he) hfdV
+          C.exists_third_neighbor (degree_of_color (Or.inl he)) hfdV
         have hhSide := C.other_neighbor_of_red_is_blueSide he hf hef heh hhf
         have hecAdj : ¬ G.Adj e c := hec
         have hhc : h ≠ c := by intro hx; subst h; exact hecAdj heh

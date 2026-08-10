@@ -103,7 +103,7 @@ theorem lemma5_11_bluish_i_cases
         · exact color_ne hj hd (by decide)
         · intro h; subst j; exact hih hij
       apply HasReachableNegativeReduction.of_current_ntr C
-      apply containsNegativeQ C Q.hi hb he hj hc hd Q.hg Q.hh
+      apply containsNegativeR C Q.hi hb he hj hc hd Q.hg Q.hh
         hij Q.hci.symm hid hbc Q.hbg hde.symm Q.heh hcd
         hbi hie Q.hig hih
         (by simpa using nonedge 1 4 (by native_decide)) hbj
@@ -160,7 +160,7 @@ theorem lemma5_11_bluish_i_cases
         simpa using nonedge 1 3 (by native_decide)
       apply Or.inl
       apply HasReachableNegativeReduction.of_current_ntr C
-      apply containsNegativeP C Q.hi he hb hj Q.hh hc hd Q.hg
+      apply containsNegativeQ C Q.hi he hb hj Q.hh hc hd Q.hg
         hij hih Q.hci.symm Q.heh hde.symm hbc Q.hbg hcd
         hie hbi hid Q.hig
         (by simpa using nonedge 4 1 (by native_decide)) hej

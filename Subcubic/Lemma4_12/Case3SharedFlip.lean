@@ -21,6 +21,14 @@ theorem lemma4_12_shared_i_red_flip
     {j : V} (hj : C.color j = .red) (hij : G.Adj R.i j) :
     HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 4} (hxy : x ≠ y) :
@@ -86,6 +94,7 @@ theorem lemma4_12_shared_i_red_flip
     · exact hk
     · exact (C.reddish_not_adj_redSide hk (Or.inl hj) hjk.symm).elim
   rcases exists_flipAt_or_cutEnhancer C hj R.hi hk R.hh
+      (degreeC (Or.inl hj)) (degreeC (Or.inr R.hi))
       hjk hij.symm R.hhi.symm with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring

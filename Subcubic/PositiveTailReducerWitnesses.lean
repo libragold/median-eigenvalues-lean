@@ -5,13 +5,45 @@ import Mathlib.Tactic.FinCases
 /-!
 # Reusable witnesses for positive tail reducers
 
-The catalog remains generated from `data/tail_reducers.txt`.  This file only
+The catalog is generated from `detailed-input.txt`.  This file only
 records the mathematical labellings used repeatedly in proofs.
 -/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
+
+/-- The absolute degree-two reducer used in Lemma 3.4: a red vertex with
+one displayed bluish neighbor and ambient degree two. -/
+theorem containsPositiveAbs
+    (C : GoodColoring G) {a b : V}
+    (ha : C.color a = .red) (hb : C.color b = .bluish)
+    (hab : G.Adj a b) (haDegree : vertexDegree G a = 2) :
+    ContainsPositiveTailReducer C := by
+  refine ⟨positiveTailReducer .abs, ⟨.abs, rfl⟩, Or.inl ?_⟩
+  refine ⟨![a, b], ?_, ?_, ?_, ?_⟩
+  · intro x y hxy
+    fin_cases x <;> fin_cases y
+    · rfl
+    · exact (hab.ne hxy).elim
+    · exact (hab.ne hxy.symm).elim
+    · rfl
+  · intro x y
+    fin_cases x <;> fin_cases y <;>
+      simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
+        graphOfEdges, G.adj_comm, hab]
+  · intro x
+    fin_cases x <;>
+      simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
+        PatternData.color, ha, hb]
+  · intro x d hdegree
+    fin_cases x
+    · change (some 2 : Option Nat) = some d at hdegree
+      injection hdegree with hd
+      change vertexDegree G a = d
+      simpa [hd] using haDegree
+    · change (none : Option Nat) = some d at hdegree
+      contradiction
 
 /-- Reducer `c+`, with its two red vertices, blue edge, and bluish vertex. -/
 theorem containsPositiveC
@@ -41,7 +73,7 @@ theorem containsPositiveC
   have hde : ¬ G.Adj d e :=
     C.bluish_not_adj_blueSide he (Or.inl hd) ∘ SimpleGraph.Adj.symm
   refine ⟨positiveTailReducer .c, ⟨.c, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, ?_⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -52,6 +84,10 @@ theorem containsPositiveC
         ![.red, .red, .blue, .blue, .bluish] := by native_decide
     rw [hcolors]
     fin_cases x <;> simp [ha, hb, hc, hd, he] <;> native_decide
+  · intro x d hdegree
+    fin_cases x <;>
+      simp [positiveTailReducer, positiveTailReducerData,
+        PatternData.toPattern] at hdegree
 
 /-- Reducer `n+`, with ambient vertices listed in catalog order. -/
 theorem containsPositiveN
@@ -209,8 +245,8 @@ theorem containsPositiveM
       | (intro h; exact hbc h.symm)
       | (intro h; exact hbe h.symm)
 
-/-- Reducer `m-minus+`: reducer `m+` with its extra bluish vertex removed. -/
-theorem containsPositiveMMinus
+/-- Reducer `ptr-dc-a`: reducer `ptr-m` with its extra bluish vertex removed. -/
+theorem containsPositiveDcA
     (C : GoodColoring G) {a b c d e : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .bluish)
@@ -221,15 +257,14 @@ theorem containsPositiveMMinus
     (hab : ¬ G.Adj a b) (hae : ¬ G.Adj a e)
     (hbd : ¬ G.Adj b d)
     (hn : [a, b, c, d, e].Nodup) : ContainsPositiveTailReducer C := by
-  -- This is the extra ambient requirement distinguishing `m-minus+` from
+  -- This is the extra ambient requirement distinguishing `ptr-dc-a` from
   -- an arbitrary five-vertex induced copy.  In particular, `a` has no
   -- unlisted third neighbor on the opposite side of the cut.
-  have _haDegree := haDegree
-  refine ⟨positiveTailReducer .mMinus, ⟨.mMinus, rfl⟩, Or.inl ?_⟩
-  apply (positiveTailReducer .mMinus).occursInduced_of_embedding C
+  refine ⟨positiveTailReducer .dcA, ⟨.dcA, rfl⟩, Or.inl ?_⟩
+  apply (positiveTailReducer .dcA).occursInduced_of_embedding_with_degrees C
     ([a, b, c, d, e].get) hn.injective_get
   · intro x y hxy
-    apply (positiveTailReducerData .mMinus).adj_map_of_edgesMapTo G _ ?_ hxy
+    apply (positiveTailReducerData .dcA).adj_map_of_edgesMapTo G _ ?_ hxy
     unfold PatternData.EdgesMapTo
     dsimp only [positiveTailReducerData]
     intro edge hedge
@@ -239,13 +274,13 @@ theorem containsPositiveMMinus
     all_goals simp
     all_goals assumption
   · intro x
-    have hcolors : (positiveTailReducer .mMinus).color =
+    have hcolors : (positiveTailReducer .dcA).color =
         ([.reddish, .red, .bluish, .blue, .blue] : List Color).get := by
       native_decide
     rw [hcolors]
     fin_cases x <;> simp [ha, hb, hc, hd, he]
   · intro x y hne hnon hauto
-    have hp := positiveMMinus_boundaryNonedges x y hne hnon hauto
+    have hp := positiveDcA_boundaryNonedges x y hne hnon hauto
     simp only [List.mem_cons, List.not_mem_nil, or_false, Prod.mk.injEq] at hp
     rcases hp with
       (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩) |
@@ -256,6 +291,19 @@ theorem containsPositiveMMinus
       | (intro h; exact hab h.symm)
       | (intro h; exact hae h.symm)
       | (intro h; exact hbd h.symm)
+  · intro x d hdegree
+    fin_cases x
+    · change (some 2 : Option Nat) = some d at hdegree
+      injection hdegree with hd
+      simpa [hd] using haDegree
+    · change (none : Option Nat) = some d at hdegree
+      contradiction
+    · change (none : Option Nat) = some d at hdegree
+      contradiction
+    · change (none : Option Nat) = some d at hdegree
+      contradiction
+    · change (none : Option Nat) = some d at hdegree
+      contradiction
 
 /-- Reducer `l+`, in catalog order. -/
 theorem containsPositiveL

@@ -86,6 +86,14 @@ theorem lemma5_13_case2_flip_path
     HasReachableNegativeReduction C ∨
       Nonempty (NegativeOneFlipPath3Configuration C) := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 4} (hxy : x ≠ y) :
@@ -96,15 +104,18 @@ theorem lemma5_13_case2_flip_path
   have hab : G.Adj a b := edge 0 1 (by native_decide)
   have hbc : G.Adj b c := edge 1 2 (by native_decide)
   have hcd : G.Adj c d := edge 2 3 (by native_decide)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
     have hbD : D.color b = .blue :=
       blue_of_flipped_red_endpoint C hflip ha hab.symm
+        (degreeC (Or.inl hb))
         (hv (x := (0 : Fin 4)) (y := 2) (by decide))
     have hcD : D.color c = .red :=
       red_of_flipped_blue_endpoint C hflip hd hcd
+        (degreeC (Or.inr hc))
         (hv (x := (3 : Fin 4)) (y := 1) (by decide))
     have heD : D.color Q.e = .blue := by
       apply blue_of_bluish_gains_flipped_red C hflip Q.he Q.hbe.symm
@@ -183,6 +194,14 @@ theorem lemma5_13_case4_red_flip_path
     HasReachableNegativeReduction C ∨
       Nonempty (NegativeOneFlipPath3Configuration C) := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 4} (hxy : x ≠ y) :
@@ -193,15 +212,18 @@ theorem lemma5_13_case4_red_flip_path
   have hab : G.Adj a b := edge 0 1 (by native_decide)
   have hbc : G.Adj b c := edge 1 2 (by native_decide)
   have hcd : G.Adj c d := edge 2 3 (by native_decide)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
     have hbD : D.color b = .blue :=
       blue_of_flipped_red_endpoint C hflip ha hab.symm
+        (degreeC (Or.inl hb))
         (hv (x := (0 : Fin 4)) (y := 2) (by decide))
     have hcD : D.color c = .red :=
       red_of_flipped_blue_endpoint C hflip hd hcd
+        (degreeC (Or.inr hc))
         (hv (x := (3 : Fin 4)) (y := 1) (by decide))
     have heD : D.color Q.e = .blue := by
       apply blue_of_bluish_gains_flipped_red C hflip Q.he Q.hbe.symm
@@ -284,6 +306,14 @@ theorem lemma5_13_shared_h_red_flip_path
     HasReachableNegativeReduction C ∨
       Nonempty (NegativeOneFlipPath3Configuration C) := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 4} (hxy : x ≠ y) :
@@ -338,6 +368,7 @@ theorem lemma5_13_shared_h_red_flip_path
     · exact hk
     · exact (C.reddish_not_adj_redSide hk (Or.inl hj) hjk.symm).elim
   rcases exists_flipAt_or_cutEnhancer C hj R.hh hk R.hi
+      (degreeC (Or.inl hj)) (degreeC (Or.inr R.hh))
       hjk hhj.symm R.hhi with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -363,6 +394,7 @@ theorem lemma5_13_shared_h_red_flip_path
       · exact R.hgh.ne
     have hhD : D.color R.h = .red :=
       red_of_flipped_blue_endpoint C hflip R.hi R.hhi
+        (degreeC (Or.inr R.hh))
         (by intro h; have := congrArg C.color h; simp [R.hi, hj] at this)
     have color_ne {x y : V} {cx cy : Color}
         (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) :

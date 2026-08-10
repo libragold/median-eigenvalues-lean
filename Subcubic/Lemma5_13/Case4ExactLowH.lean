@@ -5,7 +5,7 @@ import Subcubic.Lemma5_13.Case4ExactNoRed
 
 The prose takes a third neighbor of the unique common reddish neighbor `h`.
 When `h` instead has degree two, the vertices `{a, b, h}` give the
-degree-guarded reddish version `l0-`; the original red version is `l1-`.
+degree-guarded reddish version `ntr-dc-c`; the original red version is `ntr-l`.
 -/
 
 namespace Subcubic
@@ -59,7 +59,7 @@ theorem lemma5_13_case4_exact_shared_h_degree_two
       color_ne Q.he hc (by decide), color_ne Q.he hd (by decide),
       color_ne Q.hg hc (by decide), color_ne Q.hg hd (by decide)]
   apply HasReachableNegativeReduction.of_current_ntr C
-  apply containsNegativeL0 C ha hb hh Q.he Q.hg hc hd hdeg
+  apply containsNegativeDcC C ha hb hh Q.he Q.hg hc hd hdeg
     hab Q.heaEdge.symm Q.hag Q.hbe hbc hgh.symm hdh.symm hcd hhe hhc hn
 
 end Subcubic

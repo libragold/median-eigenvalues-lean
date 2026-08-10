@@ -1,78 +1,32 @@
 #!/usr/bin/env python3
-"""Print the systematic Lean definitions for all supplied tail reducers.
-
-The compact source table is expanded into readable blocks. Each numeric edge
-is accompanied by its original letter name, and the script validates the
-transformation before printing Lean code.
-"""
+"""Generate the Lean tail-reducer catalogue from detailed-input.txt."""
 
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
+import re
 import sys
 
-
-POSITIVE_REDDISH = {
-    "l": [0], "m": [0], "o": [0], "p": [0], "q": [0],
-    "r": [0], "s": [0], "t": [0], "u": [0], "x": [3], "mMinus": [0],
-}
-NEGATIVE_REDDISH = {
-    "e": [1], "h": [1], "i": [1], "j": [1], "k": [2],
-    "n": [2], "o": [0], "p": [0], "q": [0], "r": [2],
-    "s": [2], "t": [2], "u": [0, 1], "uMinus": [0, 1], "v": [0, 1],
-    "w": [1], "w0Minus": [0, 1], "x": [2], "y": [1], "z": [0],
-    "aa": [2], "ab": [0, 1], "ac": [0, 1], "ad": [0, 1],
-    "ae": [2], "af": [0], "ag": [0, 1], "ah": [0, 1],
-    "ai": [0, 1], "al": [0, 1], "am": [0], "an": [0, 1, 4],
-    "ao": [0, 1, 2],
-    "abMinus": [0, 1], "acMinus": [0, 1], "adMinus": [0, 1],
-    "anMinus": [0, 1, 2], "anMinus2": [0, 1, 2],
-    "l0": [2],
-    "e0Minus": [1], "s0Minus": [2], "s0Minus2": [2],
-}
-
-SPECIAL_LABELS = {
-    ("+", "mMinus"): "m-minus+",
-    ("-", "e0Minus"): "e0-minus-",
-    ("-", "e1Minus"): "e1-minus-",
-    ("-", "s0Minus"): "s0-minus-",
-    ("-", "s1Minus"): "s1-minus-",
-    ("-", "s0Minus2"): "s0-minus2-",
-    ("-", "s1Minus2"): "s1-minus2-",
-    ("-", "uMinus"): "u-minus-",
-    ("-", "w0Minus"): "w0-minus-",
-    ("-", "abMinus"): "ab-minus-",
-    ("-", "acMinus"): "ac-minus-",
-    ("-", "adMinus"): "ad-minus-",
-    ("-", "anMinus"): "an-minus-",
-    ("-", "anMinus2"): "an-minus2-",
-}
-
-# A reddish vertex can have an unlisted opposite-side neighbor.  These are
-# precisely the catalogue variants whose use therefore needs an ambient
-# degree equality at the indicated canonical vertex.  Witness constructors
-# and indexed witness call sites carry the corresponding hypotheses; this
-# table makes the expected guard auditable against the compact source data.
-AMBIENT_DEGREE_GUARDS = {
-    ("+", "mMinus"): (0, 2),
-    ("-", "a0"): (0, 2),
-    ("-", "e0Minus"): (1, 2),
-    ("-", "s0Minus"): (2, 2),
-    ("-", "s0Minus2"): (2, 1),
-    ("-", "uMinus"): (0, 2),
-    ("-", "w0"): (0, 2),
-    ("-", "w0Minus"): (0, 1),
-    ("-", "abMinus"): (0, 2),
-    ("-", "acMinus"): (0, 2),
-    ("-", "adMinus"): (0, 2),
-    ("-", "anMinus"): (0, 2),
-    ("-", "anMinus2"): (0, 1),
-    ("-", "l0"): (2, 2),
-}
+DETAILED_LINE = re.compile(
+    r"^(ptr|ntr)-([^ ]+) ([a-z]+)"
+    r"(?: deg\(([a-z])\)=([0-9]+))?"
+    r" reddish ([a-z]+|-); red ([a-z]+|-);"
+    r" bluish ([a-z]+|-); blue ([a-z]+|-)$"
+)
 
 
 def letter(index):
     return chr(ord("a") + index)
+
+
+def lean_name(name):
+    """Translate a detailed label such as dc-a to the Lean constructor dcA."""
+    first, *rest = name.split("-")
+    return first + "".join(part[0].upper() + part[1:] for part in rest)
+
+
+def indices(text):
+    return [] if text == "-" else [ord(c) - ord("a") for c in text]
 
 
 def row_colors(row):
@@ -157,11 +111,14 @@ def boundary_nonedges(row):
 
 def parse_rows():
     rows = {"+": [], "-": []}
-    source = Path("data/tail_reducers.txt")
+    source = Path("detailed-input.txt")
     for line_number, line in enumerate(source.read_text().splitlines(), 1):
-        head, code = line.split()
-        sign = "+" if "+" in head else "-"
-        name, side_count = head.split(sign)
+        match = DETAILED_LINE.fullmatch(line)
+        assert match is not None, (line_number, "cannot parse", line)
+        kind, detailed_name, code, degree_vertex, required_degree, reddish, red, bluish, blue = (
+            match.groups()
+        )
+        sign = "+" if kind == "ptr" else "-"
         assert len(code) % 2 == 0, (line_number, "odd edge encoding")
         edges = [
             (ord(code[i]) - ord("a"), ord(code[i + 1]) - ord("a"))
@@ -170,70 +127,70 @@ def parse_rows():
         assert all(0 <= u < 26 and 0 <= v < 26 and u != v for u, v in edges)
         unordered = [tuple(sorted(edge)) for edge in edges]
         assert len(unordered) == len(set(unordered)), (head, "duplicate edge")
-        vertex_count = 1 + max(max(edge) for edge in edges)
+        color_groups = {
+            "reddish": indices(reddish),
+            "red": indices(red),
+            "bluish": indices(bluish),
+            "blue": indices(blue),
+        }
+        colored_vertices = [v for group in color_groups.values() for v in group]
+        assert len(colored_vertices) == len(set(colored_vertices)), (
+            line_number, "vertex assigned two colors")
+        vertex_count = 1 + max(colored_vertices)
+        assert set(colored_vertices) == set(range(vertex_count)), (
+            line_number, "colors do not partition the vertices")
+        side = sorted(color_groups["reddish"] + color_groups["red"])
+        side_count = len(side)
+        assert side == list(range(side_count)), (line_number, "red side is not initial")
+        assert all(max(edge) < vertex_count for edge in edges), (
+            line_number, "edge endpoint lacks a color")
         degrees = [0] * vertex_count
         for u, v in edges:
             degrees[u] += 1
             degrees[v] += 1
-        assert max(degrees) <= 3, (head, "not subcubic", degrees)
-        assert int(side_count) <= vertex_count
-        side = set(range(int(side_count)))
+        assert max(degrees) <= 3, (detailed_name, "not subcubic", degrees)
+        side_set = set(side)
         side_degrees = [0] * vertex_count
         for u, v in edges:
-            if (u in side) == (v in side):
+            if (u in side_set) == (v in side_set):
                 side_degrees[u] += 1
                 side_degrees[v] += 1
-        assert max(side_degrees) <= 1, (head, "not a matching cut", side_degrees)
-        display_label = SPECIAL_LABELS.get((sign, name), f"{name}{sign}")
-        rows[sign].append({
-            "name": name,
-            "label": display_label,
-            "side_count": int(side_count),
+        assert max(side_degrees) <= 1, (
+            detailed_name, "not a matching cut", side_degrees)
+        ambient_degree = []
+        if degree_vertex is not None:
+            vertex = ord(degree_vertex) - ord("a")
+            degree = int(required_degree)
+            assert degrees[vertex] <= degree <= 3, (
+                detailed_name, "invalid ambient-degree guard")
+            ambient_degree = [(vertex, degree)]
+        row = {
+            "name": lean_name(detailed_name),
+            "label": f"{kind}-{detailed_name}",
+            "side_count": side_count,
             "vertex_count": vertex_count,
             "edges": edges,
-        })
-    assert len(rows["+"]) == 26
-    assert len(rows["-"]) == 55
+            "reddish": color_groups["reddish"],
+            "ambient_degree": ambient_degree,
+        }
+        declared_colors = [
+            next(color for color, vertices in color_groups.items() if v in vertices)
+            for v in range(vertex_count)
+        ]
+        assert row_colors(row) == declared_colors, (
+            line_number, "declared colors disagree with graph/cut", detailed_name)
+        rows[sign].append(row)
+    assert len(rows["+"]) == 27
+    assert len(rows["-"]) == 56
     return rows
 
 
 def exact_rows():
     rows = parse_rows()
-    positive = []
-    for row in rows["+"]:
-        positive.append({**row, "reddish": POSITIVE_REDDISH.get(row["name"], [])})
-
-    negative = []
-    for row in rows["-"]:
-        name = row["name"]
-        if name == "a":
-            # User convention: suffix 0 is the reddish-a version; suffix 1 is red.
-            negative.append({**row, "name": "a0", "label": "a0-", "reddish": [0]})
-            negative.append({**row, "name": "a1", "label": "a1-", "reddish": []})
-        elif name == "w":
-            # b is always reddish; suffix 0/1 selects reddish/red for a.
-            negative.append({**row, "name": "w0", "label": "w0-", "reddish": [0, 1]})
-            negative.append({**row, "name": "w1", "label": "w1-", "reddish": [1]})
-        else:
-            negative.append({**row, "reddish": NEGATIVE_REDDISH.get(name, [])})
-
-    assert len(positive) == 26
-    assert len(negative) == 57
-    for row in positive + negative:
-        assert all(i < row["side_count"] for i in row["reddish"])
-    catalog = {
-        **{("+", row["name"]): row for row in positive},
-        **{("-", row["name"]): row for row in negative},
-    }
-    assert set(AMBIENT_DEGREE_GUARDS) <= set(catalog)
-    for key, (vertex, required_degree) in AMBIENT_DEGREE_GUARDS.items():
-        row = catalog[key]
-        assert row_colors(row)[vertex] == "reddish", (key, "guard is not reddish")
-        actual_degree = sum(vertex in edge for edge in row["edges"])
-        assert actual_degree == required_degree, (
-            key, "guard disagrees with displayed degree", actual_degree,
-            required_degree,
-        )
+    positive = rows["+"]
+    negative = rows["-"]
+    assert len(positive) == 27
+    assert len(negative) == 56
     return positive, negative
 
 
@@ -266,6 +223,9 @@ def emit_catalog(title, prefix, sign, rows):
             values = ", ".join(map(str, row["reddish"]))
             names = ", ".join(letter(i) for i in row["reddish"])
             print(f"      reddish := [{values}] -- {names}")
+        if row["ambient_degree"]:
+            vertex, degree = row["ambient_degree"][0]
+            print(f"      ambientDegree := [({vertex}, {degree})]")
         print("    }")
     print()
 
@@ -353,12 +313,12 @@ def main():
 
     print("/-! Named color checks for exceptional entries. -/\n")
     checks = [
-        ("negativeA0_color_a", "a0", 0, "reddish"),
-        ("negativeA1_color_a", "a1", 0, "red"),
-        ("negativeW0_color_a", "w0", 0, "reddish"),
-        ("negativeW0_color_b", "w0", 1, "reddish"),
-        ("negativeW1_color_a", "w1", 0, "red"),
-        ("negativeW1_color_b", "w1", 1, "reddish"),
+        ("negativeDcA_color_a", "dcA", 0, "reddish"),
+        ("negativeA_color_a", "a", 0, "red"),
+        ("negativeDcG_color_a", "dcG", 0, "reddish"),
+        ("negativeDcG_color_b", "dcG", 1, "reddish"),
+        ("negativeX_color_a", "x", 0, "red"),
+        ("negativeX_color_b", "x", 1, "reddish"),
     ]
     for theorem, name, vertex, color in checks:
         print(f"@[simp] theorem {theorem} :")

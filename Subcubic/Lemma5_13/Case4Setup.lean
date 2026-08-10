@@ -43,6 +43,14 @@ theorem lemma5_13_case4_setup
       ∃ R : Lemma5_13Case4Configuration C a b c d,
         R.toLemma4_12ThirdNeighborConfiguration = Q := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have edge (x y : Fin 4)
@@ -51,7 +59,7 @@ theorem lemma5_13_case4_setup
   have hab : G.Adj a b := by simpa using edge 0 1 (by native_decide)
   obtain ⟨g, hag, hgb, hge⟩ :=
     exists_third_neighbor_of_degree_three
-      (C.red_or_blue_degree a (Or.inl ha))
+      (degreeC (Or.inl ha))
       Q.hbe.ne
   have hgSide := C.other_neighbor_of_red_is_blueSide ha hb hab hag hgb
   have hg : C.color g = .bluish := by

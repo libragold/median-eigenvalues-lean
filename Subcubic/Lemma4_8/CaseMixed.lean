@@ -58,6 +58,13 @@ theorem lemma4_8_case_lm_mixed_setup
     noResult (HasReachableReduction.of_current_ce C hce)
   have noPTR (hptr : ContainsPositiveTailReducer C) : False :=
     noResult (HasReachableReduction.of_current_ptr C hptr)
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (noPTR hptr).elim
+    · exact (noCE hce).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {u v : Fin 8} (huv : u ≠ v) :
@@ -96,7 +103,7 @@ theorem lemma4_8_case_lm_mixed_setup
     · exact (C.bluish_not_adj_blueSide hn (Or.inl hm) hmn.symm).elim
   have hnk : n ≠ Q.k := color_ne hn Q.hk (by decide)
   obtain ⟨o, hmo, hok, hon⟩ :=
-    C.exists_third_neighbor (Or.inr hm) hnk
+    C.exists_third_neighbor (degree_of_color (Or.inr hm)) hnk
   have hoSide := C.other_neighbor_of_blue_is_redSide hm hn hmn hmo hok
   have hdk : ¬ G.Adj d Q.k := by
     apply C.not_adj_fourth_neighbor (Or.inr hd) hcd.symm hde Q.hdi
@@ -460,6 +467,7 @@ theorem lemma4_8_case_lm_mixed_setup
       · exact (hpred ⟨z, hnz, hz⟩).elim
       · simp [hz]
     have hptrSwap := lemma4_4 C.swapSides (by simp [hm]) (by simp [hn]) hmn
+      (degree_of_color (Or.inr hm)) (degree_of_color (Or.inr hn))
       m_other n_other
     exact (noPTR ((containsInducedUpToSwap_swapSides IsPositiveTailReducer C).1
       hptrSwap)).elim
@@ -476,6 +484,15 @@ theorem lemma4_8_case_lm_mixed_complete
     (Q : Lemma4_8MixedPConfiguration C a b c d e f g h) :
     HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hpPath : FormsInducedPath8 G a b c d e f g h := ⟨hinj, hedge⟩
@@ -506,6 +523,7 @@ theorem lemma4_8_case_lm_mixed_complete
     · exact hq
     · exact (C.reddish_not_adj_redSide hq (Or.inl Q.hp) hpq.symm).elim
   rcases exists_flipAt_or_cutEnhancer C Q.hp Q.hn hq Q.hm
+      (degree_of_color (Or.inl Q.hp)) (degree_of_color (Or.inr Q.hn))
       hpq Q.hnp.symm Q.hmn.symm with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring

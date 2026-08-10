@@ -49,7 +49,15 @@ theorem lemma4_10_flip_bc_isolates_ef
   have hfc : ¬ G.Adj f c := by simpa using nonedge 5 2 (by native_decide)
   have noCurrentCE (hce : ContainsCutEnhancer C) : False :=
     hresult (HasReachableReduction.of_current_ce C hce)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+  have degreeC {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hresult (.of_current_ptr C hptr)).elim
+    · exact (noCurrentCE hce).elim
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -105,7 +113,17 @@ theorem lemma4_10_flip_bc_isolates_ef
       apply bluish_of_untouched_bluish C hflip hz (fun h => hzb h.symm)
       · intro h; subst z; simp_all
       · exact hzc
-    have hptr := lemma4_4 D heD hfD hef e_other f_other
+    have degreeD {v : V}
+        (hv : D.color v = .red ∨ D.color v = .blue) :
+        vertexDegree G v = 3 := by
+      rcases lemma3_4_positive D hv with hdegree | hptr | hceD
+      · exact hdegree
+      · exact (hresult (HasReachableReduction.after_flip C hflip
+          (.of_current_ptr D hptr))).elim
+      · exact (hresult (HasReachableReduction.after_flip C hflip
+          (.of_current_ce D hceD))).elim
+    have hptr := lemma4_4 D heD hfD hef
+      (degreeD (Or.inl heD)) (degreeD (Or.inl hfD)) e_other f_other
     exact hresult (HasReachableReduction.after_flip C hflip
       (HasReachableReduction.of_current_ptr D hptr))
   · exact (noCurrentCE hce).elim

@@ -50,7 +50,15 @@ theorem lemma5_11_flip_bc_isolates_ef
   have hfc : ¬ G.Adj f c := by simpa using nonedge 5 2 (by native_decide)
   have noCurrentCE (hce : ContainsCutEnhancer C) : False :=
     hresult (HasReachableNegativeReduction.of_current_ce C hce)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+  have degreeC {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hresult (.of_current_ntr C hntr)).elim
+    · exact (noCurrentCE hce).elim
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring

@@ -1,39 +1,29 @@
-import Subcubic.Lemma4_12
+import Subcubic.Lemma5_13.Main
 
 /-!
-# Lemma 2.7 (distance-free form)
+# Lemma 2.8 (distance-free form)
 
 Starting from a red edge, either every other neighbor is bluish and Lemma
-4.4 applies, or a blue edge can be appended.  A further strong-colored edge
-gives the three-block path handled by the inlined Lemma 4.11 argument; if no
-such extension exists, the four vertices satisfy Lemma 4.12.  Extra edges
-between consecutive monochromatic blocks are handled by Lemma 4.2.
+5.4 applies, or a blue edge can be appended.  A further strong-colored edge
+gives the three-block path handled by the inlined Lemma 5.12 argument; if no
+such extension exists, the four vertices satisfy Lemma 5.13.  Extra edges
+between consecutive monochromatic blocks are handled by Lemmas 5.2 and 5.3.
 -/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- **Lemma 2.7.** Every red edge yields, after zero or more permitted
-cut-preserver flips, a positive tail reducer or a cut enhancer.  Distance
+/-- **Lemma 2.8.** Every red edge yields, after zero or more permitted
+cut-preserver flips, a negative tail reducer or a cut enhancer.  Distance
 bounds from the paper are deliberately omitted. -/
-theorem lemma2_7
+theorem lemma2_8
     (C : GoodColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
-    (hab : G.Adj a b) : HasReachableReduction C := by
+    (hab : G.Adj a b) : HasReachableNegativeReduction C := by
   classical
   by_contra hresult
-  have noResult (hout : HasReachableReduction C) : False := hresult hout
-  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
-      vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
-    · exact hdegree
-    · exact (noResult (.of_current_ptr C hptr)).elim
-    · exact (noResult (.of_current_ce C hce)).elim
-  have noOutcome
-      (hout : ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C) : False :=
-    noResult (hout.elim (HasReachableReduction.of_current_ptr C)
-      (HasReachableReduction.of_current_ce C))
+  have noResult (hout : HasReachableNegativeReduction C) : False := hresult hout
   have color_ne {x y : V} {cx cy : Color}
       (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) :
       x ≠ y := by
@@ -54,20 +44,20 @@ theorem lemma2_7
       · exact (C.bluish_not_adj_blueSide hd (Or.inl hc) hcd.symm).elim
     have huc : ¬ G.Adj u c := by
       intro h
-      apply noOutcome
-      apply lemma4_2 C u v c d huv hu hv hcd hc hd
+      apply noResult
+      apply lemma5_2 C u v c d huv hu hv hcd hc hd
       simp [fourVertexCrossEdgeCount, h, hvc]
       omega
     have hud : ¬ G.Adj u d := by
       intro h
-      apply noOutcome
-      apply lemma4_2 C u v c d huv hu hv hcd hc hd
+      apply noResult
+      apply lemma5_2 C u v c d huv hu hv hcd hc hd
       simp [fourVertexCrossEdgeCount, h, hvc]
       omega
     have hvd : ¬ G.Adj v d := by
       intro h
-      apply noOutcome
-      apply lemma4_2 C u v c d huv hu hv hcd hc hd
+      apply noResult
+      apply lemma5_2 C u v c d huv hu hv hcd hc hd
       simp [fourVertexCrossEdgeCount, h, hvc]
     have hNoBlueU : ∀ z, G.Adj u z → C.color z ≠ .blue := by
       intro z huz hz
@@ -103,7 +93,7 @@ theorem lemma2_7
           color_ne hz hu (by decide), color_ne hz hv (by decide),
           color_ne hu hc (by decide), color_ne hu hd (by decide),
           color_ne hv hc (by decide), color_ne hv hd (by decide)]
-      have hpath : FormsPath6Subgraph G w z u v c d := by
+      have hpath : FormsNegativePath6Subgraph G w z u v c d := by
         refine ⟨?_, ?_⟩
         · have hvec : (![w, z, u, v, c, d] : Fin 6 → V) =
               [w, z, u, v, c, d].get := by
@@ -119,8 +109,8 @@ theorem lemma2_7
           have hdc := hcd.symm
           fin_cases i <;> fin_cases j <;> simp [graphOfEdges] at hij
           all_goals assumption
-      exact noResult (HasReachableReduction.of_swapSides C
-        (lemma4_11_inline C.swapSides hpath
+      exact noResult (HasReachableNegativeReduction.of_swapSides C
+        (lemma5_12_inline C.swapSides hpath
           (by simp [hw]) (by simp [hz]) (by simp [hu])
           (by simp [hv]) (by simp [hc]) (by simp [hd])))
     have hNoRedD : ∀ z, G.Adj d z → C.color z ≠ .red := by
@@ -157,7 +147,7 @@ theorem lemma2_7
           color_ne hv hc (by decide), color_ne hv hd (by decide),
           color_ne hc hz (by decide), color_ne hc hw (by decide),
           color_ne hd hz (by decide), color_ne hd hw (by decide)]
-      have hpath : FormsPath6Subgraph G u v c d z w := by
+      have hpath : FormsNegativePath6Subgraph G u v c d z w := by
         refine ⟨?_, ?_⟩
         · have hvec : (![u, v, c, d, z, w] : Fin 6 → V) =
               [u, v, c, d, z, w].get := by
@@ -173,7 +163,7 @@ theorem lemma2_7
           have hwz := hzw.symm
           fin_cases i <;> fin_cases j <;> simp [graphOfEdges] at hij
           all_goals assumption
-      exact noResult (lemma4_11_inline C hpath hu hv hc hd hz hw)
+      exact noResult (lemma5_12_inline C hpath hu hv hc hd hz hw)
     have hpath4 : FormsInducedPath4 G u v c d := by
       refine ⟨?_, ?_⟩
       · have hn : [u, v, c, d].Nodup := by
@@ -189,7 +179,7 @@ theorem lemma2_7
         fin_cases i <;> fin_cases j <;>
           simp [graphOfEdges, SimpleGraph.adj_comm, huv, hvc, hcd,
             huc, hud, hvd]
-    exact noResult (lemma4_12 C hpath4 hu hv hc hd hNoBlueU hNoRedD)
+    exact noResult (lemma5_13 C hpath4 hu hv hc hd hNoBlueU hNoRedD)
   by_cases hBlue : ∃ x, (G.Adj a x ∨ G.Adj b x) ∧ C.color x = .blue
   · obtain ⟨c, hac | hbc, hc⟩ := hBlue
     · exact fromCross hb ha hc hab.symm hac
@@ -206,8 +196,6 @@ theorem lemma2_7
       rcases hvSide with hv | hv
       · exact (hBlue ⟨v, Or.inr hbV, hv⟩).elim
       · exact hv
-    exact noResult (HasReachableReduction.of_current_ptr C
-      (lemma4_4 C ha hb hab (degreeC (Or.inl ha))
-        (degreeC (Or.inl hb)) haOther hbOther))
+    exact noResult (lemma5_4 C ha hb hab haOther hbOther)
 
 end Subcubic

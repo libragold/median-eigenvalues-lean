@@ -12,13 +12,22 @@ private theorem redSide_ne_bluish'' {C : GoodColoring G} {x y : V}
   intro h; subst y; rcases hx with hx | hx <;> simp_all
 
 /-- Case 2.2.4: when `f` is red and has a blue neighbor, flipping `fg`
-turns the common bluish neighbor `d` blue, giving reversed `a1-`. -/
+turns the common bluish neighbor `d` blue, giving reversed `ntr-a`. -/
 theorem lemma5_4_red_f_blue_neighbor
     (C : GoodColoring G) {a b g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hf : C.color Q.f = .red) (hg : C.color g = .blue)
     (hfg : G.Adj Q.f g) : HasReachableNegativeReduction C := by
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   have hfCorrect := C.color_correct Q.f
   rw [hf] at hfCorrect
   obtain ⟨_, r, hrSide, hfr⟩ := hfCorrect
@@ -35,7 +44,9 @@ theorem lemma5_4_red_f_blue_neighbor
     rcases hiCases with hi | hi
     · exact hi
     · exact (C.bluish_not_adj_blueSide hi (Or.inl hg) hgi.symm).elim
-  rcases exists_flipAt_or_cutEnhancer C hf hg hr hi hfr hfg hgi with
+  rcases exists_flipAt_or_cutEnhancer C hf hg hr hi
+      (degree_of_color (Or.inl hf)) (degree_of_color (Or.inr hg))
+      hfr hfg hgi with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -55,7 +66,7 @@ theorem lemma5_4_red_f_blue_neighbor
         (vertex_ne_of_color_eq hb hg (by decide))
         Q.hfa.symm
         (vertex_ne_of_color_eq ha hg (by decide))
-    have hntrSwap := containsNegativeA1 D.swapSides
+    have hntrSwap := containsNegativeA D.swapSides
       (a := Q.d) (b := a) (c := b)
       (by simp [hdD]) (by simp [haD]) (by simp [hbD])
       Q.had.symm Q.hbd.symm hab

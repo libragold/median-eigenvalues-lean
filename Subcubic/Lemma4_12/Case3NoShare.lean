@@ -35,6 +35,7 @@ theorem lemma4_12_no_share_setup
     (C : GoodColoring G) {a b c d : V}
     (hd : C.color d = .blue) (hc : C.color c = .blue)
     (hcd : G.Adj c d)
+    (hddeg : vertexDegree G d = 3)
     (hNoRedAtD : ∀ v, G.Adj d v → C.color v ≠ .red)
     (Q : Lemma4_12ThirdNeighborConfiguration C a b c d)
     (hOnlyRedB : ∀ z, G.Adj Q.e z → C.color z = .red → z = b)
@@ -55,7 +56,7 @@ theorem lemma4_12_no_share_setup
   have hx := reddish_of_e_other hex hxb
   have hy := reddish_of_e_other hey hyb
   obtain ⟨i, j, hdi, hdj, hic, hjc, hij⟩ :=
-    C.exists_two_other_neighbors (Or.inr hd) hcd.symm
+    C.exists_two_other_neighbors hddeg hcd.symm
   have reddish_of_d_other {z : V} (hdz : G.Adj d z) (hzc : z ≠ c) :
       C.color z = .reddish := by
     have hzSide := C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdz hzc
@@ -82,6 +83,14 @@ theorem lemma4_12_case3_no_share
     (hea : ¬ G.Adj Q.e a) (hef : ¬ G.Adj Q.e Q.f) :
     HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {p q : Fin 4} (hpq : p ≠ q) :
@@ -103,7 +112,8 @@ theorem lemma4_12_case3_no_share
   have hyf : Q.y ≠ Q.f := fun h => hef (by simpa [h] using Q.hey)
   by_cases hfd : G.Adj Q.f d
   · obtain ⟨k, hdk, hkc, hkf⟩ :=
-      C.exists_third_neighbor (Or.inr hd) (color_ne hc Q.hf (by decide))
+      C.exists_third_neighbor (degreeC (Or.inr hd))
+        (color_ne hc Q.hf (by decide))
     have hkSide := C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdk hkc
     have hk : C.color k = .reddish := by
       rcases hkSide with hk | hk

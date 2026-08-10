@@ -20,6 +20,14 @@ theorem lemma5_13_case3
       C.color z = .bluish) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath4 G a b c d := ⟨hinj, hedge⟩
@@ -41,7 +49,7 @@ theorem lemma5_13_case3
     intro h; subst y; simp_all
   obtain ⟨x, y, hax, hay, hxb, hyb, hxy⟩ :=
     exists_two_other_neighbors_of_degree_three
-      (C.red_or_blue_degree a (Or.inl ha)) hab
+      (degreeC (Or.inl ha)) hab
   have hxSide := C.other_neighbor_of_red_is_blueSide ha hb hab hax hxb
   have hySide := C.other_neighbor_of_red_is_blueSide ha hb hab hay hyb
   have hx : C.color x = .bluish := by
@@ -109,10 +117,8 @@ theorem lemma5_13_case3
       have hzd : z ≠ d := by intro h; subst z; exact hfd hfz
       have hz' := hOutsideF z hfz hzc hzd
       simp [hz] at hz'
-    rcases lemma5_5 C hpent hb ha Q.hf hc (Or.inr hx)
-        hbNoBlue haNoBlue hfNoBlue with hntr | hce
-    · exact HasReachableNegativeReduction.of_current_ntr C hntr
-    · exact HasReachableNegativeReduction.of_current_ce C hce
+    exact lemma5_5 C hpent hb ha Q.hf hc (Or.inr hx)
+      hbNoBlue haNoBlue hfNoBlue
   · by_cases hsy : G.Adj Q.f y
     · have hswap : FormsInducedPentagon G b a Q.f c y := by
         -- This is the preceding shared-neighbor argument with `x,y` exchanged.
@@ -163,12 +169,10 @@ theorem lemma5_13_case3
         have hzd : z ≠ d := by intro h; subst z; exact hfd hfz
         have hz' := hOutsideF z hfz hzc hzd
         simp [hz] at hz'
-      rcases lemma5_5 C hswap hb ha Q.hf hc (Or.inr hy)
-          hbNoBlue haNoBlue hfNoBlue with hntr | hce
-      · exact HasReachableNegativeReduction.of_current_ntr C hntr
-      · exact HasReachableNegativeReduction.of_current_ce C hce
+      exact lemma5_5 C hswap hb ha Q.hf hc (Or.inr hy)
+        hbNoBlue haNoBlue hfNoBlue
     · apply HasReachableNegativeReduction.of_current_ntr C
-      apply containsNegativeAf C Q.hf ha hb hu hvv hx hy hc hd Q.he
+      apply containsNegativeAg C Q.hf ha hb hu hvv hx hy hc hd Q.he
         hfu hfv Q.hcf.symm hab hax hay hbc Q.hbe hcd
         hsx hsy hfd (fun h => hef h.symm)
       have hux : u ≠ x := by intro h; subst u; exact hsx hfu

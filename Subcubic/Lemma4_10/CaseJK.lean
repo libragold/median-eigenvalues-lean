@@ -22,6 +22,15 @@ theorem lemma4_10_jk_cases
     HasReachableReduction C ∨
       Nonempty (Lemma4_10JConfiguration C a b c d e f) := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact Or.inl hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 6} (hxy : x ≠ y) :
@@ -59,7 +68,7 @@ theorem lemma4_10_jk_cases
       exact Or.inr ⟨⟨Q', hka⟩⟩
     · have hbh : b ≠ Q.h := color_ne hb Q.hh (by decide)
       obtain ⟨l, hal, hlb, hlh⟩ :=
-        C.exists_third_neighbor (Or.inl ha) hbh
+        C.exists_third_neighbor (degree_of_color (Or.inl ha)) hbh
       have hlSide := C.other_neighbor_of_red_is_blueSide ha hb hab hal hlb
       have hl : C.color l = .bluish := by
         rcases hlSide with hl | hl

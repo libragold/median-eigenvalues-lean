@@ -1,5 +1,4 @@
-import Subcubic.CutEnhancers
-import Subcubic.ColoringLemmas
+import Subcubic.Lemma3_4
 import Mathlib.Tactic.FinCases
 
 /-!

@@ -20,6 +20,14 @@ theorem lemma5_13_case4_red_neighbor_blue
     (hgh : G.Adj Q.g h) (hhi : G.Adj h i) (hha : h ≠ a) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 4} (hxy : x ≠ y) :
@@ -45,7 +53,7 @@ theorem lemma5_13_case4_red_neighbor_blue
     intro e
     subst i
     have hnot := not_adj_fourth_neighbor_of_degree_three
-      (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+      (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
       (hv (x := (1 : Fin 4)) (y := 3) (by decide))
       (color_ne hb Q.hf (by decide)) (color_ne hd Q.hf (by decide))
       hhb (color_ne hh hd (by decide)) (color_ne hh Q.hf (by decide))
@@ -63,7 +71,8 @@ theorem lemma5_13_case4_red_neighbor_blue
     · exact ht
     · exact (C.reddish_not_adj_redSide ht (Or.inl hh) hht.symm).elim
   obtain ⟨j, hj, hij⟩ := C.exists_blue_mate hi
-  rcases exists_flipAt_or_cutEnhancer C hh hi ht hj hht hhi hij with
+  rcases exists_flipAt_or_cutEnhancer C hh hi ht hj
+      (degreeC (Or.inl hh)) (degreeC (Or.inr hi)) hht hhi hij with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -89,6 +98,7 @@ theorem lemma5_13_case4_red_neighbor_blue
       · exact color_ne Q.hg hi (by decide)
     have hhD : D.color h = .blue :=
       blue_of_flipped_red_endpoint C hflip ht hht
+        (degreeC (Or.inl hh))
         (color_ne ht hi (by decide))
     have hnodup : [d, c, b, a, Q.g, h].Nodup := by
       simp [hcd.ne.symm, hbc.ne.symm, hab.ne.symm, Q.hag.ne,
@@ -127,6 +137,14 @@ theorem lemma5_13_case4_red_neighbor
     {h : V} (hh : C.color h = .red) (hgh : G.Adj Q.g h)
     (hha : h ≠ a) : HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   by_cases hBlue : ∃ i, G.Adj h i ∧ C.color i = .blue
   · obtain ⟨i, hhi, hi⟩ := hBlue
     exact lemma5_13_case4_red_neighbor_blue C hpath ha hb hc hd hNoRedAtD
@@ -156,7 +174,7 @@ theorem lemma5_13_case4_red_neighbor
       exact hnot hgh.symm
     have hah : ¬ G.Adj a h := by
       apply not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree a (Or.inl ha)) hab Q.heaEdge.symm Q.hag
+        (degreeC (Or.inl ha)) hab Q.heaEdge.symm Q.hag
       · exact color_ne hb Q.he (by decide)
       · exact Q.hgb.symm
       · exact Q.hge.symm
@@ -180,7 +198,7 @@ theorem lemma5_13_case4_red_neighbor
         · exact (C.reddish_not_adj_redSide ht (Or.inl hh) hht.symm).elim
       obtain ⟨u, hhu, hug, hut⟩ :=
         exists_third_neighbor_of_degree_three
-          (C.red_or_blue_degree h (Or.inl hh))
+          (degreeC (Or.inl hh))
           (color_ne Q.hg ht (by decide))
       have huSide := C.other_neighbor_of_red_is_blueSide hh ht hht hhu hut
       have hu : C.color u = .bluish := by
@@ -191,7 +209,7 @@ theorem lemma5_13_case4_red_neighbor
         intro e; subst u; exact hhe hhu
       have hau : ¬ G.Adj a u := by
         apply not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree a (Or.inl ha)) hab Q.heaEdge.symm Q.hag
+          (degreeC (Or.inl ha)) hab Q.heaEdge.symm Q.hag
         · exact color_ne hb Q.he (by decide)
         · exact Q.hgb.symm
         · exact Q.hge.symm

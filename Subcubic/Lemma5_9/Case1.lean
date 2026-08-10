@@ -17,11 +17,9 @@ theorem lemma5_9_case_i_adj_g
   have hout := lemma5_6 C.swapSides hpath.reverse
     (by simp [hh]) (by simp [hg]) (by simp [hf]) (by simp [he])
     (by simp [hd]) (by simp [hc])
-  rcases hout with hnone | hntr | hce
+  rcases hout with hnone | hfound
   · exact (hnone ⟨i, hig.symm, hdi⟩).elim
   · exact HasReachableNegativeReduction.of_swapSides C
-      (HasReachableNegativeReduction.of_current_ntr C.swapSides hntr)
-  · exact HasReachableNegativeReduction.of_swapSides C
-      (HasReachableNegativeReduction.of_current_ce C.swapSides hce)
+      hfound
 
 end Subcubic

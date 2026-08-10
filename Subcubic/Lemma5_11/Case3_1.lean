@@ -58,7 +58,7 @@ theorem lemma5_11_case_3_1
   by_cases hga : G.Adj Q.g a
   · left
     apply HasReachableNegativeReduction.of_current_ntr C
-    apply containsNegativeL1 C ha hb he Q.hg Q.hh hc hd
+    apply containsNegativeL C ha hb he Q.hg Q.hh hc hd
       hab hga.symm Q.hha.symm Q.hbg hbc Q.heh hde.symm hcd
       (fun h => Q.hge h.symm) hec
     have hgh : Q.g ≠ Q.h := by
@@ -77,7 +77,7 @@ theorem lemma5_11_case_3_1
   · by_cases hhf : G.Adj Q.h f
     · left
       apply HasReachableNegativeReduction.of_current_ntr C
-      apply containsNegativeL1 C hf he hb Q.hh Q.hg hd hc
+      apply containsNegativeL C hf he hb Q.hh Q.hg hd hc
         hef.symm hhf.symm Q.hgf.symm Q.heh hde.symm Q.hbg hbc hcd.symm
         (fun h => Q.hhb h.symm) hbd
       have hhg : Q.h ≠ Q.g := by

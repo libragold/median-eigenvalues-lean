@@ -87,7 +87,7 @@ theorem lemma5_9_case_aa
       color_ne hx hc (by decide), color_ne hx hd (by decide),
       color_ne hj hg (by decide), color_ne hj hh (by decide),
       color_ne hj hc (by decide), color_ne hj hd (by decide), hxj]
-  have hntr := containsNegativeAa C ha hf hi hx hj hg hh hc hd
+  have hntr := containsNegativeAb C ha hf hi hx hj hg hh hc hd
     hax hja.symm hjf.symm hfg hih hic hdi.symm hgh hcd
     (by simpa using nonedge 0 5 (by native_decide))
     (C.reddish_not_adj_redSide hi (Or.inl ha) ∘ SimpleGraph.Adj.symm)

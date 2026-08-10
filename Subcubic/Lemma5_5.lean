@@ -1,5 +1,6 @@
 import Subcubic.NegativeTailReducerWitnesses
 import Subcubic.Lemma3_5
+import Subcubic.NegativeReduction
 
 /-!
 # Lemma 5.5
@@ -47,7 +48,7 @@ private theorem blue_mate
 
 /-- **Lemma 5.5.**  The induced pentagon contains a negative tail reducer or
 a cut enhancer.  The paper's distance bound is omitted. -/
-theorem lemma5_5
+private theorem lemma5_5_current
     (C : GoodColoring G) {a b c d e : V}
     (hpentagon : FormsInducedPentagon G a b c d e)
     (ha : C.color a = .red) (hb : C.color b = .red)
@@ -55,9 +56,17 @@ theorem lemma5_5
     (he : C.color e = .blue ∨ C.color e = .bluish)
     (haNoBlue : ∀ v, G.Adj a v → v ≠ d → v ≠ e → C.color v ≠ .blue)
     (hbNoBlue : ∀ v, G.Adj b v → v ≠ d → v ≠ e → C.color v ≠ .blue)
-    (hcNoBlue : ∀ v, G.Adj c v → v ≠ d → v ≠ e → C.color v ≠ .blue) :
+    (hcNoBlue : ∀ v, G.Adj c v → v ≠ d → v ≠ e → C.color v ≠ .blue)
+    (hNoReach : ¬ HasReachableNegativeReduction C) :
     ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
   classical
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hNoReach (.of_current_ntr C hntr)).elim
+    · exact (hNoReach (.of_current_ce C hce)).elim
   dsimp [FormsInducedPentagon] at hpentagon
   rcases hpentagon with ⟨hinj, hedge⟩
   have hv {u v : Fin 5} (huv : u ≠ v) :
@@ -85,10 +94,12 @@ theorem lemma5_5
   have hdeV : d ≠ e := hv (u := (3 : Fin 5)) (v := 4) (by decide)
 
   rcases lemma3_5 C ha hd hc had hcd.symm with hcdeg | hfound
-  · obtain ⟨x, hax, hxb, hxd⟩ := C.exists_third_neighbor (Or.inl ha) hbdV
+  · obtain ⟨x, hax, hxb, hxd⟩ :=
+      C.exists_third_neighbor (degree_of_color (Or.inl ha)) hbdV
     have hxe : x ≠ e := by intro h; subst x; exact hae hax
     have hx := bluish_third_of_no_blue_outside C ha hb hab hax hxb hxd hxe haNoBlue
-    obtain ⟨y, hby, hya, hye⟩ := C.exists_third_neighbor (Or.inl hb) haeV
+    obtain ⟨y, hby, hya, hye⟩ :=
+      C.exists_third_neighbor (degree_of_color (Or.inl hb)) haeV
     have hyd : y ≠ d := by intro h; subst y; exact hbd hby
     have hy := bluish_third_of_no_blue_outside C hb ha hab.symm hby hya hyd hye hbNoBlue
     obtain ⟨f, hcf, hfd, hfe⟩ :=
@@ -173,7 +184,7 @@ theorem lemma5_5
                 (by simp [hdm]) (by simp [hd]) (by simp [he])
                 hddm.symm hdeV) heem.symm
             left
-            apply containsNegativeX C ha hb hc hx hdm hd he hem hf
+            apply containsNegativeY C ha hb hc hx hdm hd he hem hf
               hab hax had hby hbe hcd hce hcf hddm.symm heem hcx hcdm hcem
             simp [hab.ne, hax.ne, had.ne, hbe.ne, hcd.ne, hce.ne, hcf.ne,
               hddm.ne, heem.ne, hcx, hcdm, hcem, hfa, hfb,
@@ -242,7 +253,7 @@ theorem lemma5_5
               · exact hemE
               · exact vertex_ne_of_color_eq hem hf (by decide)
             left
-            apply containsNegativeAe C ha hb hc hy hx hdm hd he hem hf
+            apply containsNegativeAf C ha hb hc hy hx hdm hd he hem hf
               hab hax had hby hbe hcd hce hcf hddm.symm heem
               hcy hcx hcdm hcem
             simp [hab.ne, hax.ne, had.ne, hby.ne, hbe.ne, hcd.ne, hce.ne,
@@ -313,7 +324,7 @@ theorem lemma5_5
         by_cases hyx : y = x
         · subst y
           left
-          apply containsNegativeR C hb ha hc he hx hd hdm hf
+          apply containsNegativeS C hb ha hc he hx hd hdm hf
             hab.symm hbe hby hax had hce hcd hcf hddm hcx hcdm
           have hex : e ≠ x := by intro h; subst x; exact hae hax
           simp [hab.ne, hbe.ne, hax.ne, hcd.ne, hce.ne, hcf.ne, hddm.ne,
@@ -339,7 +350,7 @@ theorem lemma5_5
         · by_cases hyf : y = f
           · subst y
             left
-            apply containsNegativeT C hb ha hc he hx hd hdm hf
+            apply containsNegativeU C hb ha hc he hx hd hdm hf
               hab.symm hbe hby hax had hce hcd hcf hddm hcx hcdm
             have hex : e ≠ x := by intro h; subst x; exact hae hax
             simp [hab.ne, hbe.ne, hax.ne, hcd.ne, hce.ne, hcf.ne, hddm.ne,
@@ -371,7 +382,7 @@ theorem lemma5_5
               · exact hye
               · exact hyf
             left
-            apply containsNegativeZ C hc hb ha hf he hy hd hdm hx
+            apply containsNegativeAa C hc hb ha hf he hy hd hdm hx
               hcf hce hcd hab.symm hbe hby had hax hddm hcy hcdm hcx
             simp [hab.ne, had.ne, hbe.ne, hcd.ne, hce.ne, hax.ne, hby.ne,
               hcf.ne, hddm.ne, hxf, hyx, hyf, hcx, hcy, hcdm,
@@ -405,6 +416,25 @@ theorem lemma5_5
               hfe, hye.symm, hxe.symm]
             exact ⟨⟨hab.ne.symm, vertex_ne_of_color_eq hb hf (by decide)⟩,
               (fun h => hyf h.symm), fun h => hxf h.symm⟩
-  · exact Or.inr hfound
+  · exact (hNoReach (.of_lemma3_4 C hfound)).elim
+
+/-- **Lemma 5.5.** The pentagon configuration reaches a negative tail
+reducer or a cut enhancer. -/
+theorem lemma5_5
+    (C : GoodColoring G) {a b c d e : V}
+    (hpentagon : FormsInducedPentagon G a b c d e)
+    (ha : C.color a = .red) (hb : C.color b = .red)
+    (hc : C.color c = .reddish) (hd : C.color d = .blue)
+    (he : C.color e = .blue ∨ C.color e = .bluish)
+    (haNoBlue : ∀ v, G.Adj a v → v ≠ d → v ≠ e → C.color v ≠ .blue)
+    (hbNoBlue : ∀ v, G.Adj b v → v ≠ d → v ≠ e → C.color v ≠ .blue)
+    (hcNoBlue : ∀ v, G.Adj c v → v ≠ d → v ≠ e → C.color v ≠ .blue) :
+    HasReachableNegativeReduction C := by
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  rcases lemma5_5_current C hpentagon ha hb hc hd he
+      haNoBlue hbNoBlue hcNoBlue hdone with hntr | hce
+  · exact .of_current_ntr C hntr
+  · exact .of_current_ce C hce
 
 end Subcubic

@@ -23,6 +23,14 @@ theorem lemma5_9_case_lm_mixed_flip
     (hpl : ¬ G.Adj Q.p Q.l) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hpPath : FormsInducedPath8 G a b c d e f g h := ⟨hinj, hedge⟩
@@ -60,6 +68,7 @@ theorem lemma5_9_case_lm_mixed_flip
     · exact hq
     · exact (C.reddish_not_adj_redSide hq (Or.inl Q.hp) hpq.symm).elim
   rcases exists_flipAt_or_cutEnhancer C Q.hp Q.hn hq Q.hm
+      (degreeC (Or.inl Q.hp)) (degreeC (Or.inr Q.hn))
       hpq Q.hnp.symm Q.hmn.symm with ⟨M, hflip⟩ | hce
   · let D := M.toGoodColoring
     have hen : ¬ G.Adj e Q.n := by

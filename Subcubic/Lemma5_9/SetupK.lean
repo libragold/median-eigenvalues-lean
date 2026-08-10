@@ -27,6 +27,14 @@ theorem lemma5_9_setup_k
     HasReachableNegativeReduction C ∨
       Nonempty (Lemma5_9KConfiguration C a b c d e f g h) := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases Q with ⟨⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
     hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩, hxy, hij, hnotBoth⟩,
     hic, hideg, t, ht, hit, htd, hth⟩
@@ -51,7 +59,7 @@ theorem lemma5_9_setup_k
   have hcd := edge 2 3 (by native_decide)
   have hfg := edge 5 6 (by native_decide)
   obtain ⟨k, hck, hkb, hkd⟩ :=
-    C.exists_third_neighbor (Or.inr hc)
+    C.exists_third_neighbor (degreeC (Or.inr hc))
       (hv (u := (1 : Fin 8)) (v := 3) (by decide))
   have hkSide : C.color k = .red ∨ C.color k = .reddish :=
     C.other_neighbor_of_blue_is_redSide hc hd hcd hck hkd
@@ -94,7 +102,7 @@ theorem lemma5_9_setup_k
           hkd := hkd
           hkg := hkg
           hkdeg := hkdeg }⟩
-      · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
+      · exact Or.inl (HasReachableNegativeReduction.of_lemma3_4 C hce)
   · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
 
 end Subcubic

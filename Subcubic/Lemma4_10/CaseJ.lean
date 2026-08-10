@@ -89,7 +89,7 @@ theorem lemma4_10_j_cases
               (color_ne Q.hj hc (by decide))
               (by intro h; apply Q.hig; simpa [h] using Q.hij)
         have hca : ¬ G.Adj c a := by simpa using nonedge 2 0 (by native_decide)
-        have hptrSwap := containsPositiveMMinus C.swapSides
+        have hptrSwap := containsPositiveDcA C.swapSides
           (a := Q.j) (b := c) (c := Q.i) (d := a) (e := b)
           (by simp [Q.hj]) (by simp [hc]) (by simp [Q.hi])
           (by simp [ha]) (by simp [hb]) hjdeg2 Q.hij.symm Q.hja

@@ -16,6 +16,14 @@ theorem lemma5_9_case_lm_blue
     (hl : C.color Q.l = .blue) (hm : C.color Q.m = .blue) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases Q with ⟨⟨⟨⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
     hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩, hxy, hij, hnotBoth⟩,
     hic, hideg, t, ht, hit, htd, hth⟩,
@@ -43,7 +51,8 @@ theorem lemma5_9_case_lm_blue
   have hbc : G.Adj b c := by simpa using edge 1 2 (by native_decide)
   have hcd : G.Adj c d := by simpa using edge 2 3 (by native_decide)
   have hde : G.Adj d e := by simpa using edge 3 4 (by native_decide)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     ⟨M, hflip⟩ | hce
   · let D := M.toGoodColoring
     have hkc : k ≠ c := hck.ne.symm
@@ -91,11 +100,8 @@ theorem lemma5_9_case_lm_blue
         unfold fourVertexCrossEdgeCount
         rw [if_pos hkl, if_pos hkm]
         omega
-      rcases lemma5_2 D c k l m hck hcD hkD hlm hlD hmD hmulti with hntr | hceD
-      · exact HasReachableNegativeReduction.after_flip C hflip
-          (HasReachableNegativeReduction.of_current_ntr D hntr)
-      · exact HasReachableNegativeReduction.after_flip C hflip
-          (HasReachableNegativeReduction.of_current_ce D hceD)
+      exact HasReachableNegativeReduction.after_flip C hflip
+        (lemma5_2 D c k l m hck hcD hkD hlm hlD hmD hmulti)
     · exact HasReachableNegativeReduction.after_flip C hflip
         (HasReachableNegativeReduction.of_current_ce D
           (containsCutEnhancerA_of D hkD hlD hmD hkl hkm hlmV hlm))

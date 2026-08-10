@@ -7,7 +7,7 @@ import Subcubic.NegativeTailReducerWitnesses
 This file mirrors the first paragraph of the prose proof.  The four bluish
 neighbor occurrences of the isolated red edge overlap in zero, one, or two
 vertices.  The zero- and two-overlap cases immediately give `g-` and `c-`.
-For one overlap, `a0-` handles degree two; the remaining configuration records
+For one overlap, `ntr-dc-a` handles degree two; the remaining configuration records
 the third neighbor needed by the rest of the proof.
 -/
 
@@ -97,10 +97,19 @@ theorem lemma5_4_initial
     (hb_other : ∀ v, G.Adj b v → v ≠ a → C.color v = .bluish) :
     HasReachableNegativeReduction C ∨
       Nonempty (Lemma5_4SharedConfiguration C a b) := by
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   obtain ⟨c, d, hac, had, hcb, hdb, hcd⟩ :=
-    C.exists_two_other_neighbors (Or.inl ha) hab
+    C.exists_two_other_neighbors (degree_of_color (Or.inl ha)) hab
   obtain ⟨e, f, hbe, hbf, hea, hfa, hef⟩ :=
-    C.exists_two_other_neighbors (Or.inl hb) hab.symm
+    C.exists_two_other_neighbors (degree_of_color (Or.inl hb)) hab.symm
   have hc := ha_other c hac hcb
   have hd := ha_other d had hdb
   have he := hb_other e hbe hea
@@ -121,7 +130,7 @@ theorem lemma5_4_initial
         unfold vertexDegree
         simpa [hab.ne] using Set.ncard_le_ncard hs
       by_cases hcdeg2 : vertexDegree G c = 2
-      · have hntrSwap := containsNegativeA0 C.swapSides
+      · have hntrSwap := containsNegativeDcA C.swapSides
             (a := c) (b := a) (c := b)
             (by simp [hc]) (by simp [ha]) (by simp [hb]) hcdeg2
             hac.symm hbe.symm hab
@@ -158,7 +167,7 @@ theorem lemma5_4_initial
           unfold vertexDegree
           simpa [hab.ne] using Set.ncard_le_ncard hs
         by_cases hcdeg2 : vertexDegree G c = 2
-        · have hntrSwap := containsNegativeA0 C.swapSides
+        · have hntrSwap := containsNegativeDcA C.swapSides
               (a := c) (b := a) (c := b)
               (by simp [hc]) (by simp [ha]) (by simp [hb]) hcdeg2
               hac.symm hbf.symm hab
@@ -191,7 +200,7 @@ theorem lemma5_4_initial
           unfold vertexDegree
           simpa [hab.ne] using Set.ncard_le_ncard hs
         by_cases hddeg2 : vertexDegree G d = 2
-        · have hntrSwap := containsNegativeA0 C.swapSides
+        · have hntrSwap := containsNegativeDcA C.swapSides
               (a := d) (b := a) (c := b)
               (by simp [hd]) (by simp [ha]) (by simp [hb]) hddeg2
               had.symm hbe.symm hab
@@ -224,7 +233,7 @@ theorem lemma5_4_initial
             unfold vertexDegree
             simpa [hab.ne] using Set.ncard_le_ncard hs
           by_cases hddeg2 : vertexDegree G d = 2
-          · have hntrSwap := containsNegativeA0 C.swapSides
+          · have hntrSwap := containsNegativeDcA C.swapSides
                 (a := d) (b := a) (c := b)
                 (by simp [hd]) (by simp [ha]) (by simp [hb]) hddeg2
                 had.symm hbf.symm hab

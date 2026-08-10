@@ -88,8 +88,6 @@ structure GoodColoring [Fintype V] (G : SimpleGraph V) where
   subcubic : IsSubcubic G
   matching : IsMatchingColoring G color
   color_correct : ∀ v, HasGraphColor G color v (color v)
-  red_or_blue_degree :
-    ∀ v, (color v = .red ∨ color v = .blue) → vertexDegree G v = 3
 
 namespace GoodColoring
 
@@ -147,10 +145,6 @@ def swapSides : GoodColoring G where
   color_correct := by
     intro v
     exact (C.hasGraphColor_swap v (C.color v)).2 (C.color_correct v)
-  red_or_blue_degree := by
-    intro v hv
-    apply C.red_or_blue_degree v
-    cases h : C.color v <;> simp [h, Color.swap] at hv ⊢
 
 @[simp] theorem swapSides_color (v : V) : C.swapSides.color v = (C.color v).swap := rfl
 

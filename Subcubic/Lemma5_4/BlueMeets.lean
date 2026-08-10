@@ -44,6 +44,15 @@ theorem lemma5_4_blue_meets_e
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hfe : G.Adj Q.f Q.e) (hg : C.color g = .blue)
     (hfg : G.Adj Q.f g) : HasReachableNegativeReduction C := by
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   have hf := f_reddish_of_meets_e_and_blue C Q hfe hg hfg
   have hgCorrect := C.color_correct g
   rw [hg] at hgCorrect
@@ -55,7 +64,7 @@ theorem lemma5_4_blue_meets_e
     · exact (C.bluish_not_adj_blueSide hi (Or.inl hg) hgi.symm).elim
   have hif : i ≠ Q.f := vertex_ne_of_color_eq hi hf (by decide)
   obtain ⟨h, hgh, hhi, hhf⟩ :=
-    C.exists_third_neighbor (Or.inr hg) hif
+    C.exists_third_neighbor (degree_of_color (Or.inr hg)) hif
   have hhSide := C.other_neighbor_of_blue_is_redSide hg hi hgi hgh hhi
   have hgd : ¬ G.Adj g Q.d := by
     simpa [SimpleGraph.adj_comm] using
@@ -154,7 +163,9 @@ theorem lemma5_4_blue_meets_e
         rcases hrCases with hr | hr
         · exact hr
         · exact (C.reddish_not_adj_redSide hr (Or.inl hh) hhr.symm).elim
-      rcases exists_flipAt_or_cutEnhancer C hh hg hr hi hhr hgh.symm hgi with
+      rcases exists_flipAt_or_cutEnhancer C hh hg hr hi
+          (degree_of_color (Or.inl hh)) (degree_of_color (Or.inr hg))
+          hhr hgh.symm hgi with
         hflip | hce
       · obtain ⟨M, hflip⟩ := hflip
         let D := M.toGoodColoring

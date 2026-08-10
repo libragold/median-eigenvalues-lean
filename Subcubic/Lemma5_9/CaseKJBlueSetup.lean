@@ -49,6 +49,12 @@ theorem lemma5_9_case_kj_blue_setup
   have noCE (hce : ContainsCutEnhancer C) : False :=
     hfinal.1 (HasReachableNegativeReduction.of_current_ce C hce)
   have noResult (hr : HasReachableNegativeReduction C) : False := hfinal.1 hr
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (noResult (.of_current_ntr C hntr)).elim
+    · exact (noResult (.of_current_ce C hce)).elim
   rcases Q with ⟨⟨⟨⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
     hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩, hxy, hij, hnotBoth⟩,
     hic, hideg, t, ht, hit, htd, hth⟩,
@@ -207,7 +213,7 @@ theorem lemma5_9_case_kj_blue_setup
         (vertex_ne_of_color_eq hm hy (by decide)))
       exact hmb.symm
     have hmf : ¬ G.Adj m f := by
-      obtain ⟨r, hfr, hre, hrg⟩ := C.exists_third_neighbor (Or.inl hf)
+      obtain ⟨r, hfr, hre, hrg⟩ := C.exists_third_neighbor (degreeC (Or.inl hf))
         (hv (u := (4 : Fin 8)) (v := 6) (by decide))
       have hrSide := C.other_neighbor_of_red_is_blueSide hf he hef.symm hfr hre
       have hrh : r ≠ h := by intro q; subst r; exact (nonedge 5 7 (by native_decide)) hfr

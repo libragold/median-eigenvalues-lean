@@ -22,13 +22,14 @@ private theorem redEdge_twoBlueNeighbors_negative
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hac : G.Adj a c) (had : G.Adj a d)
     (hcdV : c ≠ d) :
-    ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
+    HasReachableNegativeReduction C := by
   by_cases hcd : G.Adj c d
   · apply lemma5_2 C a b c d hab ha hb hcd hc hd
     classical
     simp [fourVertexCrossEdgeCount, hac, had]
     omega
-  · exact Or.inr (containsCutEnhancerA_of C ha hc hd hac had hcdV hcd)
+  · exact .of_current_ce C
+      (containsCutEnhancerA_of C ha hc hd hac had hcdV hcd)
 
 /-- **Lemma 5.3.** If a red edge sends at least three edges into a set of
 blue vertices, then the current coloring contains an induced negative tail
@@ -38,7 +39,7 @@ theorem lemma5_3
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (hB : ∀ v ∈ B, C.color v = .blue)
     (hthree : 3 ≤ edgeCountFromPairToSet G a b B) :
-    ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
+    HasReachableNegativeReduction C := by
   have hsplit :
       2 ≤ (G.neighborSet a ∩ B).ncard ∨
       2 ≤ (G.neighborSet b ∩ B).ncard := by
@@ -67,7 +68,7 @@ theorem lemma5_3_of_three_neighbors
     (hax : G.Adj a x ∨ G.Adj b x)
     (hay : G.Adj a y ∨ G.Adj b y)
     (haz : G.Adj a z ∨ G.Adj b z) :
-    ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
+    HasReachableNegativeReduction C := by
   classical
   let B : Set V := {x, y, z}
   apply lemma5_3 C B ha hb hab

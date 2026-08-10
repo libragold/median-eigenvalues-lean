@@ -25,6 +25,13 @@ theorem lemma4_10_other_red_complete
   by_contra hresult
   have noCurrentCE (hce : ContainsCutEnhancer C) : False :=
     hresult (HasReachableReduction.of_current_ce C hce)
+  have degreeC {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hresult (.of_current_ptr C hptr)).elim
+    · exact (noCurrentCE hce).elim
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath6 G a b c d e f := ⟨hinj, hedge⟩
@@ -147,7 +154,8 @@ theorem lemma4_10_other_red_complete
         · exact (hNoBlueM z hmz hz).elim
         · exact hz
       exact hresult (HasReachableReduction.of_current_ptr C
-        (lemma4_4 C Q.hl hm hlm l_other m_other))
+        (lemma4_4 C Q.hl hm hlm (degreeC (Or.inl Q.hl))
+          (degreeC (Or.inl hm)) l_other m_other))
     · -- Case (3.2.2.3.2.3.3), completed below.
       push Not at hNoBlueM
       obtain ⟨n, hmn, hn⟩ := hNoBlueM
@@ -223,6 +231,7 @@ theorem lemma4_10_other_red_complete
         · exact ho
         · exact (C.bluish_not_adj_blueSide ho (Or.inl hn) hno.symm).elim
       rcases exists_flipAt_or_cutEnhancer C hm hn Q.hl ho
+          (degreeC (Or.inl hm)) (degreeC (Or.inr hn))
           hlm.symm hmn hno with hflip | hce
       · obtain ⟨M, hflip⟩ := hflip
         let D := M.toGoodColoring
@@ -362,6 +371,7 @@ theorem lemma4_10_other_red_complete
       · exact ho
       · exact (C.bluish_not_adj_blueSide ho (Or.inl hn) hno.symm).elim
     rcases exists_flipAt_or_cutEnhancer C Q.hl hn hm ho
+        (degreeC (Or.inl Q.hl)) (degreeC (Or.inr hn))
         hlm hln hno with hflip | hce
     · obtain ⟨M, hflip⟩ := hflip
       let D := M.toGoodColoring
@@ -448,9 +458,11 @@ theorem lemma4_10_other_red_complete
         · exact Q.hjl.ne
         · exact color_ne Q.hj hn (by decide)
       have hlD : D.color Q.l = .blue :=
-        blue_of_flipped_red_endpoint C hflip hm hlm (color_ne hm hn (by decide))
+        blue_of_flipped_red_endpoint C hflip hm hlm
+          (degreeC (Or.inl Q.hl)) (color_ne hm hn (by decide))
       have hnD : D.color n = .red :=
-        red_of_flipped_blue_endpoint C hflip ho hno (color_ne ho Q.hl (by decide))
+        red_of_flipped_blue_endpoint C hflip ho hno
+          (degreeC (Or.inr hn)) (color_ne ho Q.hl (by decide))
       have hnCorrectD := D.color_correct n
       rw [hnD] at hnCorrectD
       obtain ⟨_, p, hpSide, hnp⟩ := hnCorrectD

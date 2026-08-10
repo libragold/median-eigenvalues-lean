@@ -22,6 +22,14 @@ theorem lemma5_11_jk_cases
     HasReachableNegativeReduction C ∨
       Nonempty (Lemma5_11JConfiguration C a b c d e f) := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 6} (hxy : x ≠ y) :
@@ -59,7 +67,7 @@ theorem lemma5_11_jk_cases
       exact Or.inr ⟨⟨Q', hka⟩⟩
     · have hbh : b ≠ Q.h := color_ne hb Q.hh (by decide)
       obtain ⟨l, hal, hlb, hlh⟩ :=
-        C.exists_third_neighbor (Or.inl ha) hbh
+        C.exists_third_neighbor (degreeC (Or.inl ha)) hbh
       have hlSide := C.other_neighbor_of_red_is_blueSide ha hb hab hal hlb
       have hl : C.color l = .bluish := by
         rcases hlSide with hl | hl
@@ -76,7 +84,7 @@ theorem lemma5_11_jk_cases
         · intro h; subst l; exact hka hal.symm
       apply Or.inl
       apply HasReachableNegativeReduction.of_current_ntr C
-      apply containsNegativeAf C Q.hi ha hb Q.hj Q.hk Q.hh hl hc hd Q.hg
+      apply containsNegativeAg C Q.hi ha hb Q.hj Q.hk Q.hh hl hc hd Q.hg
         Q.hij Q.hik Q.hci.symm hab Q.hha.symm hal hbc Q.hbg hcd
         Q.hih hil Q.hid' Q.hig
       have hjh : Q.j ≠ Q.h := by
@@ -116,4 +124,3 @@ theorem lemma5_11_jk_cases
         color_ne hc Q.hg (by decide), color_ne hd Q.hg (by decide), hcdV]
 
 end Subcubic
-

@@ -1,5 +1,6 @@
 import Subcubic.FlipLemmas
 import Subcubic.TailReducers
+import Subcubic.Lemma3_4
 
 /-!
 # Reachable positive reductions
@@ -29,6 +30,15 @@ theorem HasReachableReduction.of_current_ce (C : GoodColoring G)
   refine ⟨C.toMatchingCut, .refl, Or.inr ?_⟩
   exact (containsInducedUpToSwap_congr_color IsCutEnhancer
     (by simp)).1 hce
+
+/-- An absolute reducer or cut enhancer reachable in the sense of Lemma 3.4
+is a reachable positive reduction. -/
+theorem HasReachableReduction.of_lemma3_4
+    (C : GoodColoring G) (h : HasReachableLemma3_4Obstruction C) :
+    HasReachableReduction C := by
+  rcases h with ⟨M, hreach, habsolute | hce⟩
+  · exact ⟨M, hreach, Or.inl habsolute.1⟩
+  · exact ⟨M, hreach, Or.inr hce⟩
 
 /-- A reduction reachable after one valid first flip is also reachable from
 the original coloring. -/

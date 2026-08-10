@@ -17,6 +17,15 @@ theorem lemma4_8_case_lm_blue
     (hl : C.color Q.l = .blue) (hm : C.color Q.m = .blue) :
     HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases Q with ⟨⟨⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
     hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩, hxy, hij, hnotBoth⟩,
     hic, k, hk, hck, hkb, hkd, hkg, hkdeg⟩,
@@ -43,7 +52,9 @@ theorem lemma4_8_case_lm_blue
     exact (by native_decide : ¬ (graphOfEdges
       [(0, 1), (1, 2), (2, 3), (3, 4),
        (4, 5), (5, 6), (6, 7)]).Adj (2 : Fin 8) 0) ((hedge 2 0).mpr hca)
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degree_of_color (Or.inl hb)) (degree_of_color (Or.inr hc))
+      hab.symm hbc hcd
       with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring

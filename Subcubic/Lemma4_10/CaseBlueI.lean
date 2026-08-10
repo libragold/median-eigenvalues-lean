@@ -34,6 +34,13 @@ theorem lemma4_10_case_3_2_1
   by_contra hresult
   have noCurrentCE (hce : ContainsCutEnhancer C) : False :=
     hresult (HasReachableReduction.of_current_ce C hce)
+  have degreeC {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hresult (.of_current_ptr C hptr)).elim
+    · exact (noCurrentCE hce).elim
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath6 G a b c d e f := ⟨hinj, hedge⟩
@@ -84,7 +91,8 @@ theorem lemma4_10_case_3_2_1
         (by simp [hd]) (by simp [hc]) (by simp [hj]) hcd.symm hjc.symm
     exact hdj hjk.symm
 
-  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+  rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+      (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring
@@ -105,9 +113,11 @@ theorem lemma4_10_case_3_2_1
       · exact hv (x := (4 : Fin 6)) (y := 2) (by decide)
     have hbD : D.color b = .blue :=
       blue_of_flipped_red_endpoint C hflip ha hab.symm
+        (degreeC (Or.inl hb))
         (hv (x := (0 : Fin 6)) (y := 2) (by decide))
     have hcD : D.color c = .red :=
       red_of_flipped_blue_endpoint C hflip hd hcd
+        (degreeC (Or.inr hc))
         (hv (x := (3 : Fin 6)) (y := 1) (by decide))
     have hiD : D.color Q.i = .red :=
       red_of_reddish_gains_flipped_blue C hflip Q.hi Q.hci.symm

@@ -22,6 +22,14 @@ theorem lemma5_13_case4_exact_blue_no_red
     (hNoRedI : ∀ z, G.Adj i z → C.color z ≠ .red) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   have color_ne {x y : V} {cx cy : Color}
       (hx : C.color x = cx) (hy : C.color y = cy) (hne : cx ≠ cy) : x ≠ y := by
     intro e; subst y; simp_all
@@ -29,7 +37,7 @@ theorem lemma5_13_case4_exact_blue_no_red
   have hhm : h ≠ m := vertex_ne_of_color_eq hh hm (by decide)
   obtain ⟨q, hiq, hqh, hqm⟩ :=
     exists_third_neighbor_of_degree_three
-      (C.red_or_blue_degree i (Or.inr hi)) hhm
+      (degreeC (Or.inr hi)) hhm
   have hq : C.color q = .reddish := by
     cases hcq : C.color q with
     | red => exact (hNoRedI q hiq hcq).elim

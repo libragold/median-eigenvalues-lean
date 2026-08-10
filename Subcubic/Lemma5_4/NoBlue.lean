@@ -25,8 +25,8 @@ private theorem no_blue_neighbor_is_bluish
   | bluish => exact rfl
 
 /-- Case 2.2.1, oriented so that the third neighbor `f` meets `e`.
-The new `e0-minus-`/`e1-minus-` entries are exactly the degree-two reddish
-and red alternatives. -/
+The reducers `ntr-dc-b` and `ntr-b` are exactly the degree-two reddish and
+red alternatives. -/
 theorem lemma5_4_noBlue_meets_e
     (C : GoodColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
@@ -44,7 +44,7 @@ theorem lemma5_4_noBlue_meets_e
         Q.hfa.symm
     · exact fun h => C.reddish_not_adj_redSide hf (Or.inl hb) h.symm
   rcases Q.hf with hf | hf
-  · apply containsNegativeE1Minus C hb hf Q.hd Q.he
+  · apply containsNegativeB C hb hf Q.hd Q.he
       Q.hbd Q.hbe Q.hdf.symm hfe hbf
     simp [Q.hbd.ne, Q.hbe.ne, hfd, hfeV, Q.hde,
       Q.hfb.symm]
@@ -58,7 +58,7 @@ theorem lemma5_4_noBlue_meets_e
       unfold vertexDegree
       simpa [Q.hde] using Set.ncard_le_ncard hs
     by_cases hfdeg2 : vertexDegree G Q.f = 2
-    · apply containsNegativeE0Minus C hb hf Q.hd Q.he hfdeg2
+    · apply containsNegativeDcB C hb hf Q.hd Q.he hfdeg2
         Q.hbd Q.hbe Q.hdf.symm hfe hbf
       simp [Q.hbd.ne, Q.hbe.ne, hfd, hfeV, Q.hde,
         Q.hfb.symm]
@@ -89,6 +89,7 @@ theorem lemma5_4_noBlue_meets_neither
     (C : GoodColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
+    (hfDegree : C.color Q.f = .red → vertexDegree G Q.f = 3)
     (hfc : ¬ G.Adj Q.f Q.c) (hfe : ¬ G.Adj Q.f Q.e)
     (hnoBlue : ∀ v, G.Adj Q.f v → C.color v ≠ .blue) :
     ContainsNegativeTailReducer C := by
@@ -106,7 +107,7 @@ theorem lemma5_4_noBlue_meets_neither
       · exact (C.reddish_not_adj_redSide hr (Or.inl hf) hfr.symm).elim
     have hdr : Q.d ≠ r := redSide_ne_bluish (Or.inl hr) Q.hd |>.symm
     obtain ⟨g, hfg, hgd, hgr⟩ :=
-      C.exists_third_neighbor (Or.inl hf) hdr
+      C.exists_third_neighbor (hfDegree hf) hdr
     have hgSide := C.other_neighbor_of_red_is_blueSide hf hr hfr hfg hgr
     have hg : C.color g = .bluish := by
       rcases hgSide with hg | hg
@@ -114,7 +115,7 @@ theorem lemma5_4_noBlue_meets_neither
       · exact hg
     have hcg : Q.c ≠ g := by intro h; subst g; exact hfc hfg
     have heg : Q.e ≠ g := by intro h; subst g; exact hfe hfg
-    apply containsNegativeS1Minus C ha hb hf Q.hc Q.he Q.hd hg
+    apply containsNegativeN C ha hb hf Q.hc Q.he Q.hd hg
       hab Q.hac Q.had Q.hbe Q.hbd Q.hdf.symm hfg hfc hfe
     simp [hab.ne, Q.hac.ne, Q.had.ne, Q.hbe.ne, Q.hbd.ne,
       hfd, hfcV, hfeV, Q.hcd, Q.hce,
@@ -134,7 +135,7 @@ theorem lemma5_4_noBlue_meets_neither
         exact Q.hdf.symm
       simpa using Set.ncard_le_ncard hs
     by_cases hfdeg1 : vertexDegree G Q.f = 1
-    · apply containsNegativeS0Minus2 C ha hb hf Q.hc Q.he Q.hd hfdeg1
+    · apply containsNegativeDcE C ha hb hf Q.hc Q.he Q.hd hfdeg1
         hab Q.hac Q.had Q.hbe Q.hbd Q.hdf.symm hfc hfe
       simp [hab.ne, Q.hac.ne, Q.had.ne, Q.hbe.ne, Q.hbd.ne,
         hfd, hfcV, hfeV, Q.hcd, Q.hce, Q.hde.symm,
@@ -147,7 +148,7 @@ theorem lemma5_4_noBlue_meets_neither
         have hg := no_blue_neighbor_is_bluish C hf hfg hnoBlue
         have hcg : Q.c ≠ g := by intro h; subst g; exact hfc hfg
         have heg : Q.e ≠ g := by intro h; subst g; exact hfe hfg
-        apply containsNegativeS0Minus C ha hb hf Q.hc Q.he Q.hd hg hfdeg2
+        apply containsNegativeDcD C ha hb hf Q.hc Q.he Q.hd hg hfdeg2
           hab Q.hac Q.had Q.hbe Q.hbd Q.hdf.symm hfg hfc hfe
         simp [hab.ne, Q.hac.ne, Q.had.ne, Q.hbe.ne, Q.hbd.ne,
           hfd, hfcV, hfeV, Q.hcd, Q.hce,
@@ -169,7 +170,7 @@ theorem lemma5_4_noBlue_meets_neither
         have hch : Q.c ≠ h := by intro h; subst h; exact hfc hfh
         have heg : Q.e ≠ g := by intro h; subst g; exact hfe hfg
         have heh : Q.e ≠ h := by intro h; subst h; exact hfe hfh
-        apply containsNegativeS C ha hb hf Q.hc Q.he Q.hd hg hh
+        apply containsNegativeT C ha hb hf Q.hc Q.he Q.hd hg hh
           hab Q.hac Q.had Q.hbe Q.hbd Q.hdf.symm hfg hfh hfc hfe
         simp [hab.ne, Q.hac.ne, Q.had.ne, Q.hbe.ne, Q.hbd.ne,
           hfd, hfcV, hfeV, hgh, Q.hcd, Q.hce,

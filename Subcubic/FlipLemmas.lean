@@ -204,13 +204,15 @@ theorem exists_flipAt_or_cutEnhancer
     (C : GoodColoring G) {r s rr ss : V}
     (hr : C.color r = .red) (hs : C.color s = .blue)
     (hrr : C.color rr = .red) (hss : C.color ss = .blue)
+    (hrDegree : vertexDegree G r = 3)
+    (hsDegree : vertexDegree G s = 3)
     (hrrEdge : G.Adj r rr) (hrsEdge : G.Adj r s)
     (hssEdge : G.Adj s ss) :
     (∃ M' : MatchingCut G, C.toMatchingCut.IsFlipAt M' r s) ∨
       ContainsCutEnhancer C := by
   have hrrs : rr ≠ s := by intro h; subst rr; simp_all
   obtain ⟨rb, hrbEdge, hrbrr, hrbs⟩ :=
-    C.exists_third_neighbor (Or.inl hr) hrrs
+    C.exists_third_neighbor hrDegree hrrs
   have hrbSide : C.color rb = .blue ∨ C.color rb = .bluish :=
     C.other_neighbor_of_red_is_blueSide hr hrr hrrEdge hrbEdge hrbrr
   have finish (hrbSafe : C.color rb = .bluish ∨ rb = ss) :
@@ -221,7 +223,7 @@ theorem exists_flipAt_or_cutEnhancer
         (Or.inr rfl) hrrEdge hrsEdge hrbEdge hssEdge hsrr)
     have hssr : ss ≠ r := by intro h; subst ss; simp_all
     obtain ⟨sr, hsrEdge, hsrss, hsrrV⟩ :=
-      C.exists_third_neighbor (Or.inr hs) hssr
+      C.exists_third_neighbor hsDegree hssr
     have hsrSide : C.color sr = .red ∨ C.color sr = .reddish :=
       C.other_neighbor_of_blue_is_redSide hs hss hssEdge hsrEdge hsrss
     have hsrrr : rr ≠ sr := by
@@ -473,11 +475,12 @@ theorem blue_of_flipped_red_endpoint (C : GoodColoring G)
     {M : MatchingCut G} {r s rr : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hrr : C.color rr = .red) (hrrEdge : G.Adj r rr)
+    (hrDegree : vertexDegree G r = 3)
     (hrrs : rr ≠ s) : M.toGoodColoring.color r = .blue := by
   have hr : C.color r = .red := by
     simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.1
   obtain ⟨z, hrz, hzrr, hzs⟩ :=
-    C.exists_third_neighbor (Or.inl hr) hrrs
+    C.exists_third_neighbor hrDegree hrrs
   have hzBlue : z ∉ C.redSide := by
     rw [C.not_mem_redSide_iff]
     exact C.other_neighbor_of_red_is_blueSide hr hrr hrrEdge hrz hzrr
@@ -496,11 +499,12 @@ theorem red_of_flipped_blue_endpoint (C : GoodColoring G)
     {M : MatchingCut G} {r s ss : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hss : C.color ss = .blue) (hssEdge : G.Adj s ss)
+    (hsDegree : vertexDegree G s = 3)
     (hssr : ss ≠ r) : M.toGoodColoring.color s = .red := by
   have hs : C.color s = .blue := by
     simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.2
   obtain ⟨z, hsz, hzss, hzr⟩ :=
-    C.exists_third_neighbor (Or.inr hs) hssr
+    C.exists_third_neighbor hsDegree hssr
   have hzRed : z ∈ C.redSide := by
     rw [C.mem_redSide_iff]
     exact C.other_neighbor_of_blue_is_redSide hs hss hssEdge hsz hzss

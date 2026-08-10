@@ -18,6 +18,15 @@ theorem lemma5_4
     (ha_other : ∀ v, G.Adj a v → v ≠ b → C.color v = .bluish)
     (hb_other : ∀ v, G.Adj b v → v ≠ a → C.color v = .bluish) :
     HasReachableNegativeReduction C := by
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases lemma5_4_initial C ha hb hab ha_other hb_other with hdone | hconfig
   · exact hdone
   · obtain ⟨Q⟩ := hconfig
@@ -40,6 +49,7 @@ theorem lemma5_4
         · exact HasReachableNegativeReduction.of_current_ntr C
             (lemma5_4_noBlue_meets_e C hb ha hab.symm Q.reverse hfc hnoBlue)
         · exact HasReachableNegativeReduction.of_current_ntr C
-            (lemma5_4_noBlue_meets_neither C ha hb hab Q hfc hfe hnoBlue)
+            (lemma5_4_noBlue_meets_neither C ha hb hab Q
+              (fun hf ↦ degree_of_color (Or.inl hf)) hfc hfe hnoBlue)
 
 end Subcubic

@@ -28,6 +28,7 @@ private theorem lemma5_6_endpoint_case
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
     (hg : C.color g = .bluish) (hgdeg : vertexDegree G g = 3)
+    (hcDegree : vertexDegree G c = 3)
     (hbg : G.Adj b g) (heg : G.Adj e g) (hgf : G.Adj g f) :
     ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
   classical
@@ -54,7 +55,7 @@ private theorem lemma5_6_endpoint_case
   have hbfV : b ≠ f := hv (x := (1 : Fin 6)) (y := 5) (by decide)
   have hefV : e ≠ f := hv (x := (4 : Fin 6)) (y := 5) (by decide)
   have hbdV : b ≠ d := hv (x := (1 : Fin 6)) (y := 3) (by decide)
-  obtain ⟨h, hch, hhb, hhd⟩ := C.exists_third_neighbor (Or.inr hc) hbdV
+  obtain ⟨h, hch, hhb, hhd⟩ := C.exists_third_neighbor hcDegree hbdV
   have hhSide := C.other_neighbor_of_blue_is_redSide hc hd hcd hch hhd
   have hha : h ≠ a := by
     intro hha
@@ -112,10 +113,22 @@ theorem lemma5_6
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red) :
     (¬ ∃ g, G.Adj b g ∧ G.Adj e g) ∨
-      ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
+      HasReachableNegativeReduction C := by
   classical
   by_cases hshared : ∃ g, G.Adj b g ∧ G.Adj e g
   · right
+    by_cases hdone : HasReachableNegativeReduction C
+    · exact hdone
+    have degree_of_color {v : V}
+        (hv : C.color v = .red ∨ C.color v = .blue) :
+        vertexDegree G v = 3 := by
+      rcases lemma3_4_negative C hv with hdegree | hntr | hce
+      · exact hdegree
+      · exact (hdone (.of_current_ntr C hntr)).elim
+      · exact (hdone (.of_current_ce C hce)).elim
+    have finish (hout : ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C) :
+        HasReachableNegativeReduction C :=
+      hout.elim (.of_current_ntr C) (.of_current_ce C)
     rcases hshared with ⟨g, hbg, heg⟩
     dsimp [FormsInducedPath6] at hpath
     rcases hpath with ⟨hinj, hedge⟩
@@ -148,24 +161,26 @@ theorem lemma5_6
     · rcases lemma3_5 C.swapSides (by simp [hc]) (by simp [hb])
           (by simp [hg]) hbc.symm hbg with hgdeg | hceFound
       · by_cases hgf : G.Adj g f
-        · exact lemma5_6_endpoint_case C hp ha hb hc hd he hf hg hgdeg
-            hbg heg hgf
+        · exact finish (lemma5_6_endpoint_case C hp ha hb hc hd he hf hg hgdeg
+            (degree_of_color (Or.inr hc)) hbg heg hgf)
         · by_cases hga : G.Adj g a
-          · exact lemma5_6_endpoint_case C hp.reverse hf he hd hc hb ha hg
-              hgdeg heg hbg hga
+          · exact finish (lemma5_6_endpoint_case C hp.reverse hf he hd hc hb ha hg
+              hgdeg (degree_of_color (Or.inr hd)) heg hbg hga)
           · have hceV : c ≠ e := hv (x := (2 : Fin 6)) (y := 4) (by decide)
             have hcg : ¬ G.Adj c g :=
               fun h => C.bluish_not_adj_blueSide hg (Or.inl hc) h.symm
             have hgd : ¬ G.Adj g d :=
               C.bluish_not_adj_blueSide hg (Or.inl hd)
             have hdg : ¬ G.Adj d g := fun q => hgd q.symm
-            obtain ⟨i, hci, hib, hid⟩ := C.exists_third_neighbor (Or.inr hc)
+            obtain ⟨i, hci, hib, hid⟩ := C.exists_third_neighbor
+              (degree_of_color (Or.inr hc))
               (hv (x := (1 : Fin 6)) (y := 3) (by decide))
             have hiSide := C.other_neighbor_of_blue_is_redSide hc hd hcd hci hid
             have hia : i ≠ a := by intro h; subst i; exact (nonedge 0 2 (by native_decide)) hci.symm
             rcases lemma3_3_reversed C hc hb ha hiSide hbc.symm hci hab.symm
                 hib.symm hia.symm with hi | hceFound
-            · obtain ⟨j, hdj, hjc, hje⟩ := C.exists_third_neighbor (Or.inr hd) hceV
+            · obtain ⟨j, hdj, hjc, hje⟩ := C.exists_third_neighbor
+                (degree_of_color (Or.inr hd)) hceV
               have hjSide := C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdj hjc
               have hjf : j ≠ f := by intro h; subst j; exact (nonedge 3 5 (by native_decide)) hdj
               rcases lemma3_3_reversed C hd he hf hjSide hde hdj hef
@@ -179,8 +194,7 @@ theorem lemma5_6
                   exact (C.bluish_not_adj_blueSide hg
                     ((C.not_mem_redSide_iff h).1 hhmem) hgh).elim
                 rcases hhSide with hh | hh
-                · right
-                  have hha : h ≠ a := by intro hha; subst h; exact hga hgh
+                · have hha : h ≠ a := by intro hha; subst h; exact hga hgh
                   have hhf : h ≠ f := by intro hhf; subst h; exact hgf hgh
                   have hbh : ¬ G.Adj b h :=
                     C.redSide_not_adj_second_neighbor
@@ -192,17 +206,18 @@ theorem lemma5_6
                       hhf.symm
                   have hch : ¬ G.Adj c h := by
                     apply not_adj_fourth_neighbor_of_degree_three
-                      (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd hci
+                      (degree_of_color (Or.inr hc)) hbc.symm hcd hci
                     · exact (hv (x := (1 : Fin 6)) (y := 3) (by decide))
                     · exact hib.symm
                     · exact hid.symm
                     · exact hhb
                     · exact color_ne hh hd (by decide)
                     · exact color_ne hh hi (by decide)
-                  exact containsCutEnhancerC_of C hb he hc hg hh
-                    hbc hbg heg hgh hbe hbh (fun h => hce h.symm) heh hcg hch
-                    (hv (x := (1 : Fin 6)) (y := 4) (by decide))
-                    hhb.symm hhe.symm
+                  exact HasReachableNegativeReduction.of_current_ce C
+                    (containsCutEnhancerC_of C hb he hc hg hh
+                      hbc hbg heg hgh hbe hbh (fun h => hce h.symm) heh hcg hch
+                      (hv (x := (1 : Fin 6)) (y := 4) (by decide))
+                      hhb.symm hhe.symm)
                 · have pentagon : FormsInducedPentagon G c d g b e := by
                     have hbeV : b ≠ e :=
                       hv (x := (1 : Fin 6)) (y := 4) (by decide)
@@ -224,7 +239,7 @@ theorem lemma5_6
                       C.color v ≠ .red := by
                     intro v hcv hvb _ hvred
                     exact (not_adj_fourth_neighbor_of_degree_three
-                      (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd hci
+                      (degree_of_color (Or.inr hc)) hbc.symm hcd hci
                       (hv (x := (1 : Fin 6)) (y := 3) (by decide))
                       hib.symm hid.symm hvb
                       (color_ne hvred hd (by decide))
@@ -233,7 +248,7 @@ theorem lemma5_6
                       C.color v ≠ .red := by
                     intro v hdv _ hve hvred
                     exact (not_adj_fourth_neighbor_of_degree_three
-                      (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hde hdj
+                      (degree_of_color (Or.inr hd)) hcd.symm hde hdj
                       hceV hjc.symm hje.symm
                       (color_ne hvred hc (by decide)) hve
                       (color_ne hvred hj (by decide))) hdv
@@ -250,17 +265,12 @@ theorem lemma5_6
                     (by simp [hb]) (Or.inl (by simp [he]))
                     (by simpa using noRedAtC) (by simpa using noRedAtD)
                     (by simpa using noRedAtG)
-                  rcases hresult with hntr | hceResult
-                  · left
-                    exact (containsInducedUpToSwap_swapSides
-                      IsNegativeTailReducer C).1 hntr
-                  · right
-                    exact (containsInducedUpToSwap_swapSides
-                      IsCutEnhancer C).1 hceResult
-              · exact Or.inr hceFound
-            · exact Or.inr hceFound
-      · exact Or.inr ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hceFound)
-    · exact Or.inr hceFound
+                  exact HasReachableNegativeReduction.of_swapSides C hresult
+              · exact finish (Or.inr hceFound)
+            · exact finish (Or.inr hceFound)
+      · exact HasReachableNegativeReduction.of_swapSides C
+          (HasReachableNegativeReduction.of_lemma3_4 C.swapSides hceFound)
+    · exact finish (Or.inr hceFound)
   · exact Or.inl hshared
 
 end Subcubic

@@ -30,7 +30,8 @@ private theorem contains_positiveB
   have hn : [a, b, c, d].Nodup := by
     simp [hab_ne, hac_ne, had_ne, hbc_ne, hbd_ne, hcd]
   refine ⟨positiveTailReducer .b, ⟨.b, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -74,7 +75,8 @@ private theorem contains_positiveH
     simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
       hcd, hce, hde]
   refine ⟨positiveTailReducer .h, ⟨.h, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -133,7 +135,8 @@ private theorem contains_positiveK
     simp [hab_ne, hac_ne, had_ne, hae_ne, haf_ne, hbc_ne, hbd_ne,
       hbe_ne, hbf_ne, hcd, hce, hcf, hde, hdf, hef]
   refine ⟨positiveTailReducer .k, ⟨.k, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e, f].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e, f].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -152,13 +155,15 @@ positive tail reducer. -/
 theorem lemma4_4
     (C : GoodColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
+    (haDegree : vertexDegree G a = 3)
+    (hbDegree : vertexDegree G b = 3)
     (ha_other : ∀ v, G.Adj a v → v ≠ b → C.color v = .bluish)
     (hb_other : ∀ v, G.Adj b v → v ≠ a → C.color v = .bluish) :
     ContainsPositiveTailReducer C := by
   obtain ⟨c, d, hac, had, hcb, hdb, hcd⟩ :=
-    C.exists_two_other_neighbors (Or.inl ha) hab
+    C.exists_two_other_neighbors haDegree hab
   obtain ⟨e, f, hbe, hbf, hea, hfa, hef⟩ :=
-    C.exists_two_other_neighbors (Or.inl hb) hab.symm
+    C.exists_two_other_neighbors hbDegree hab.symm
   have hc := ha_other c hac hcb
   have hd := ha_other d had hdb
   have he := hb_other e hbe hea

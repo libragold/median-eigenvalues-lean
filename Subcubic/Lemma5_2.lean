@@ -1,13 +1,13 @@
 import Subcubic.NegativeTailReducerWitnesses
 import Subcubic.Lemma3_5
+import Subcubic.NegativeReduction
 
 /-!
 # Lemma 5.2
 
 This is the negative-tail analogue of Lemma 4.2.  The two crossing edges
-either share an endpoint, immediately giving `a1-`, or form a matching.  The
-matching case follows the prose proof through reducers `f-`, `k-`, `n-`, and
-`m-`.
+either share an endpoint, immediately giving `ntr-a`, or form a matching.
+The matching case follows the corresponding reducers in `detailed-input.txt`.
 -/
 
 namespace Subcubic
@@ -31,7 +31,7 @@ private theorem shared_red_endpoint
     ContainsNegativeTailReducer C := by
   have hn : [a, c, d].Nodup := by
     simp [hcd.ne, color_ne ha hc (by decide), color_ne ha hd (by decide)]
-  exact containsNegativeA1 C ha hc hd hac had hcd hn
+  exact containsNegativeA C ha hc hd hac had hcd hn
 
 /-- Figure 5(f): in a crossing matching, the third neighbor of `b` is not
 also adjacent to `a`. -/
@@ -46,9 +46,15 @@ private theorem matching_open
     (hbe : G.Adj b e) (hea : ¬ G.Adj e a)
     (heaV : e ≠ a) (hedV : e ≠ d) :
     ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
+  by_contra hno
+  apply hno
+  have haDegree : vertexDegree G a = 3 := by
+    rcases lemma3_4_negative C (Or.inl ha) with hdegree | hfound
+    · exact hdegree
+    · exact (hno hfound).elim
   have hbcV : b ≠ c := by intro h; subst c; simp_all
   obtain ⟨f, haf, hfb, hfc⟩ :=
-    C.exists_third_neighbor (Or.inl ha) hbcV
+    C.exists_third_neighbor haDegree hbcV
   have hfSide := C.other_neighbor_of_red_is_blueSide ha hb hab haf hfb
   have hfdV : d ≠ f := by
     intro h
@@ -81,11 +87,19 @@ private theorem crossing_matching
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hcd : G.Adj c d)
     (hac : G.Adj a c) (hbd : G.Adj b d)
-    (had : ¬ G.Adj a d) (hbc : ¬ G.Adj b c) :
+    (had : ¬ G.Adj a d) (hbc : ¬ G.Adj b c)
+    (hNoReach : ¬ HasReachableNegativeReduction C) :
     ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hNoReach (.of_current_ntr C hntr)).elim
+    · exact (hNoReach (.of_current_ce C hce)).elim
   have hadV : a ≠ d := color_ne ha hd (by decide)
   obtain ⟨e, hbe, heaV, hedV⟩ :=
-    C.exists_third_neighbor (Or.inl hb) hadV
+    C.exists_third_neighbor (degree_of_color (Or.inl hb)) hadV
   have heSide := C.other_neighbor_of_red_is_blueSide hb ha hab.symm hbe heaV
   have hceV : c ≠ e := by
     intro h
@@ -96,7 +110,7 @@ private theorem crossing_matching
   · by_cases hea : G.Adj e a
     · have hcbV : c ≠ b := color_ne hc hb (by decide)
       obtain ⟨f, hdf, hfcV, hfbV⟩ :=
-        C.exists_third_neighbor (Or.inr hd) hcbV
+        C.exists_third_neighbor (degree_of_color (Or.inr hd)) hcbV
       have hfSide := C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdf hfcV
       have hfaV : a ≠ f := by
         intro h
@@ -137,7 +151,7 @@ private theorem crossing_matching
                       hgr.symm).elim
                 have hre : r ≠ e := color_ne hr he (by decide)
                 obtain ⟨h, hgh, hhr, hhe⟩ :=
-                  C.exists_third_neighbor (Or.inl hg) hre
+                  C.exists_third_neighbor (degree_of_color (Or.inl hg)) hre
                 have hhSide :=
                   C.other_neighbor_of_red_is_blueSide hg hr hgr hgh hhr
                 have hgf : g ≠ f := by
@@ -224,7 +238,7 @@ private theorem crossing_matching
                     color_ne he hf (by decide), color_ne he hg (by decide),
                     color_ne ha hg (by decide),
                     color_ne hb hf (by decide), color_ne hb hg (by decide)]
-                have hntrSwap := containsNegativeN C.swapSides
+                have hntrSwap := containsNegativeO C.swapSides
                   (by simp [hc]) (by simp [hd]) (by simp [he])
                   (by simp [ha]) (by simp [hb]) (by simp [hf])
                   (by simp [hg]) hcd hac.symm hfc.symm hbd.symm hdf hea
@@ -232,8 +246,10 @@ private theorem crossing_matching
                   hab hef hn
                 exact (containsInducedUpToSwap_swapSides
                   IsNegativeTailReducer C).1 hntrSwap
-          · right
-            exact (containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hce
+          · have hnegSwap :=
+              HasReachableNegativeReduction.of_lemma3_4 C.swapSides hce
+            exact (hNoReach
+              (HasReachableNegativeReduction.of_swapSides C hnegSwap)).elim
         · have hout := matching_open C.swapSides
             (by simp [hc]) (by simp [hd]) (by simp [ha]) (by simp [hb])
             (by simp [hf]) hcd hab hac.symm hbd.symm
@@ -250,37 +266,46 @@ private theorem crossing_matching
   · exact Or.inr hce
 
 /-- **Lemma 5.2.** If a red edge and a blue edge have at least two crossing
-edges between their endpoint pairs, then the current coloring contains an
-induced negative tail reducer or an induced cut enhancer, allowing the global
-red/blue symmetry in either witness. -/
+edges between their endpoint pairs, then a negative tail reducer or cut
+enhancer is reachable. -/
 theorem lemma5_2
     (C : GoodColoring G) (a b c d : V)
     (hab : G.Adj a b) (ha : C.color a = .red) (hb : C.color b = .red)
     (hcd : G.Adj c d) (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hmulti : 2 ≤ fourVertexCrossEdgeCount G a b c d) :
-    ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C := by
+    HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have liftCurrent
+      (h : ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C) :
+      HasReachableNegativeReduction C := by
+    rcases h with hntr | hce
+    · exact .of_current_ntr C hntr
+    · exact .of_current_ce C hce
   by_cases hac : G.Adj a c <;>
   by_cases had : G.Adj a d <;>
   by_cases hbc : G.Adj b c <;>
   by_cases hbd : G.Adj b d
   all_goals simp [fourVertexCrossEdgeCount, hac, had, hbc, hbd] at hmulti
-  · exact Or.inl (shared_red_endpoint C ha hc hd hcd hac had)
-  · exact Or.inl (shared_red_endpoint C ha hc hd hcd hac had)
-  · exact Or.inl (shared_red_endpoint C ha hc hd hcd hac had)
-  · exact Or.inl (shared_red_endpoint C ha hc hd hcd hac had)
-  · exact Or.inl (shared_red_endpoint C hb hc hd hcd hbc hbd)
+  · exact .of_current_ntr C (shared_red_endpoint C ha hc hd hcd hac had)
+  · exact .of_current_ntr C (shared_red_endpoint C ha hc hd hcd hac had)
+  · exact .of_current_ntr C (shared_red_endpoint C ha hc hd hcd hac had)
+  · exact .of_current_ntr C (shared_red_endpoint C ha hc hd hcd hac had)
+  · exact .of_current_ntr C (shared_red_endpoint C hb hc hd hcd hbc hbd)
   · have hntr := shared_red_endpoint C.swapSides
         (by simp [hc]) (by simp [ha]) (by simp [hb]) hab hac.symm hbc.symm
-    exact Or.inl ((containsInducedUpToSwap_swapSides
+    exact .of_current_ntr C ((containsInducedUpToSwap_swapSides
       IsNegativeTailReducer C).1 hntr)
-  · exact crossing_matching C ha hb hc hd hab hcd hac hbd had hbc
-  · exact Or.inl (shared_red_endpoint C hb hc hd hcd hbc hbd)
-  · exact crossing_matching C ha hb hd hc hab hcd.symm had hbc hac hbd
+  · exact liftCurrent
+      (crossing_matching C ha hb hc hd hab hcd hac hbd had hbc hdone)
+  · exact .of_current_ntr C (shared_red_endpoint C hb hc hd hcd hbc hbd)
+  · exact liftCurrent
+      (crossing_matching C ha hb hd hc hab hcd.symm had hbc hac hbd hdone)
   · have hntr := shared_red_endpoint C.swapSides
         (by simp [hd]) (by simp [ha]) (by simp [hb]) hab had.symm hbd.symm
-    exact Or.inl ((containsInducedUpToSwap_swapSides
+    exact .of_current_ntr C ((containsInducedUpToSwap_swapSides
       IsNegativeTailReducer C).1 hntr)
-  · exact Or.inl (shared_red_endpoint C hb hc hd hcd hbc hbd)
+  · exact .of_current_ntr C (shared_red_endpoint C hb hc hd hcd hbc hbd)
 
 end Subcubic

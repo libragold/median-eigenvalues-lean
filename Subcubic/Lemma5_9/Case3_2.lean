@@ -65,7 +65,7 @@ theorem lemma5_9_case_shared_ab_neighbor
       ⟨hxj, hyc, vertex_ne_of_color_eq hx hd (by decide)⟩,
       ⟨vertex_ne_of_color_eq hj hc (by decide),
         vertex_ne_of_color_eq hj hd (by decide)⟩, hcd.ne⟩
-  have hntr := containsNegativeL1 C ha hb he hx hj hc hd
+  have hntr := containsNegativeL C ha hb he hx hj hc hd
     hab hax hja.symm hby hbc hej hde.symm hcd hex hec hn
   exact HasReachableNegativeReduction.of_current_ntr C hntr
 

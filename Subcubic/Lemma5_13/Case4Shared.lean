@@ -17,6 +17,14 @@ theorem lemma5_13_case4_shared_de
     (hes : G.Adj Q.e s) (hds : G.Adj d s) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 4} (hxy : x ≠ y) :
@@ -59,7 +67,7 @@ theorem lemma5_13_case4_shared_de
         intro h; subst s; exact Q.hef hes) Q.hef)
   · obtain ⟨t, hdt, htc, hts⟩ :=
       exists_third_neighbor_of_degree_three
-        (C.red_or_blue_degree d (Or.inr hd))
+        (degreeC (Or.inr hd))
         (color_ne hc hs (by decide))
     have htSide := C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdt htc
     have ht : C.color t = .reddish := by

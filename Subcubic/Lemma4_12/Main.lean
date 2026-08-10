@@ -24,6 +24,13 @@ theorem lemma4_12_oriented
     (hef : ¬ G.Adj Q.e Q.f) (hea : ¬ G.Adj Q.e a) :
     HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have hddeg : vertexDegree G d = 3 := by
+    rcases lemma3_4_positive C (Or.inr hd) with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have edge (x y : Fin 4)
@@ -75,7 +82,7 @@ theorem lemma4_12_oriented
           G.Adj Q.e z → ¬ G.Adj d z := by
         intro z hz hez hdz
         exact hShare ⟨z, hz, hez, hdz⟩
-      obtain ⟨R, hRQ⟩ := lemma4_12_no_share_setup C hd hc hcd hNoRedAtD
+      obtain ⟨R, hRQ⟩ := lemma4_12_no_share_setup C hd hc hcd hddeg hNoRedAtD
         Q hOnlyRedB hNoShare
       subst Q
       exact lemma4_12_case3_no_share C ⟨hinj, hedge⟩ ha hb hc hd

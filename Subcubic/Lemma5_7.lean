@@ -75,6 +75,15 @@ theorem lemma5_7
     (hi : C.color i = .red) (hj : C.color j = .red) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   have hprefix := hpath.prefix6
   have hsuffix := hpath.suffix6
   dsimp [FormsInducedPath10] at hpath
@@ -110,7 +119,7 @@ theorem lemma5_7
     HasReachableNegativeReduction.of_current_ce C hce
 
   have hdf : d ≠ f := hv (x := (3 : Fin 10)) (y := 5) (by decide)
-  obtain ⟨k, hek, hkd, hkf⟩ := C.exists_third_neighbor (Or.inl he) hdf
+  obtain ⟨k, hek, hkd, hkf⟩ := C.exists_third_neighbor (degreeC (Or.inl he)) hdf
   have hkSide := C.other_neighbor_of_red_is_blueSide he hf hef hek hkf
   have hkc : k ≠ c := by
     intro hkc
@@ -132,12 +141,12 @@ theorem lemma5_7
       exact current_ce
         ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hceSwap)
     · by_cases hkb : G.Adj k b
-      · rcases lemma5_6 C hprefix ha hb hc hd he hf with hnone | hntr | hce
+      · rcases lemma5_6 C hprefix ha hb hc hd he hf with hnone | hfound
         · exact (hnone ⟨k, hkb.symm, hek⟩).elim
-        · exact current_ntr hntr
-        · exact current_ce hce
+        · exact hfound
       · have hegV : e ≠ g := hv (x := (4 : Fin 10)) (y := 6) (by decide)
-        obtain ⟨l, hfl, hle, hlg⟩ := C.exists_third_neighbor (Or.inl hf) hegV
+        obtain ⟨l, hfl, hle, hlg⟩ := C.exists_third_neighbor
+          (degreeC (Or.inl hf)) hegV
         have hlSide := C.other_neighbor_of_red_is_blueSide hf he hef.symm hfl hle
         have hlh : l ≠ h := by
           intro hlh
@@ -159,11 +168,11 @@ theorem lemma5_7
             exact current_ce
               ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hceSwap)
           · by_cases hli : G.Adj l i
-            · rcases lemma5_6 C hsuffix he hf hg hh hi hj with hnone | hntr | hce
+            · rcases lemma5_6 C hsuffix he hf hg hh hi hj with hnone | hfound
               · exact (hnone ⟨l, hfl, hli.symm⟩).elim
-              · exact current_ntr hntr
-              · exact current_ce hce
+              · exact hfound
             · rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+                (degreeC (Or.inl hb)) (degreeC (Or.inr hc))
                 hab.symm hbc hcd with ⟨M₁, hflip₁⟩ | hce
               · let D₁ := M₁.toGoodColoring
                 have hi₁ : D₁.color i = .red :=
@@ -194,7 +203,17 @@ theorem lemma5_7
                     (hv (x := (6 : Fin 10)) (y := 2) (by decide))
                     (hv (x := (7 : Fin 10)) (y := 1) (by decide))
                     (hv (x := (7 : Fin 10)) (y := 2) (by decide))
+                have degreeD₁ {v : V}
+                    (hv : D₁.color v = .red ∨ D₁.color v = .blue) :
+                    vertexDegree G v = 3 := by
+                  rcases lemma3_4_negative D₁ hv with hdegree | hntr | hceD
+                  · exact hdegree
+                  · exact (hdone (HasReachableNegativeReduction.after_flip C hflip₁
+                      (.of_current_ntr D₁ hntr))).elim
+                  · exact (hdone (HasReachableNegativeReduction.after_flip C hflip₁
+                      (.of_current_ce D₁ hceD))).elim
                 rcases exists_flipAt_or_cutEnhancer D₁ hi₁ hh₁ hj₁ hg₁
+                    (degreeD₁ (Or.inl hi₁)) (degreeD₁ (Or.inr hh₁))
                     hij hhi.symm hgh.symm with ⟨M₂, hflip₂⟩ | hce₁
                 · let D₂ := M₂.toGoodColoring
                   have he₁ : D₁.color e = .red :=

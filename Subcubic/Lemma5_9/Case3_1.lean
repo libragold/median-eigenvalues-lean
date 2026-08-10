@@ -47,10 +47,7 @@ theorem lemma5_9_case_i_adj_j
     unfold fourVertexCrossEdgeCount
     rw [if_pos hde, if_pos hij]
     omega
-  rcases lemma5_2 D d i e j hdi hdD hiD hej heD hjD hmulti with hntr | hce
-  · exact HasReachableNegativeReduction.after_flip C hflip
-      (HasReachableNegativeReduction.of_current_ntr D hntr)
-  · exact HasReachableNegativeReduction.after_flip C hflip
-      (HasReachableNegativeReduction.of_current_ce D hce)
+  exact HasReachableNegativeReduction.after_flip C hflip
+    (lemma5_2 D d i e j hdi hdD hiD hej heD hjD hmulti)
 
 end Subcubic

@@ -102,9 +102,19 @@ theorem lemma4_8_case_i_not_adj_g_h
       · intro h; subst z; exact hih hhz.symm
     · exact hze
     · intro h; subst z; simp_all
+  have degreeD {z : V}
+      (hz : D.color z = .red ∨ D.color z = .blue) :
+      vertexDegree G z = 3 := by
+    rcases lemma3_4_positive D hz with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hresult (HasReachableReduction.after_flip C hflip
+        (HasReachableReduction.of_current_ptr D hptr))).elim
+    · exact (hresult (HasReachableReduction.after_flip C hflip
+        (HasReachableReduction.of_current_ce D hce))).elim
   have hptrSwap : ContainsPositiveTailReducer D.swapSides :=
     lemma4_4 D.swapSides
       (by simp [hgD]) (by simp [hhD]) hgh
+      (degreeD (Or.inr hgD)) (degreeD (Or.inr hhD))
       (by
         intro z hgz hzh
         have := g_other z hgz hzh

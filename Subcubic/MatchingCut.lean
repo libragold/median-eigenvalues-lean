@@ -134,20 +134,6 @@ theorem color_correct (M : MatchingCut G) (v : V) :
     · simp [colorOfCut, hv, hn, HasGraphColor, redSideOf_colorOfCut]
     · simp [colorOfCut, hv, hn, HasGraphColor, redSideOf_colorOfCut]
 
-/-!
-`lemma3_4_red_or_blue_degree` is intentionally the single paper-specific
-axiom in this layer.  In the paper it is Lemma 3.4: for every matching cut
-under consideration in the fixed subcubic graph, vertices that are red or
-blue have degree three.  Taking it as an axiom lets later flip arguments use
-the same `GoodColoring` API without formalizing the earlier minimal-counterexample
-infrastructure.
--/
-
-/-- **Axiom (Lemma 3.4 of the paper).** -/
-axiom lemma3_4_red_or_blue_degree (M : MatchingCut G) (v : V)
-    (hv : M.color v = .red ∨ M.color v = .blue) :
-    vertexDegree G v = 3
-
 /-- View a matching cut through the existing color-based API. -/
 noncomputable def toGoodColoring (M : MatchingCut G) : GoodColoring G where
   color := M.color
@@ -155,7 +141,6 @@ noncomputable def toGoodColoring (M : MatchingCut G) : GoodColoring G where
   matching := by
     simpa [IsMatchingColoring, IsMatchingCut, M.redSideOf_color] using M.matching
   color_correct := M.color_correct
-  red_or_blue_degree := M.lemma3_4_red_or_blue_degree
 
 @[simp] theorem toGoodColoring_color (M : MatchingCut G) :
     M.toGoodColoring.color = M.color := rfl

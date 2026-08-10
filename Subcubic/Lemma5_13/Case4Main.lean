@@ -33,6 +33,14 @@ theorem lemma5_13_case4_core
       C.color z = .bluish) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   by_cases hShareDE : ∃ z, C.color z = .reddish ∧
       G.Adj Q.e z ∧ G.Adj d z
   · obtain ⟨z, hz, hez, hdz⟩ := hShareDE
@@ -89,7 +97,7 @@ theorem lemma5_13_case4_core
     have hy := reddishG hgy hya
     obtain ⟨h, s, hdh, hds, hhc, hsc, hhs⟩ :=
       exists_two_other_neighbors_of_degree_three
-        (C.red_or_blue_degree d (Or.inr hd)) hcd.symm
+        (degreeC (Or.inr hd)) hcd.symm
     have reddishD {z : V} (hdz : G.Adj d z) (hzc : z ≠ c) :
         C.color z = .reddish := by
       cases hz : C.color z with
@@ -135,7 +143,7 @@ theorem lemma5_13_case4_core
           · exact (color_ne hz ha (by decide) e).elim
           · have ezs : z = s := by
               rcases neighbor_eq_of_degree_three
-                  (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hdh hds
+                  (degreeC (Or.inr hd)) hcd.symm hdh hds
                   (color_ne hc hh (by decide)) (color_ne hc hs (by decide))
                   hsh.symm hdz with q | q | q
               · exact (color_ne hz hc (by decide) q).elim
@@ -166,7 +174,7 @@ theorem lemma5_13_case4_core
                 intro e; subst i
                 have hch : ¬ G.Adj c h := by
                   apply not_adj_fourth_neighbor_of_degree_three
-                    (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+                    (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
                   · exact color_ne hb hd (by decide)
                   · exact color_ne hb Q.hf (by decide)
                   · exact color_ne hd Q.hf (by decide)
@@ -192,7 +200,7 @@ theorem lemma5_13_case4_core
                   intro e; subst i
                   have hch : ¬ G.Adj c h := by
                     apply not_adj_fourth_neighbor_of_degree_three
-                      (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+                      (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
                     · exact color_ne hb hd (by decide)
                     · exact color_ne hb Q.hf (by decide)
                     · exact color_ne hd Q.hf (by decide)
@@ -317,6 +325,14 @@ theorem lemma5_13_case4
       C.color z = .bluish) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   apply lemma5_13_case4_core C hpath ha hb hc hd hNoBlueAtA hNoRedAtD Q
     (hOutsideF := hOutsideF)
   intro x y h s hx hy hh hs hgx hgy hxa hya hxy
@@ -342,7 +358,7 @@ theorem lemma5_13_case4
       (hu : C.color u = cu) (hv : C.color v = cv) (hne : cu ≠ cv) : u ≠ v := by
     intro e; subst v; simp_all
   have hfCases := neighbor_eq_of_degree_three
-    (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hdh hds
+    (degreeC (Or.inr hd)) hcd.symm hdh hds
     (color_ne hc hh (by decide)) (color_ne hc hs (by decide)) hhs hdf
   have finish {r : V} (hr : C.color r = .reddish)
       (hdr : G.Adj d r) (hrf : r ≠ Q.f) (hgr : ¬ G.Adj Q.g r) :
@@ -353,7 +369,7 @@ theorem lemma5_13_case4
     have htb : ¬ G.Adj t b := by
       intro htb
       apply (not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+        (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
         (color_ne ha hc (by decide)) (color_ne ha Q.he (by decide))
         (color_ne hc Q.he (by decide)) (color_ne ht ha (by decide))
         (color_ne ht hc (by decide)) (by intro e; subst t; exact Q.hef hft.symm))
@@ -361,19 +377,22 @@ theorem lemma5_13_case4
     have hrc : ¬ G.Adj r c := by
       intro hrc
       apply (not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+        (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
         (color_ne hb hd (by decide)) (color_ne hb Q.hf (by decide))
         (color_ne hd Q.hf (by decide)) (color_ne hr hb (by decide))
         (color_ne hr hd (by decide)) hrf)
       exact hrc.symm
-    rcases exists_flipAt_or_cutEnhancer C hb hc ha hd hab.symm hbc hcd with
+    rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
+        (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
       ⟨M, hflip⟩ | hce
     · let D := M.toGoodColoring
       have hcD : D.color c = .red :=
         red_of_flipped_blue_endpoint C hflip hd hcd
+          (degreeC (Or.inr hc))
           (color_ne hd hb (by decide))
       have hbD : D.color b = .blue :=
         blue_of_flipped_red_endpoint C hflip ha hab.symm
+          (degreeC (Or.inl hb))
           (color_ne ha hc (by decide))
       have hfD : D.color Q.f = .red :=
         red_of_reddish_gains_flipped_blue C hflip Q.hf Q.hcf.symm
@@ -419,8 +438,8 @@ theorem lemma5_13_case4
         hbe := hcd, hcf := hab.symm,
         hea := hdf.ne, hec := color_ne hd hb (by decide),
         hfb := color_ne ha hc (by decide), hfd := Q.heaEdge.ne.symm,
-        hedeg := C.red_or_blue_degree d (Or.inr hd),
-        hfdeg := C.red_or_blue_degree a (Or.inl ha),
+        hedeg := degreeC (Or.inr hd),
+        hfdeg := degreeC (Or.inl ha),
         heaEdge := hdf, hef := fun z => had z.symm,
         g := t, hg := htD, hag := hft,
         hgb := htc, hge := htd,
@@ -437,7 +456,7 @@ theorem lemma5_13_case4
       have hQrC : ¬ G.Adj Q.r c := by
         intro hQrC
         apply (not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+          (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
           (color_ne hb hd (by decide)) (color_ne hb Q.hf (by decide))
           (color_ne hd Q.hf (by decide)) (color_ne Q.hr hb (by decide))
           (color_ne Q.hr hd (by decide))
@@ -473,7 +492,7 @@ theorem lemma5_13_case4
         intro z haz hzb hze
         have ez : z = Q.g := by
           rcases neighbor_eq_of_degree_three
-              (C.red_or_blue_degree a (Or.inl ha)) hab Q.heaEdge.symm Q.hag
+              (degreeC (Or.inl ha)) hab Q.heaEdge.symm Q.hag
               (color_ne hb Q.he (by decide))
               (color_ne hb Q.hg (by decide)) Q.hge.symm haz with e | e | e
           · exact (hzb e).elim
@@ -495,7 +514,7 @@ theorem lemma5_13_case4
       have hxc : ¬ G.Adj x c := by
         intro z
         apply (not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+          (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
           (color_ne hb hd (by decide)) (color_ne hb Q.hf (by decide))
           (color_ne hd Q.hf (by decide)) (color_ne hx hb (by decide))
           (color_ne hx hd (by decide))
@@ -503,7 +522,7 @@ theorem lemma5_13_case4
       have hyc : ¬ G.Adj y c := by
         intro z
         apply (not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+          (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
           (color_ne hb hd (by decide)) (color_ne hb Q.hf (by decide))
           (color_ne hd Q.hf (by decide)) (color_ne hy hb (by decide))
           (color_ne hy hd (by decide))
@@ -522,7 +541,7 @@ theorem lemma5_13_case4
       have htcAdj : ¬ G.Adj t c := by
         intro z
         apply (not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+          (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
           (color_ne hb hd (by decide)) (color_ne hb Q.hf (by decide))
           (color_ne hd Q.hf (by decide)) (color_neD htD hbD (by decide))
           (color_ne ht hd (by decide)) hft.ne.symm) z.symm
@@ -539,7 +558,7 @@ theorem lemma5_13_case4
         exact hNoShareDE' Q.r hQrD hz Q.her
       have hdx : ¬ G.Adj d x := by
         apply not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hdh hds
+          (degreeC (Or.inr hd)) hcd.symm hdh hds
         · exact color_ne hc hh (by decide)
         · exact color_ne hc hs (by decide)
         · exact hhs
@@ -548,7 +567,7 @@ theorem lemma5_13_case4
         · intro e; subst x; exact hgs hgx
       have hdy : ¬ G.Adj d y := by
         apply not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hdh hds
+          (degreeC (Or.inr hd)) hcd.symm hdh hds
         · exact color_ne hc hh (by decide)
         · exact color_ne hc hs (by decide)
         · exact hhs
@@ -608,7 +627,7 @@ theorem lemma5_13_case4
               · exact hty (e ▸ htv)
             have hbV : ¬ G.Adj b v := by
               apply not_adj_fourth_neighbor_of_degree_three
-                (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+                (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
               · exact color_ne ha hc (by decide)
               · exact color_ne ha Q.he (by decide)
               · exact color_ne hc Q.he (by decide)
@@ -649,7 +668,7 @@ theorem lemma5_13_case4
               · exact hty (e ▸ htu)
             have hbU : ¬ G.Adj b u := by
               apply not_adj_fourth_neighbor_of_degree_three
-                (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+                (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
               · exact color_ne ha hc (by decide)
               · exact color_ne ha Q.he (by decide)
               · exact color_ne hc Q.he (by decide)
@@ -694,7 +713,7 @@ theorem lemma5_13_case4
               · exact htx (e ▸ htv)
             have hbV : ¬ G.Adj b v := by
               apply not_adj_fourth_neighbor_of_degree_three
-                (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+                (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
               · exact color_ne ha hc (by decide)
               · exact color_ne ha Q.he (by decide)
               · exact color_ne hc Q.he (by decide)
@@ -735,7 +754,7 @@ theorem lemma5_13_case4
               · exact htx (e ▸ htu)
             have hbU : ¬ G.Adj b u := by
               apply not_adj_fourth_neighbor_of_degree_three
-                (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+                (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
               · exact color_ne ha hc (by decide)
               · exact color_ne ha Q.he (by decide)
               · exact color_ne hc Q.he (by decide)

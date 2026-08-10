@@ -36,6 +36,15 @@ theorem lemma5_11_cases1_and_2_setup3
     HasReachableNegativeReduction C ∨
       Nonempty (Lemma5_11Case3Configuration C a b c d e f) := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath6] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath6 G a b c d e f := ⟨hinj, hedge⟩
@@ -60,20 +69,19 @@ theorem lemma5_11_cases1_and_2_setup3
   have hec : ¬ G.Adj e c := by simpa using nonedge 4 2 (by native_decide)
   have hacV : a ≠ c := hv (x := (0 : Fin 6)) (y := 2) (by decide)
   obtain ⟨g, hbg, hga, hgc⟩ :=
-    C.exists_third_neighbor (Or.inl hb) hacV
+    C.exists_third_neighbor (degree_of_color (Or.inl hb)) hacV
   have hgSide := C.other_neighbor_of_red_is_blueSide hb ha hab.symm hbg hga
   have hgd : g ≠ d := by intro h; subst g; exact hbd hbg
   rcases lemma3_3 C hb hc hd hgSide hbc hbg hcd
       hgc.symm hgd.symm with hg | hce
   · by_cases hge : G.Adj g e
-    · rcases lemma5_6 C hp ha hb hc hd he hf with hnone | hntr | hce
+    · rcases lemma5_6 C hp ha hb hc hd he hf with hnone | hfound
       · exact (hnone ⟨g, hbg, hge.symm⟩).elim
-      · exact Or.inl (HasReachableNegativeReduction.of_current_ntr C hntr)
-      · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
+      · exact Or.inl hfound
     · by_cases hgf : G.Adj g f
       · have hfdV : f ≠ d := hv (x := (5 : Fin 6)) (y := 3) (by decide)
         obtain ⟨h, heh, hhf, hhd⟩ :=
-          C.exists_third_neighbor (Or.inl he) hfdV
+          C.exists_third_neighbor (degree_of_color (Or.inl he)) hfdV
         have hhSide := C.other_neighbor_of_red_is_blueSide he hf hef heh hhf
         have hecAdj : ¬ G.Adj e c := hec
         have hhc : h ≠ c := by intro hx; subst h; exact hecAdj heh
@@ -81,10 +89,9 @@ theorem lemma5_11_cases1_and_2_setup3
             hhd.symm hhc.symm with hh | hce
         · by_cases hhb : G.Adj h b
           · rcases lemma5_6 C hp.reverse hf he hd hc hb ha with
-              hnone | hntr | hce
+              hnone | hfound
             · exact (hnone ⟨h, heh, hhb.symm⟩).elim
-            · exact Or.inl (HasReachableNegativeReduction.of_current_ntr C hntr)
-            · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
+            · exact Or.inl hfound
           · by_cases hha : G.Adj h a
             · exact Or.inr ⟨⟨g, h, hg, hh, hbg, hgf, heh, hha, hge, hhb⟩⟩
             · left

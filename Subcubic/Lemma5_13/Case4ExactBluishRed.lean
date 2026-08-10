@@ -54,6 +54,12 @@ theorem lemma5_13_case4_exact_bluish_red
   have hbdV : b ≠ d := by simpa using hinj.ne (show (1 : Fin 4) ≠ 3 by decide)
   by_contra hfinal
   have noResult (hr : HasReachableNegativeReduction C) : False := hfinal hr
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (noResult (.of_current_ntr C hntr)).elim
+    · exact (noResult (.of_current_ce C hce)).elim
   have noCE (hce : ContainsCutEnhancer C) : False :=
     noResult (HasReachableNegativeReduction.of_current_ce C hce)
   have color_ne {u v : V} {cu cv : Color}
@@ -69,7 +75,7 @@ theorem lemma5_13_case4_exact_bluish_red
     · exact (C.reddish_not_adj_redSide hk (Or.inl hj) hjk.symm).elim
   obtain ⟨l, hjl, hli, hlk⟩ :=
     exists_third_neighbor_of_degree_three
-      (C.red_or_blue_degree j (Or.inl hj)) (color_ne hi hk (by decide))
+      (degreeC (Or.inl hj)) (color_ne hi hk (by decide))
   have hlSide := C.other_neighbor_of_red_is_blueSide hj hk hjk hjl hlk
   have hie : i ≠ Q.e := by
     intro q; subst i
@@ -78,7 +84,7 @@ theorem lemma5_13_case4_exact_bluish_red
     intro q; subst j
     have hai : ¬ G.Adj a i := by
       apply not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree a (Or.inl ha)) hab Q.heaEdge.symm Q.hag
+        (degreeC (Or.inl ha)) hab Q.heaEdge.symm Q.hag
       · exact color_ne hb Q.he (by decide)
       · exact color_ne hb Q.hg (by decide)
       · exact Q.hge.symm
@@ -90,7 +96,7 @@ theorem lemma5_13_case4_exact_bluish_red
     intro q; subst j
     have hbi : ¬ G.Adj b i := by
       apply not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+        (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
       · exact color_ne ha hc (by decide)
       · exact color_ne ha Q.he (by decide)
       · exact color_ne hc Q.he (by decide)
@@ -101,14 +107,14 @@ theorem lemma5_13_case4_exact_bluish_red
   have hia : ¬ G.Adj i a := by
     intro hia
     apply (not_adj_fourth_neighbor_of_degree_three
-      (C.red_or_blue_degree a (Or.inl ha)) hab Q.heaEdge.symm Q.hag
+      (degreeC (Or.inl ha)) hab Q.heaEdge.symm Q.hag
       (color_ne hb Q.he (by decide)) (color_ne hb Q.hg (by decide))
       Q.hge.symm (color_ne hi hb (by decide)) hie hig)
     exact hia.symm
   have hib : ¬ G.Adj i b := by
     intro hib
     apply (not_adj_fourth_neighbor_of_degree_three
-      (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+      (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
       (color_ne ha hc (by decide)) (color_ne ha Q.he (by decide))
       (color_ne hc Q.he (by decide)) (color_ne hi ha (by decide))
       (color_ne hi hc (by decide)) hie)
@@ -117,7 +123,7 @@ theorem lemma5_13_case4_exact_bluish_red
     intro q; subst i
     have hch : ¬ G.Adj c h := by
       apply not_adj_fourth_neighbor_of_degree_three
-        (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+        (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
       · exact color_ne hb hd (by decide)
       · exact color_ne hb Q.hf (by decide)
       · exact color_ne hd Q.hf (by decide)
@@ -127,16 +133,25 @@ theorem lemma5_13_case4_exact_bluish_red
     exact hch hih
   rcases hlSide with hl | hl
   · obtain ⟨m, hm, hlm⟩ := C.exists_blue_mate hl
-    rcases exists_flipAt_or_cutEnhancer C hj hl hk hm hjk hjl hlm with
+    rcases exists_flipAt_or_cutEnhancer C hj hl hk hm
+        (degreeC (Or.inl hj)) (degreeC (Or.inr hl)) hjk hjl hlm with
       ⟨M, hflip⟩ | hce
     · let D := M.toGoodColoring
+      have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
+          vertexDegree G v = 3 := by
+        rcases lemma3_4_negative D hv with hdegree | hntr | hce
+        · exact hdegree
+        · exact (noResult (HasReachableNegativeReduction.after_flip C hflip
+            (.of_current_ntr D hntr))).elim
+        · exact (noResult (HasReachableNegativeReduction.after_flip C hflip
+            (.of_current_ce D hce))).elim
       have hla : l ≠ a := color_ne hl ha (by decide)
       have hlb : l ≠ b := color_ne hl hb (by decide)
       have hlc : l ≠ c := by
         intro q; subst l
         have hcj : ¬ G.Adj c j := by
           apply not_adj_fourth_neighbor_of_degree_three
-            (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+            (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
           · exact color_ne hb hd (by decide)
           · exact color_ne hb Q.hf (by decide)
           · exact color_ne hd Q.hf (by decide)
@@ -189,7 +204,8 @@ theorem lemma5_13_case4_exact_bluish_red
           red_of_reddish_gains_flipped_blue C hflip hh hhl
             (color_ne hh hj (by decide)) (color_ne hh hl (by decide))
         have hlD : D.color l = .red :=
-          red_of_flipped_blue_endpoint C hflip hm hlm (color_ne hm hj (by decide))
+          red_of_flipped_blue_endpoint C hflip hm hlm
+            (degreeC (Or.inr hl)) (color_ne hm hj (by decide))
         have hah : a ≠ h := by intro q; subst h; exact hNoRedAtD a hdh ha
         have hbh : b ≠ h := by intro q; subst h; exact hNoRedAtD b hdh hb
         have hn : [a, b, c, d, h, l].Nodup := by
@@ -215,7 +231,8 @@ theorem lemma5_13_case4_exact_bluish_red
             red_of_reddish_gains_flipped_blue C hflip hs hsl
               (color_ne hs hj (by decide)) (color_ne hs hl (by decide))
           have hlD : D.color l = .red :=
-            red_of_flipped_blue_endpoint C hflip hm hlm (color_ne hm hj (by decide))
+            red_of_flipped_blue_endpoint C hflip hm hlm
+              (degreeC (Or.inr hl)) (color_ne hm hj (by decide))
           have has : a ≠ s := by intro q; subst s; exact hNoRedAtD a hds ha
           have hbs : b ≠ s := by intro q; subst s; exact hNoRedAtD b hds hb
           have hn : [a, b, c, d, s, l].Nodup := by
@@ -243,7 +260,7 @@ theorem lemma5_13_case4_exact_bluish_red
       have hjOther : ∀ z, G.Adj j z → z ≠ k → C.color z = .bluish := by
         intro z hjz hzk
         rcases neighbor_eq_of_degree_three
-            (C.red_or_blue_degree j (Or.inl hj)) hjk hij.symm hjl
+            (degreeC (Or.inl hj)) hjk hij.symm hjl
             (color_ne hk hi (by decide)) (color_ne hk hl (by decide))
             hli.symm hjz with q | q | q
         · exact (hzk q).elim
@@ -277,7 +294,7 @@ theorem lemma5_13_case4_exact_bluish_red
       intro q; subst o
       have hck : ¬ G.Adj c k := by
         apply not_adj_fourth_neighbor_of_degree_three
-          (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+          (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
         · exact color_ne hb hd (by decide)
         · exact color_ne hb Q.hf (by decide)
         · exact color_ne hd Q.hf (by decide)
@@ -292,9 +309,18 @@ theorem lemma5_13_case4_exact_bluish_red
     · exact noResult (lemma5_13_case4_blue_neighbor_flip C hp ha hb hc hd
         hh hs hi hdh hds hsh hih hik hid hk hj ho hom hjk.symm hko hoom
         hia hib hci hoc hod)
-    · rcases exists_flipAt_or_cutEnhancer C hk ho hj hom hjk.symm hko hoom with
+    · rcases exists_flipAt_or_cutEnhancer C hk ho hj hom
+          (degreeC (Or.inl hk)) (degreeC (Or.inr ho)) hjk.symm hko hoom with
         ⟨M, hflip⟩ | hce
       · let D := M.toGoodColoring
+        have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
+            vertexDegree G v = 3 := by
+          rcases lemma3_4_negative D hv with hdegree | hntr | hce
+          · exact hdegree
+          · exact (noResult (HasReachableNegativeReduction.after_flip C hflip
+              (.of_current_ntr D hntr))).elim
+          · exact (noResult (HasReachableNegativeReduction.after_flip C hflip
+              (.of_current_ce D hce))).elim
         have haD : D.color a = .red :=
           red_of_untouched_red_edge C hflip (by simp [ha]) (by simp [hb]) hab
             hka.symm (color_ne ha ho (by decide))
@@ -316,7 +342,7 @@ theorem lemma5_13_case4_exact_bluish_red
             (color_ne hi hk (by decide)) (color_ne hi ho (by decide))
         have hjo : ¬ G.Adj j o := by
           apply not_adj_fourth_neighbor_of_degree_three
-            (C.red_or_blue_degree j (Or.inl hj)) hjk hij.symm hjl
+            (degreeC (Or.inl hj)) hjk hij.symm hjl
           · exact color_ne hk hi (by decide)
           · exact color_ne hk hl (by decide)
           · exact hli.symm
@@ -332,6 +358,7 @@ theorem lemma5_13_case4_exact_bluish_red
               (color_ne hh hk (by decide)) (color_ne hh ho (by decide))
           have hoD : D.color o = .red :=
             red_of_flipped_blue_endpoint C hflip hom hoom
+              (degreeC (Or.inr ho))
               (color_ne hom hk (by decide))
           have hn : [a, b, c, d, h, o].Nodup := by
             simp [hab.ne, hbc.ne, hcd.ne, hdh.ne, hho.ne, hoc.symm, hod.symm,
@@ -355,6 +382,7 @@ theorem lemma5_13_case4_exact_bluish_red
                 (color_ne hs hk (by decide)) (color_ne hs ho (by decide))
             have hoD : D.color o = .red :=
               red_of_flipped_blue_endpoint C hflip hom hoom
+                (degreeC (Or.inr ho))
                 (color_ne hom hk (by decide))
             have hn : [a, b, c, d, s, o].Nodup := by
               simp [hab.ne, hbc.ne, hcd.ne, hds.ne, hso.ne, hoc.symm, hod.symm,
@@ -380,7 +408,7 @@ theorem lemma5_13_case4_exact_bluish_red
                 (color_ne hs hk (by decide)) (color_ne hs ho (by decide))
             have hck : ¬ G.Adj c k := by
               apply not_adj_fourth_neighbor_of_degree_three
-                (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+                (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
               · exact color_ne hb hd (by decide)
               · exact color_ne hb Q.hf (by decide)
               · exact color_ne hd Q.hf (by decide)
@@ -389,7 +417,7 @@ theorem lemma5_13_case4_exact_bluish_red
               · exact color_ne hk Q.hf (by decide)
             have hbo : ¬ G.Adj b o := by
               apply not_adj_fourth_neighbor_of_degree_three
-                (C.red_or_blue_degree b (Or.inl hb)) hab.symm hbc Q.hbe
+                (degreeC (Or.inl hb)) hab.symm hbc Q.hbe
               · exact color_ne ha hc (by decide)
               · exact color_ne ha Q.he (by decide)
               · exact color_ne hc Q.he (by decide)
@@ -406,7 +434,7 @@ theorem lemma5_13_case4_exact_bluish_red
             · obtain ⟨z, hcz, hoz⟩ := hCommonC
               have hzf : z = Q.f := by
                 rcases neighbor_eq_of_degree_three
-                    (C.red_or_blue_degree c (Or.inr hc)) hbc.symm hcd Q.hcf
+                    (degreeC (Or.inr hc)) hbc.symm hcd Q.hcf
                     (color_ne hb hd (by decide)) (color_ne hb Q.hf (by decide))
                     (color_ne hd Q.hf (by decide)) hcz with rfl | rfl | rfl
                 · exact (hbo hoz.symm).elim
@@ -428,7 +456,7 @@ theorem lemma5_13_case4_exact_bluish_red
               · obtain ⟨z, hez, hoz⟩ := hCommonE
                 have hao : ¬ G.Adj a o := by
                   apply not_adj_fourth_neighbor_of_degree_three
-                    (C.red_or_blue_degree a (Or.inl ha)) hab Q.heaEdge.symm Q.hag
+                    (degreeC (Or.inl ha)) hab Q.heaEdge.symm Q.hag
                   · exact color_ne hb Q.he (by decide)
                   · exact color_ne hb Q.hg (by decide)
                   · exact Q.hge.symm
@@ -520,7 +548,7 @@ theorem lemma5_13_case4_exact_bluish_red
                 have hNoRedAtDD : ∀ z, G.Adj d z → D.color z ≠ .red := by
                   intro z hdz hz
                   rcases neighbor_eq_of_degree_three
-                      (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hdh hds
+                      (degreeC (Or.inr hd)) hcd.symm hdh hds
                       (color_ne hc hh (by decide))
                       (color_ne hc hs (by decide)) hsh.symm hdz with q | q | q
                   · subst z; simp [hcD] at hz
@@ -530,7 +558,7 @@ theorem lemma5_13_case4_exact_bluish_red
                 · obtain ⟨z, hgz, hoz⟩ := hCommonG
                   have hao : ¬ G.Adj a o := by
                     apply not_adj_fourth_neighbor_of_degree_three
-                      (C.red_or_blue_degree a (Or.inl ha)) hab Q.heaEdge.symm Q.hag
+                      (degreeC (Or.inl ha)) hab Q.heaEdge.symm Q.hag
                     · exact color_ne hb Q.he (by decide)
                     · exact color_ne hb Q.hg (by decide)
                     · exact Q.hge.symm
@@ -590,7 +618,7 @@ theorem lemma5_13_case4_exact_bluish_red
                       q | q | q
                     · subst z; simp [haD] at hz
                     · rcases neighbor_eq_of_degree_three
-                          (C.red_or_blue_degree d (Or.inr hd)) hcd.symm hdh hds
+                          (degreeC (Or.inr hd)) hcd.symm hdh hds
                           (color_ne hc hh (by decide))
                           (color_ne hc hs (by decide)) hsh.symm hdz with r | r | r
                       · exact (vertex_ne_of_color_eq hxD hcD (by decide)
@@ -640,7 +668,7 @@ theorem lemma5_13_case4_exact_bluish_red
                       have hqc : q ≠ c := by
                         intro e; subst q
                         rcases neighbor_eq_of_degree_three
-                            (D.red_or_blue_degree c (Or.inr hcD)) hbc.symm hcd Q.hcf
+                            (degreeD (Or.inr hcD)) hbc.symm hcd Q.hcf
                             (vertex_ne_of_color_eq hbD hdD (by decide))
                             (vertex_ne_of_color_eq hbD hfD (by decide))
                             (vertex_ne_of_color_eq hdD hfD (by decide)) hmq.symm with
@@ -658,14 +686,16 @@ theorem lemma5_13_case4_exact_bluish_red
                         intro q hmq hq; exact hBlueM ⟨q, hmq, hq⟩
                       have hkD : D.color k = .blue :=
                         blue_of_flipped_red_endpoint C hflip hj hjk.symm
+                          (degreeC (Or.inl hk))
                           (color_ne hj ho (by decide))
                       have hoD : D.color o = .red :=
                         red_of_flipped_blue_endpoint C hflip hom hoom
+                          (degreeC (Or.inr ho))
                           (color_ne hom hk (by decide))
                       have hkom : ¬ G.Adj k om := by
                         intro hkom
                         have hntr : ContainsNegativeTailReducer C := by
-                          apply containsNegativeA1 C hk ho hom hko hkom hoom
+                          apply containsNegativeA C hk ho hom hko hkom hoom
                           simp [hko.ne, hkom.ne, hoom.ne,
                             color_ne hk ho (by decide),
                             color_ne hk hom (by decide)]
@@ -692,7 +722,7 @@ theorem lemma5_13_case4_exact_bluish_red
                               · exact color_ne ha hx (by decide)
                               · exact color_ne ha hh (by decide)
                               · exact hxh
-                              · exact color_ne hj ha (by decide)
+                              · exact hja
                               · exact color_ne hj hx (by decide)
                               · exact color_ne hj hh (by decide)
                             exact hnot hjl.symm
@@ -724,11 +754,11 @@ theorem lemma5_13_case4_exact_bluish_red
                           have hje : ¬ G.Adj j Q.e := jFourth
                             (vertex_ne_of_color_eq heD hkD (by decide)) hie.symm hel
                           have hjc : ¬ G.Adj j c := jFourth
-                            (vertex_ne_of_color_eq hcD hkD (by decide)) hci
-                            (vertex_ne_of_color_eq hcD hlD (by decide))
+                            (color_ne hc hk (by decide)) hci
+                            (color_ne hc hl (by decide))
                           have hjd : ¬ G.Adj j d := jFourth
-                            (vertex_ne_of_color_eq hdD hkD (by decide)) hid
-                            (vertex_ne_of_color_eq hdD hlD (by decide))
+                            (color_ne hd hk (by decide)) hid.symm
+                            (color_ne hd hl (by decide))
                           have hFourth {w : V} (hwi : w ≠ i) (hwg : w ≠ Q.g)
                               (hwd : w ≠ d) : ¬ G.Adj h w := by
                             apply not_adj_fourth_neighbor_of_subcubic C.subcubic
@@ -740,30 +770,62 @@ theorem lemma5_13_case4_exact_bluish_red
                             · exact hwg
                             · exact hwd
                           have hhk : ¬ G.Adj h k := hFourth
-                            (vertex_ne_of_color_eq hkD hiD (by decide))
-                            (vertex_ne_of_color_eq hkD hgD (by decide))
-                            (vertex_ne_of_color_eq hkD hdD (by decide))
-                          have hhl : ¬ G.Adj h l := hFourth hli hgl.symm
-                            (vertex_ne_of_color_eq hlD hdD (by decide))
-                          have hhe : ¬ G.Adj h Q.e := hFourth hie.symm Q.hge.ne.symm
-                            (vertex_ne_of_color_eq heD hdD (by decide))
+                            (color_ne hk hi (by decide))
+                            (color_ne hk Q.hg (by decide))
+                            (color_ne hk hd (by decide))
+                          have hhl : ¬ G.Adj h l := hFourth hli
+                            hgl.symm
+                            (color_ne hl hd (by decide))
+                          have hhe : ¬ G.Adj h Q.e := hFourth hie.symm Q.hge.symm
+                            (color_ne Q.he hd (by decide))
                           have hhc : ¬ G.Adj h c := hFourth hci
-                            (vertex_ne_of_color_eq hcD hgD (by decide)) hcd.ne
+                            (color_ne hc Q.hg (by decide)) hcd.ne
                           have hntr : ContainsNegativeTailReducer D := by
-                            apply containsNegativeAi D hjD hhD haD hbD hkD hlD
+                            apply containsNegativeAj D hjD hhD haD hbD hkD hlD
                               hiD hgD heD hcD hdD hjk hjl hij.symm hih.symm
                               hgh.symm hdh.symm hab Q.hag Q.heaEdge.symm Q.hbe
                               hbc hkl hcd hjg hje hjc hjd hhk hhl hhe hhc
                             simp [hjk.ne, hjl.ne, hij.ne, hih.ne, hgh.ne, hdh.ne,
                               hab.ne, Q.hag.ne, Q.heaEdge.ne, Q.hbe.ne, hbc.ne,
                               hkl.ne, hcd.ne, hjg, hje, hjc, hjd, hhk, hhl, hhe,
-                              hhc, hgl, hel, hie, hig, hid, hci,
-                              vertex_ne_of_color_eq hjD hhD (by decide),
-                              vertex_ne_of_color_eq haD hbD (by decide),
-                              vertex_ne_of_color_eq hkD hcD (by decide),
-                              vertex_ne_of_color_eq hkD hdD (by decide),
-                              vertex_ne_of_color_eq hlD hcD (by decide),
-                              vertex_ne_of_color_eq hlD hdD (by decide)]
+                              hhc, hgl, hgl.symm, hel, hel.symm, hie, hig,
+                              hid, hci, hci.symm, hja, hjb, hka, hka.symm,
+                              hkb, hkb.symm, hli, hlk, Q.hge,
+                              color_ne hj hi (by decide),
+                              color_ne hj Q.hg (by decide),
+                              color_ne hj Q.he (by decide),
+                              color_ne hj hc (by decide),
+                              color_ne hj hd (by decide),
+                              color_ne hj hh (by decide), hab.ne,
+                              color_ne hh ha (by decide),
+                              color_ne hh hb (by decide),
+                              color_ne hh hk (by decide),
+                              color_ne hh hl (by decide),
+                              color_ne hh hi (by decide),
+                              color_ne hh Q.hg (by decide),
+                              color_ne hh Q.he (by decide),
+                              color_ne hh hc (by decide),
+                              color_ne hh hd (by decide),
+                              color_ne ha hl (by decide),
+                              color_ne ha hi (by decide),
+                              color_ne ha Q.he (by decide),
+                              color_ne ha hc (by decide),
+                              color_ne ha hd (by decide),
+                              color_ne hb hl (by decide),
+                              color_ne hb hi (by decide),
+                              color_ne hb Q.hg (by decide),
+                              color_ne hb hd (by decide),
+                              color_ne hk hi (by decide),
+                              color_ne hk Q.hg (by decide),
+                              color_ne hk Q.he (by decide),
+                              color_ne Q.hg hc (by decide),
+                              color_ne Q.hg hd (by decide),
+                              color_ne Q.he hc (by decide),
+                              color_ne Q.he hd (by decide),
+                              color_ne hk hc (by decide),
+                              color_ne hk hd (by decide),
+                              color_ne hl hc (by decide),
+                              color_ne hl hd (by decide)]
                           exact noResult (HasReachableNegativeReduction.after_flip C hflip
                             (HasReachableNegativeReduction.of_current_ntr D hntr))
                         · have hlD : D.color l = .bluish := by
@@ -775,10 +837,17 @@ theorem lemma5_13_case4_exact_bluish_red
                           have hmk : ¬ G.Adj m k := fun hmk => hNoBlueM k hmk hkD
                           have hio : ¬ G.Adj i o :=
                             C.bluish_not_adj_blueSide hi (Or.inl ho)
+                          have hoj : ¬ G.Adj o j := fun z => hjo z.symm
+                          have hoi : ¬ G.Adj o i := fun z => hio z.symm
+                          have hjm : ¬ G.Adj j m := fun z => hmj z.symm
+                          have hkm : ¬ G.Adj k m := fun z => hmk z.symm
+                          have hki : ¬ G.Adj k i := fun z => hik z.symm
                           have hpent : FormsInducedPentagon G o m j k i := by
                             have hn : [o, m, j, k, i].Nodup := by
-                              simp [hmoAdj.ne, hko.ne, hjk.ne, hij.ne, him.ne,
-                                hjo, hio, hmj, hmk, hik,
+                              simp [hmoAdj.ne, hmoAdj.ne.symm, hko.ne, hko.ne.symm,
+                                hjk.ne, hjk.ne.symm, hij.ne, hij.ne.symm,
+                                him.ne, him.ne.symm, hjo, hoj, hio, hoi,
+                                hmj, hjm, hmk, hkm, hik, hki,
                                 vertex_ne_of_color_eq hoD hjD (by decide),
                                 vertex_ne_of_color_eq hoD hkD (by decide),
                                 vertex_ne_of_color_eq hoD hiD (by decide),
@@ -794,13 +863,15 @@ theorem lemma5_13_case4_exact_bluish_red
                               fin_cases u <;> fin_cases v <;> exact huv
                             · intro u v
                               fin_cases u <;> fin_cases v <;>
-                                simp [graphOfEdges, G.adj_comm, hmoAdj, hko, hjk,
-                                  hij, him, hjo, hio, hmj, hmk, hik]
+                                simp [graphOfEdges, G.adj_comm, hmoAdj, hmoAdj.symm,
+                                  hko, hko.symm, hjk, hjk.symm, hij, hij.symm,
+                                  him, him.symm, hjo, hoj, hio, hoi, hmj, hjm,
+                                  hmk, hkm, hik, hki]
                           have hoNoBlue : ∀ z, G.Adj o z → z ≠ k → z ≠ i →
                               D.color z ≠ .blue := by
                             intro z hoz hzk _ hz
                             rcases neighbor_eq_of_degree_three
-                                (D.red_or_blue_degree o (Or.inl hoD))
+                                (degreeD (Or.inl hoD))
                                 hmoAdj.symm hko.symm hoom
                                 (vertex_ne_of_color_eq hmD hkD (by decide))
                                 (vertex_ne_of_color_eq hmD homD (by decide))
@@ -817,19 +888,16 @@ theorem lemma5_13_case4_exact_bluish_red
                               D.color z ≠ .blue := by
                             intro z hjz hzk hzi hz
                             rcases neighbor_eq_of_degree_three
-                                (C.red_or_blue_degree j (Or.inl hj))
+                                (degreeC (Or.inl hj))
                                 hjk hij.symm hjl
                                 (vertex_ne_of_color_eq hkD hiD (by decide))
                                 hlk.symm hli.symm hjz with r | r | r
                             · exact (hzk r).elim
                             · exact (hzi r).elim
                             · subst z; simp [hlD] at hz
-                          rcases lemma5_5 D hpent hoD hmD hjD hkD (Or.inr hiD)
-                              hoNoBlue hmNoBlue hjNoBlue with hntr | hceD
-                          · exact noResult (HasReachableNegativeReduction.after_flip C hflip
-                              (HasReachableNegativeReduction.of_current_ntr D hntr))
-                          · exact noResult (HasReachableNegativeReduction.after_flip C hflip
-                              (HasReachableNegativeReduction.of_current_ce D hceD))
+                          exact noResult (HasReachableNegativeReduction.after_flip C hflip
+                            (lemma5_5 D hpent hoD hmD hjD hkD (Or.inr hiD)
+                              hoNoBlue hmNoBlue hjNoBlue))
                       by_cases hBlueN : ∃ q, G.Adj n q ∧ D.color q = .blue
                       · obtain ⟨q, hnq, hqD⟩ := hBlueN
                         obtain ⟨qm, hqmD, hqqm⟩ := D.exists_blue_mate hqD
@@ -837,14 +905,14 @@ theorem lemma5_13_case4_exact_bluish_red
                           intro e; subst q
                           have hcn : ¬ G.Adj c n := by
                             apply not_adj_fourth_neighbor_of_degree_three
-                              (D.red_or_blue_degree c (Or.inr hcD)) hbc.symm hcd Q.hcf
+                              (degreeD (Or.inr hcD)) hbc.symm hcd Q.hcf
                             · exact vertex_ne_of_color_eq hbD hdD (by decide)
                             · exact vertex_ne_of_color_eq hbD hfD (by decide)
                             · exact vertex_ne_of_color_eq hdD hfD (by decide)
                             · intro e
                               subst n
                               rcases neighbor_eq_of_degree_three
-                                  (D.red_or_blue_degree b (Or.inl hbD)) hab.symm hbc Q.hbe
+                                  (degreeD (Or.inl hbD)) hab.symm hbc Q.hbe
                                   (vertex_ne_of_color_eq haD hcD (by decide))
                                   (vertex_ne_of_color_eq haD heD (by decide))
                                   (vertex_ne_of_color_eq hcD heD (by decide)) hmn.symm with
@@ -865,9 +933,11 @@ theorem lemma5_13_case4_exact_bluish_red
                         · by_cases hqj : G.Adj q j
                           · have hkD : D.color k = .blue :=
                               blue_of_flipped_red_endpoint C hflip hj hjk.symm
+                                (degreeC (Or.inl hk))
                                 (color_ne hj ho (by decide))
                             have hoD : D.color o = .red :=
                               red_of_flipped_blue_endpoint C hflip hom hoom
+                                (degreeC (Or.inr ho))
                                 (color_ne hom hk (by decide))
                             have noCED (hceD : ContainsCutEnhancer D) : False :=
                               noResult (HasReachableNegativeReduction.after_flip C hflip
@@ -875,7 +945,7 @@ theorem lemma5_13_case4_exact_bluish_red
                             by_cases hkq : G.Adj k q
                             · obtain ⟨p, hmp, hpn, hpi⟩ :=
                                 exists_third_neighbor_of_degree_three
-                                  (D.red_or_blue_degree m (Or.inl hmD))
+                                  (degreeD (Or.inl hmD))
                                   (vertex_ne_of_color_eq hnD hiD (by decide))
                               have hpD : D.color p = .bluish := by
                                 rcases D.other_neighbor_of_red_is_blueSide hmD hnD hmn
@@ -888,7 +958,7 @@ theorem lemma5_13_case4_exact_bluish_red
                               have hmq : ¬ G.Adj m q := fun hmq => hNoBlueM q hmq hqD
                               have hjp : ¬ G.Adj j p := by
                                 apply not_adj_fourth_neighbor_of_degree_three
-                                  (C.red_or_blue_degree j (Or.inl hj)) hjk hij.symm hqj.symm
+                                  (degreeC (Or.inl hj)) hjk hij.symm hqj.symm
                                 · exact vertex_ne_of_color_eq hkD hiD (by decide)
                                 · exact hkq.ne
                                 · exact vertex_ne_of_color_eq hiD hqD (by decide)
@@ -919,7 +989,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                 · subst q
                                   have hno : n = o := by
                                     rcases neighbor_eq_of_degree_three
-                                        (D.red_or_blue_degree k (Or.inr hkD))
+                                        (degreeD (Or.inr hkD))
                                         hjk.symm hko hqqm
                                         (vertex_ne_of_color_eq hjD hoD (by decide))
                                         (vertex_ne_of_color_eq hjD hqmD (by decide))
@@ -933,7 +1003,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                   subst n
                                   obtain ⟨w, hmw, hwo, hwi⟩ :=
                                     exists_third_neighbor_of_degree_three
-                                      (D.red_or_blue_degree m (Or.inl hmD))
+                                      (degreeD (Or.inl hmD))
                                       (vertex_ne_of_color_eq hoD hiD (by decide))
                                   have hwD : D.color w = .bluish := by
                                     rcases D.other_neighbor_of_red_is_blueSide
@@ -942,7 +1012,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                     · exact hw
                                   by_cases hkom : G.Adj k om
                                   · have hntr : ContainsNegativeTailReducer C := by
-                                      apply containsNegativeA1 C hk ho hom hko hkom hoom
+                                      apply containsNegativeA C hk ho hom hko hkom hoom
                                       simp [hko.ne, hkom.ne, hoom.ne,
                                         color_ne hk ho (by decide),
                                         color_ne hk hom (by decide)]
@@ -967,7 +1037,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                         fun hml => hNoBlueM l hml hlD
                                       have hjw : ¬ G.Adj j w := by
                                         apply not_adj_fourth_neighbor_of_degree_three
-                                          (C.red_or_blue_degree j (Or.inl hj))
+                                          (degreeC (Or.inl hj))
                                           hjk hij.symm hjl
                                         · exact vertex_ne_of_color_eq hkD hiD (by decide)
                                         · exact hkl.ne
@@ -1040,7 +1110,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                           D.color z ≠ .blue := by
                                         intro z hoz hzk hzi hz
                                         rcases neighbor_eq_of_degree_three
-                                            (D.red_or_blue_degree o (Or.inl hoD))
+                                            (degreeD (Or.inl hoD))
                                             hmn.symm hko.symm hoom
                                             (vertex_ne_of_color_eq hmD hkD (by decide))
                                             (vertex_ne_of_color_eq hmD homD (by decide))
@@ -1057,19 +1127,17 @@ theorem lemma5_13_case4_exact_bluish_red
                                           D.color z ≠ .blue := by
                                         intro z hjz hzk hzi hz
                                         rcases neighbor_eq_of_degree_three
-                                            (C.red_or_blue_degree j (Or.inl hj))
+                                            (degreeC (Or.inl hj))
                                             hjk hij.symm hjl
                                             (vertex_ne_of_color_eq hkD hiD (by decide))
                                             hlk.symm hli.symm hjz with r | r | r
                                         · exact (hzk r).elim
                                         · exact (hzi r).elim
                                         · subst z; simp [hlD] at hz
-                                      rcases lemma5_5 D hpent hoD hmD hjD hkD (Or.inr hiD)
-                                          hoNoBlue hmNoBlue hjNoBlue with hntr | hce
-                                      · exact noResult (HasReachableNegativeReduction.after_flip
-                                          C hflip
-                                          (HasReachableNegativeReduction.of_current_ntr D hntr))
-                                      · exact noCED hce
+                                      exact noResult
+                                        (HasReachableNegativeReduction.after_flip C hflip
+                                          (lemma5_5 D hpent hoD hmD hjD hkD (Or.inr hiD)
+                                            hoNoBlue hmNoBlue hjNoBlue))
                                 · exact noCED (containsCutEnhancerA_of D hnD hkD hqD
                                     hkn.symm hnq hkqV hkq)
                               · by_cases hoq : G.Adj o q
@@ -1078,7 +1146,10 @@ theorem lemma5_13_case4_exact_bluish_red
                                     exact hkn hnq.symm
                                   exact noCED (containsCutEnhancerA_of D hoD hkD hqD
                                     hko.symm hoq hkqV hkq)
-                                · have hmoV : m ≠ o := hmo.ne
+                                · have hmoV : m ≠ o := by
+                                    intro e
+                                    subst o
+                                    exact hNoBlueM k hko.symm hkD
                                   have hon : ¬ G.Adj o n := by
                                     intro hon
                                     exact (D.redSide_not_adj_second_neighbor
@@ -1089,8 +1160,22 @@ theorem lemma5_13_case4_exact_bluish_red
                                   exact noCED (containsCutEnhancerB_of D hjD hkD hoD hqD hnD
                                     hjk hqj.symm hko hnq.symm hjo hjn hkq hkn hoq hon)
                           · rcases exists_flipAt_or_cutEnhancer D hnD hqD hmD hqmD
+                                (degreeD (Or.inl hnD)) (degreeD (Or.inr hqD))
                                 hmn.symm hnq hqqm with ⟨N, hflip2⟩ | hce2
                             · let E := N.toGoodColoring
+                              have degreeE {v : V}
+                                  (hv : E.color v = .red ∨ E.color v = .blue) :
+                                  vertexDegree G v = 3 := by
+                                rcases lemma3_4_negative E hv with hdegree | hntr | hce
+                                · exact hdegree
+                                · exact (noResult
+                                    (HasReachableNegativeReduction.after_flip C hflip
+                                      (HasReachableNegativeReduction.after_flip D hflip2
+                                        (.of_current_ntr E hntr)))).elim
+                                · exact (noResult
+                                    (HasReachableNegativeReduction.after_flip C hflip
+                                      (HasReachableNegativeReduction.after_flip D hflip2
+                                        (.of_current_ce E hce)))).elim
                               have hna : n ≠ a := by
                                 intro e; subst n
                                 have hmb : m ≠ b := by
@@ -1146,6 +1231,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                     (vertex_ne_of_color_eq hhD hqD (by decide))
                                 have hqE : E.color q = .red :=
                                   red_of_flipped_blue_endpoint D hflip2 hqmD hqqm
+                                    (degreeD (Or.inr hqD))
                                     (vertex_ne_of_color_eq hqmD hnD (by decide))
                                 have hn6 : [a,b,c,d,h,q].Nodup := by
                                   simp [hab.ne, hbc.ne, hcd.ne, hdh.ne, hhq.ne,
@@ -1176,6 +1262,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                       (vertex_ne_of_color_eq hsD hqD (by decide))
                                   have hqE : E.color q = .red :=
                                     red_of_flipped_blue_endpoint D hflip2 hqmD hqqm
+                                      (degreeD (Or.inr hqD))
                                       (vertex_ne_of_color_eq hqmD hnD (by decide))
                                   have hn6 : [a,b,c,d,s,q].Nodup := by
                                     simp [hab.ne, hbc.ne, hcd.ne, hds.ne, hsq.ne,
@@ -1209,7 +1296,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                       (vertex_ne_of_color_eq hsD hqD (by decide))
                                   have hcn : ¬ G.Adj c n := by
                                     apply not_adj_fourth_neighbor_of_degree_three
-                                      (D.red_or_blue_degree c (Or.inr hcD)) hbc.symm hcd Q.hcf
+                                      (degreeD (Or.inr hcD)) hbc.symm hcd Q.hcf
                                     · exact vertex_ne_of_color_eq hbD hdD (by decide)
                                     · exact vertex_ne_of_color_eq hbD hfD (by decide)
                                     · exact vertex_ne_of_color_eq hdD hfD (by decide)
@@ -1218,7 +1305,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                     · exact vertex_ne_of_color_eq hnD hfD (by decide)
                                   have hbq : ¬ G.Adj b q := by
                                     apply not_adj_fourth_neighbor_of_degree_three
-                                      (D.red_or_blue_degree b (Or.inl hbD)) hab.symm hbc Q.hbe
+                                      (degreeD (Or.inl hbD)) hab.symm hbc Q.hbe
                                     · exact vertex_ne_of_color_eq haD hcD (by decide)
                                     · exact vertex_ne_of_color_eq haD heD (by decide)
                                     · exact vertex_ne_of_color_eq hcD heD (by decide)
@@ -1236,7 +1323,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                   · obtain ⟨z, hcz, hqz⟩ := hCommonC2
                                     have hzf : z = Q.f := by
                                       rcases neighbor_eq_of_degree_three
-                                          (D.red_or_blue_degree c (Or.inr hcD)) hbc.symm hcd Q.hcf
+                                          (degreeD (Or.inr hcD)) hbc.symm hcd Q.hcf
                                           (vertex_ne_of_color_eq hbD hdD (by decide))
                                           (vertex_ne_of_color_eq hbD hfD (by decide))
                                           (vertex_ne_of_color_eq hdD hfD (by decide)) hcz with
@@ -1271,7 +1358,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                     · obtain ⟨z, hez, hqz⟩ := hCommonE2
                                       have haq : ¬ G.Adj a q := by
                                         apply not_adj_fourth_neighbor_of_degree_three
-                                          (D.red_or_blue_degree a (Or.inl haD)) hab
+                                          (degreeD (Or.inl haD)) hab
                                             Q.heaEdge.symm Q.hag
                                         · exact vertex_ne_of_color_eq hbD heD (by decide)
                                         · exact vertex_ne_of_color_eq hbD hgD (by decide)
@@ -1357,7 +1444,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                       · obtain ⟨z, hgz, hqz⟩ := hCommonG2
                                         have haq : ¬ G.Adj a q := by
                                           apply not_adj_fourth_neighbor_of_degree_three
-                                            (D.red_or_blue_degree a (Or.inl haD)) hab
+                                            (degreeD (Or.inl haD)) hab
                                               Q.heaEdge.symm Q.hag
                                           · exact vertex_ne_of_color_eq hbD heD (by decide)
                                           · exact vertex_ne_of_color_eq hbD hgD (by decide)
@@ -1381,7 +1468,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                         have hNoRedAtDE : ∀ z, G.Adj d z → E.color z ≠ .red := by
                                           intro z hdz hz
                                           rcases neighbor_eq_of_degree_three
-                                              (D.red_or_blue_degree d (Or.inr hdD)) hcd.symm hdh hds
+                                              (degreeD (Or.inr hdD)) hcd.symm hdh hds
                                               (vertex_ne_of_color_eq hcD hhD (by decide))
                                               (vertex_ne_of_color_eq hcD hsD (by decide)) hsh.symm hdz with
                                             r | r | r
@@ -1458,7 +1545,7 @@ theorem lemma5_13_case4_exact_bluish_red
                                             r | r | r
                                           · subst z; simp [haE] at hz
                                           · rcases neighbor_eq_of_degree_three
-                                                (E.red_or_blue_degree d (Or.inr hdE)) hcd.symm hdh hds
+                                                (degreeE (Or.inr hdE)) hcd.symm hdh hds
                                                 (vertex_ne_of_color_eq hcE hhE (by decide))
                                                 (vertex_ne_of_color_eq hcE hsE (by decide)) hsh.symm hdz with
                                               t | t | t

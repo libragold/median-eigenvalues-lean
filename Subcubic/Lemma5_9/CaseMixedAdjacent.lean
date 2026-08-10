@@ -19,6 +19,12 @@ theorem lemma5_9_case_lm_mixed_adjacent
   classical
   by_contra hgoal
   have noResult (hr : HasReachableNegativeReduction C) : False := hgoal hr
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (noResult (.of_current_ntr C hntr)).elim
+    · exact (noResult (.of_current_ce C hce)).elim
   have noCE (hce : ContainsCutEnhancer C) : False :=
     noResult (HasReachableNegativeReduction.of_current_ce C hce)
   have noNTR (hntr : ContainsNegativeTailReducer C) : False :=
@@ -343,7 +349,7 @@ theorem lemma5_9_case_lm_mixed_adjacent
     · -- This is the prose's third neighbor `q` of `n` (named `r` here
       -- because `q` already denotes the third neighbor of `l`).
       obtain ⟨r, hnr, hrm, hrp⟩ :=
-        C.exists_third_neighbor (Or.inr Q.hn)
+        C.exists_third_neighbor (degreeC (Or.inr Q.hn))
           (color_ne Q.hm Q.hp (by decide))
       have hrSide : C.color r = .red ∨ C.color r = .reddish :=
         C.other_neighbor_of_blue_is_redSide Q.hn Q.hm Q.hmn.symm hnr hrm
@@ -352,7 +358,7 @@ theorem lemma5_9_case_lm_mixed_adjacent
         · -- If `r` were red, `n,p,r` induce reversed negative `a1`
           -- when `p ~ r`, and reversed cut enhancer `a` otherwise.
           by_cases hpr : G.Adj Q.p r
-          · have hntrSwap := containsNegativeA1 C.swapSides
+          · have hntrSwap := containsNegativeA C.swapSides
               (by simp [Q.hn]) (by simp [Q.hp]) (by simp [hr])
               Q.hnp hnr hpr
               (by
@@ -446,13 +452,12 @@ theorem lemma5_9_case_lm_mixed_adjacent
             Q.hkl.symm hpl.symm hlq
             (color_ne Q.hk Q.hp (by decide)) hqk.symm hqp.symm
             hvk hvp hvq hlv).elim
-      rcases lemma5_5 C.swapSides hpentagon
+      exact noResult (HasReachableNegativeReduction.of_swapSides C
+        (lemma5_5 C.swapSides hpentagon
           (by simp [Q.hn]) (by simp [Q.hm]) (by simp [Q.hl])
           (by simp [Q.hp]) (Or.inr (by simp [Q.hk]))
-          nNoBlue mNoBlue lNoBlue with hntr | hce
-      · exact noNTR ((containsInducedUpToSwap_swapSides
-          IsNegativeTailReducer C).1 hntr)
-      · exact noCE ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hce)
-  · exact noCE ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hce)
+          nNoBlue mNoBlue lNoBlue))
+  · exact noResult (HasReachableNegativeReduction.of_swapSides C
+      (HasReachableNegativeReduction.of_lemma3_4 C.swapSides hce))
 
 end Subcubic

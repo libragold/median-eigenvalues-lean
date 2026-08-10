@@ -13,8 +13,17 @@ theorem lemma4_8_third_neighbors
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red) :
     (∃ i j, G.Adj d i ∧ C.color i = .reddish ∧
-      G.Adj e j ∧ C.color j = .bluish) ∨ ContainsCutEnhancer C := by
+      G.Adj e j ∧ C.color j = .bluish) ∨
+      ContainsLemma3_4Obstruction C := by
   classical
+  by_cases hobs : ContainsLemma3_4Obstruction C
+  · exact Or.inr hobs
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4 C hv with hdegree | hfound
+    · exact hdegree
+    · exact (hobs hfound).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have vertex_ne {x y : Fin 8} (hxy : x ≠ y) :
@@ -24,7 +33,7 @@ theorem lemma4_8_third_neighbors
   have hde : G.Adj d e := (hedge 3 4).mp (by native_decide)
   have hef : G.Adj e f := (hedge 4 5).mp (by native_decide)
   obtain ⟨i, hdi, hic, hie⟩ :=
-    C.exists_third_neighbor (Or.inr hd)
+    C.exists_third_neighbor (degree_of_color (Or.inr hd))
       (vertex_ne (x := (2 : Fin 8)) (y := 4) (by decide))
   have hiSide : C.color i = .red ∨ C.color i = .reddish :=
     C.other_neighbor_of_blue_is_redSide hd hc hcd.symm hdi hic
@@ -39,7 +48,7 @@ theorem lemma4_8_third_neighbors
             ((hedge 3 5).mpr hdf)
         exact hdf hdi) with hi | hce
   · obtain ⟨j, hej, hjd, hjf⟩ :=
-      C.exists_third_neighbor (Or.inl he)
+      C.exists_third_neighbor (degree_of_color (Or.inl he))
         (vertex_ne (x := (3 : Fin 8)) (y := 5) (by decide))
     have hjSide : C.color j = .blue ∨ C.color j = .bluish :=
       C.other_neighbor_of_red_is_blueSide he hf hef hej hjf
@@ -54,7 +63,7 @@ theorem lemma4_8_third_neighbors
               ((hedge 4 2).mpr hec)
           exact hec hej) with hj | hce
     · exact Or.inl ⟨i, j, hdi, hi, hej, hj⟩
-    · exact Or.inr hce
-  · exact Or.inr hce
+    · exact Or.inr (Or.inr hce)
+  · exact Or.inr (Or.inr hce)
 
 end Subcubic

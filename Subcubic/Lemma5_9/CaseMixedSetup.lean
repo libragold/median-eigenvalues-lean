@@ -54,6 +54,12 @@ theorem lemma5_9_case_lm_mixed_setup
   by_contra hgoal
   push Not at hgoal
   have noResult (h : HasReachableNegativeReduction C) : False := hgoal.1 h
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (noResult (.of_current_ntr C hntr)).elim
+    · exact (noResult (.of_current_ce C hce)).elim
   have noCE (hce : ContainsCutEnhancer C) : False :=
     noResult (HasReachableNegativeReduction.of_current_ce C hce)
   dsimp [FormsInducedPath8] at hpath
@@ -94,7 +100,7 @@ theorem lemma5_9_case_lm_mixed_setup
     · exact (C.bluish_not_adj_blueSide hn (Or.inl hm) hmn.symm).elim
   have hnk : n ≠ Q.k := color_ne hn Q.hk (by decide)
   obtain ⟨o, hmo, hok, hon⟩ :=
-    C.exists_third_neighbor (Or.inr hm) hnk
+    C.exists_third_neighbor (degreeC (Or.inr hm)) hnk
   have hoSide := C.other_neighbor_of_blue_is_redSide hm hn hmn hmo hok
   have hdk : ¬ G.Adj d Q.k := by
     apply C.not_adj_fourth_neighbor (Or.inr hd) hcd.symm hde Q.hdi

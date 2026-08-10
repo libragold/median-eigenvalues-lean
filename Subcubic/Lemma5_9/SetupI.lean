@@ -112,6 +112,6 @@ theorem lemma5_9_setup_i
         hit := hit
         htd := htd
         hth := hth }⟩
-  · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
+  · exact Or.inl (HasReachableNegativeReduction.of_lemma3_4 C hce)
 
 end Subcubic

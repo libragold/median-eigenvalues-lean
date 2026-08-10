@@ -47,7 +47,8 @@ private theorem contains_cutEnhancerB_swapped
     simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
       hcd_ne, hce_ne, hde_ne]
   refine ⟨cutEnhancer .b, ⟨.b, rfl⟩, Or.inr ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [ColoredPattern.swapSides, cutEnhancer, graphOfEdges, G.adj_comm,
@@ -85,7 +86,8 @@ private theorem contains_positiveC
     simp [hab_ne, hac_ne, had_ne, hae_ne, hbc_ne, hbd_ne, hbe_ne,
       hcd_ne, hce_ne, hde_ne]
   refine ⟨positiveTailReducer .c, ⟨.c, rfl⟩, Or.inl ?_⟩
-  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_⟩
+  refine ⟨[a, b, c, d, e].get, hn.injective_get, ?_, ?_, by
+    intro x d hdegree; exfalso; revert hdegree; native_decide +revert⟩
   · intro x y
     fin_cases x <;> fin_cases y <;>
       simp [positiveTailReducer, positiveTailReducerData, PatternData.toPattern,
@@ -238,6 +240,14 @@ theorem lemma4_7
     (hg : C.color g = .blue) (hh : C.color h = .blue) :
     ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C := by
   classical
+  by_contra hno
+  apply hno
+  have degreeC {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hfound
+    · exact hdegree
+    · exact (hno hfound).elim
   dsimp [FormsInducedCycle8] at hcycle
   rcases hcycle with ⟨hinj, hedge⟩
   have hcycleNodup : [a, b, c, d, e, f, g, h].Nodup := by
@@ -264,7 +274,7 @@ theorem lemma4_7
   have hgh : G.Adj g h := (hedge 6 7).mp (by native_decide)
   have hha : G.Adj h a := (hedge 7 0).mp (by native_decide)
   obtain ⟨p, hap, hpb, hph⟩ :=
-    C.exists_third_neighbor (Or.inl ha)
+    C.exists_third_neighbor (degreeC (Or.inl ha))
       (cycle_vertices_ne (x := (1 : Fin 8)) (y := 7) (by decide))
   have hpside := C.other_neighbor_of_red_is_blueSide ha hb hab hap hpb
   have hag : ¬ G.Adj a g := by
@@ -273,7 +283,7 @@ theorem lemma4_7
   rcases lemma3_3 C ha hh hg hpside hha.symm hap hgh.symm
       hph.symm hpg.symm with hp | hce
   · obtain ⟨q, hbq, hqa, hqc⟩ :=
-      C.exists_third_neighbor (Or.inl hb)
+      C.exists_third_neighbor (degreeC (Or.inl hb))
         (cycle_vertices_ne (x := (0 : Fin 8)) (y := 2) (by decide))
     have hqside := C.other_neighbor_of_red_is_blueSide hb ha hab.symm hbq hqa
     have hbd : ¬ G.Adj b d := by
@@ -282,7 +292,7 @@ theorem lemma4_7
     rcases lemma3_3 C hb hc hd hqside hbc hbq hcd
         hqc.symm hqd.symm with hq | hce
     · obtain ⟨r, her, hrf, hrd⟩ :=
-        C.exists_third_neighbor (Or.inl he)
+        C.exists_third_neighbor (degreeC (Or.inl he))
           (cycle_vertices_ne (x := (5 : Fin 8)) (y := 3) (by decide))
       have hrside := C.other_neighbor_of_red_is_blueSide he hf hef her hrf
       have hec : ¬ G.Adj e c := by
@@ -291,7 +301,7 @@ theorem lemma4_7
       rcases lemma3_3 C he hd hc hrside hde.symm her hcd.symm
           hrd.symm hrc.symm with hr | hce
       · obtain ⟨s, hfs, hse, hsg⟩ :=
-          C.exists_third_neighbor (Or.inl hf)
+          C.exists_third_neighbor (degreeC (Or.inl hf))
             (cycle_vertices_ne (x := (4 : Fin 8)) (y := 6) (by decide))
         have hsside := C.other_neighbor_of_red_is_blueSide hf he hef.symm hfs hse
         have hfh : ¬ G.Adj f h := by

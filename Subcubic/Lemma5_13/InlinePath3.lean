@@ -54,33 +54,29 @@ theorem path6_induced_or_negative_reduction
   have hcd : G.Adj c d := edge 2 3 (by native_decide)
   have hde : G.Adj d e := edge 3 4 (by native_decide)
   have hef : G.Adj e f := edge 4 5 (by native_decide)
-  have current (hout : ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C) :
-      HasReachableNegativeReduction C :=
-    hout.elim (HasReachableNegativeReduction.of_current_ntr C)
-      (HasReachableNegativeReduction.of_current_ce C)
   by_cases hac : G.Adj a c
-  · exact Or.inl (current (lemma5_2 C a b c d hab ha hb hcd hc hd (by
+  · exact Or.inl (lemma5_2 C a b c d hab ha hb hcd hc hd (by
       simp [fourVertexCrossEdgeCount, hac, hbc]
-      omega)))
+      omega))
   by_cases had : G.Adj a d
-  · exact Or.inl (current (lemma5_2 C a b c d hab ha hb hcd hc hd (by
+  · exact Or.inl (lemma5_2 C a b c d hab ha hb hcd hc hd (by
       simp [fourVertexCrossEdgeCount, had, hbc]
-      omega)))
+      omega))
   by_cases hbd : G.Adj b d
-  · exact Or.inl (current (lemma5_2 C a b c d hab ha hb hcd hc hd (by
-      simp [fourVertexCrossEdgeCount, hbc, hbd])))
+  · exact Or.inl (lemma5_2 C a b c d hab ha hb hcd hc hd (by
+      simp [fourVertexCrossEdgeCount, hbc, hbd]))
   by_cases hce : G.Adj c e
-  · exact Or.inl (current (lemma5_2 C e f c d hef he hf hcd hc hd (by
+  · exact Or.inl (lemma5_2 C e f c d hef he hf hcd hc hd (by
       simp [fourVertexCrossEdgeCount, SimpleGraph.adj_comm, hce, hde]
-      omega)))
+      omega))
   by_cases hcf : G.Adj c f
-  · exact Or.inl (current (lemma5_2 C e f c d hef he hf hcd hc hd (by
+  · exact Or.inl (lemma5_2 C e f c d hef he hf hcd hc hd (by
       simp [fourVertexCrossEdgeCount, SimpleGraph.adj_comm, hcf, hde]
-      omega)))
+      omega))
   by_cases hdf : G.Adj d f
-  · exact Or.inl (current (lemma5_2 C e f c d hef he hf hcd hc hd (by
+  · exact Or.inl (lemma5_2 C e f c d hef he hf hcd hc hd (by
       simp [fourVertexCrossEdgeCount, SimpleGraph.adj_comm, hde, hdf]
-      omega)))
+      omega))
   have redNonedge {x mate y : V}
       (hx : C.color x = .red) (hm : C.color mate = .red)
       (hy : C.color y = .red) (hxm : G.Adj x mate) (hmy : mate ≠ y) :
@@ -190,7 +186,7 @@ theorem lemma5_12_inline
       have hxc : x ≠ c := by
         intro h
         subst x
-        apply noOutcome
+        apply noResult
         apply lemma5_2 C e f c d hef he hf hcd hc hd
         have hed : G.Adj e d := hde.symm
         have hfc : G.Adj f c := hfx
@@ -199,7 +195,7 @@ theorem lemma5_12_inline
       have hxd : x ≠ d := by
         intro h
         subst x
-        apply noOutcome
+        apply noResult
         apply lemma5_2 C e f c d hef he hf hcd hc hd
         have hed : G.Adj e d := hde.symm
         have hfd : G.Adj f d := hfx
@@ -227,19 +223,19 @@ theorem lemma5_12_inline
       have hydN : ¬ G.Adj y d := blueNonedge hy hx hd hxy.symm hxd
       have hex : ¬ G.Adj e x := by
         intro hex
-        apply noOutcome
+        apply noResult
         apply lemma5_2 C e f x y hef he hf hxy hx hy
         simp [fourVertexCrossEdgeCount, hex, hfx]
         omega
       have hey : ¬ G.Adj e y := by
         intro hey
-        apply noOutcome
+        apply noResult
         apply lemma5_2 C e f x y hef he hf hxy hx hy
         simp [fourVertexCrossEdgeCount, hey, hfx]
         omega
       have hfy : ¬ G.Adj f y := by
         intro hfy
-        apply noOutcome
+        apply noResult
         apply lemma5_2 C e f x y hef he hf hxy hx hy
         simp [fourVertexCrossEdgeCount, hfy, hfx]
       have hxa : ¬ G.Adj x a := by
@@ -350,14 +346,14 @@ theorem lemma5_12_inline
           have hpc : p ≠ c := by
             intro h
             subst p
-            apply noOutcome
+            apply noResult
             apply lemma5_2 C a b c d hab ha hb hcd hc hd
             simp [fourVertexCrossEdgeCount, hbc, hap]
             omega
           have hpd : p ≠ d := by
             intro h
             subst p
-            apply noOutcome
+            apply noResult
             apply lemma5_2 C a b c d hab ha hb hcd hc hd
             simp [fourVertexCrossEdgeCount, hbc, hap]
             omega

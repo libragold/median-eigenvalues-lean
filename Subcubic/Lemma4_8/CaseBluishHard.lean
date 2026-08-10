@@ -27,6 +27,15 @@ theorem lemma4_8_case_l_adj_f
     (Q : Lemma4_8BluishHardConfiguration C a b c d e f g h)
     (hlf : G.Adj Q.l f) : HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {u v : Fin 8} (huv : u ≠ v) :
@@ -56,7 +65,7 @@ theorem lemma4_8_case_l_adj_f
     subst y
     simp_all
   obtain ⟨n, hgn, hnf, hnh⟩ :=
-    C.exists_third_neighbor (Or.inr hg)
+    C.exists_third_neighbor (degree_of_color (Or.inr hg))
       (hv (u := (5 : Fin 8)) (v := 7) (by decide))
   have hnSide := C.other_neighbor_of_blue_is_redSide hg hh hgh hgn hnh
   have hen : e ≠ n := by
@@ -197,7 +206,7 @@ theorem lemma4_8_bluish_hard_setup
       C.bluish_not_adj_blueSide Q.hl (Or.inl hc)
     have hlb : ¬ G.Adj Q.l b := by simpa [SimpleGraph.adj_comm] using Q.hbl
     by_cases hldeg2 : vertexDegree G Q.l = 2
-    · have hptrSwap := containsPositiveMMinus C.swapSides
+    · have hptrSwap := containsPositiveDcA C.swapSides
         (a := Q.l) (b := c) (c := Q.k) (d := a) (e := b)
         (by simp [Q.hl]) (by simp [hc]) (by simp [Q.hk])
         (by simp [ha]) (by simp [hb]) hldeg2 Q.hkl.symm Q.hal.symm
@@ -273,6 +282,15 @@ theorem lemma4_8_n_no_blue
     (hNoBlue : ∀ z, G.Adj Q.n z → C.color z ≠ .blue) :
     HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {u v : Fin 8} (huv : u ≠ v) :
@@ -308,7 +326,7 @@ theorem lemma4_8_n_no_blue
     · exact (C.reddish_not_adj_redSide hq (Or.inl Q.hn) hnq.symm).elim
   have hql : q ≠ Q.l := color_ne hq Q.hl (by decide)
   obtain ⟨o, hno, hoq, hol⟩ :=
-    C.exists_third_neighbor (Or.inl Q.hn) hql
+    C.exists_third_neighbor (degree_of_color (Or.inl Q.hn)) hql
   have hoSide := C.other_neighbor_of_red_is_blueSide
     Q.hn hq hnq hno hoq
   have ho : C.color o = .bluish := by
@@ -400,6 +418,15 @@ theorem lemma4_8_n_has_blue
     {o : V} (hno : G.Adj Q.n o) (ho : C.color o = .blue) :
     HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath8 G a b c d e f g h := ⟨hinj, hedge⟩
@@ -508,11 +535,13 @@ theorem lemma4_8_n_has_blue
         exact hout.elim (HasReachableReduction.of_current_ptr C)
           (HasReachableReduction.of_current_ce C)
       · rcases exists_flipAt_or_cutEnhancer C Q.hn ho hq hpColor
+          (degree_of_color (Or.inl Q.hn)) (degree_of_color (Or.inr ho))
           hnq hno hop with hflip | hce
         · obtain ⟨M, hflip⟩ := hflip
           let D := M.toGoodColoring
           have hnD : D.color Q.n = .blue :=
             blue_of_flipped_red_endpoint C hflip hq hnq
+              (degree_of_color (Or.inl Q.hn))
               (color_ne hq ho (by decide))
           have hlD : D.color Q.l = .blue :=
             blue_of_bluish_gains_flipped_red C hflip Q.hl Q.hln

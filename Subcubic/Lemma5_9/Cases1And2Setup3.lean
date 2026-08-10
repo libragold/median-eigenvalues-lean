@@ -25,6 +25,15 @@ theorem lemma5_9_case3_setup
     HasReachableNegativeReduction C ∨
       Nonempty (Lemma5_9Case3Configuration C a b c d e f g h) := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact Or.inl hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   dsimp [FormsInducedPath8] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hp : FormsInducedPath8 G a b c d e f g h := ⟨hinj, hedge⟩
@@ -47,14 +56,14 @@ theorem lemma5_9_case3_setup
   have hcd := edge 2 3 (by native_decide)
   have hbj : b ≠ j := by intro q; subst j; simp_all
   obtain ⟨x, hax, hxb, hxj⟩ :=
-    C.exists_third_neighbor (Or.inl ha) hbj
+    C.exists_third_neighbor (degree_of_color (Or.inl ha)) hbj
   have hxSide := C.other_neighbor_of_red_is_blueSide ha hb hab hax hxb
   have hx : C.color x = .bluish := by
     rcases hxSide with hx | hx
     · exact (hNoBlueAtA x hax hx).elim
     · exact hx
   obtain ⟨y, hby, hya, hyc⟩ :=
-    C.exists_third_neighbor (Or.inl hb)
+    C.exists_third_neighbor (degree_of_color (Or.inl hb))
       (hv (u := (0 : Fin 8)) (v := 2) (by decide))
   have hySide := C.other_neighbor_of_red_is_blueSide hb ha hab.symm hby hya
   have hbd : ¬ G.Adj b d := by simpa using nonedge 1 3 (by native_decide)
@@ -105,6 +114,7 @@ theorem lemma5_9_cases1_and_2_setup3
             exact Or.inl (HasReachableNegativeReduction.of_swapSides C hrev)
       · exact Or.inl (lemma5_9_case_i_not_adj_g_h C hpath hc hd he hf
           hg hh hi hj hdi hej hig hih hNoRedAtH)
-  · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
+  · exact Or.inl (HasReachableNegativeReduction.of_lemma3_4 C
+      (HasReachableLemma3_4Obstruction.of_current C hce))
 
 end Subcubic

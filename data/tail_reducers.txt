@@ -1,4 +1,5 @@
 a+2 abacadbcbdcd
+absolute+1 ab
 b+2 abacadbcbd
 c+2 acaebdbecd
 d+2 abacadbdbecd
@@ -25,12 +26,12 @@ w+4 abaeajbfbgcdchckdidkghij
 x+4 abaeagbfbhcgcjdhdidkhijk
 y+4 abaeajbfbgcdchcldidkghij
 a-1 abacbc
+absolute-1 ab
 b-2 acadbcbd
 c-2 abacadbcbd
 d-2 acadbdbe
 e-2 acadbcbdbe
 e0Minus-2 acadbcbd
-e1Minus-2 acadbcbd
 f-2 abacadbebfde
 g-2 abacadbebf
 h-2 acadbdbebfef
@@ -48,7 +49,6 @@ s-3 abadafbebfcfcgch
 s0Minus-3 abadafbebfcfcg
 s1Minus-3 abadafbebfcfcg
 s0Minus2-3 abadafbebfcf
-s1Minus2-3 abadafbebfcf
 t-3 abadahbebfcdcfchfg
 u-3 adaeafbebfbgcgchfg
 uMinus-3 adaebdbebfcfcgef

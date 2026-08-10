@@ -126,11 +126,8 @@ private theorem restart_kj_with_bluish_l
         hck.symm hkj hkl
         hcjV
         hlc.symm hlj.symm hvc' hvj' hvl') hkv |>.elim
-    rcases lemma5_5 C hpent hb ha hk hc (Or.inr hj)
-        hbNoBlue haNoBlue hkNoBlue with
-      hntr | hce
-    · exact HasReachableNegativeReduction.of_current_ntr C hntr
-    · exact HasReachableNegativeReduction.of_current_ce C hce
+    exact lemma5_5 C hpent hb ha hk hc (Or.inr hj)
+      hbNoBlue haNoBlue hkNoBlue
 
   have hxSide := C.other_neighbor_of_red_is_blueSide ha hb hab hax hxb
   rcases hxSide with hx | hx
@@ -178,6 +175,14 @@ theorem lemma5_9_case_kj_blue_flip
     (Q : Lemma5_9KJBlueMConfiguration C a b c d e f g h) :
     HasReachableNegativeReduction C := by
   classical
+  by_cases hdone : HasReachableNegativeReduction C
+  · exact hdone
+  have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ntr C hntr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases Q with ⟨Q, hkh, hla, m, hm, hlm, n, hn, hmn,
     hma, hmb, hmf, hme, hmi, hnl⟩
   have hnCorrect := C.color_correct n
@@ -187,7 +192,8 @@ theorem lemma5_9_case_kj_blue_flip
     rcases (C.mem_redSide_iff r).1 hrSide with hr | hr
     · exact hr
     · exact (C.reddish_not_adj_redSide hr (Or.inl hn) hnr.symm).elim
-  rcases exists_flipAt_or_cutEnhancer C hn hm hr Q.hl hnr hmn.symm hlm.symm with
+  rcases exists_flipAt_or_cutEnhancer C hn hm hr Q.hl
+      (degreeC (Or.inl hn)) (degreeC (Or.inr hm)) hnr hmn.symm hlm.symm with
     ⟨M, hflip⟩ | hce
   · let D := M.toGoodColoring
     dsimp [FormsInducedPath8] at hpath

@@ -16,6 +16,15 @@ theorem lemma4_8_case_k_adj_j
     (Q : Lemma4_8KConfiguration C a b c d e f g h)
     (hkj : G.Adj Q.k Q.j) : HasReachableReduction C := by
   classical
+  by_cases hdone : HasReachableReduction C
+  · exact hdone
+  have degree_of_color {v : V}
+      (hv : C.color v = .red ∨ C.color v = .blue) :
+      vertexDegree G v = 3 := by
+    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    · exact hdegree
+    · exact (hdone (.of_current_ptr C hptr)).elim
+    · exact (hdone (.of_current_ce C hce)).elim
   rcases Q with ⟨⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
     hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩, hxy, hij, hnotBoth⟩,
     hic, k, hk, hck, hkb, hkd, hkg, hkdeg⟩
@@ -70,7 +79,9 @@ theorem lemma4_8_case_k_adj_j
     intro hjgV
     rw [hjgV] at hj
     simp [hg] at hj
-  rcases exists_flipAt_or_cutEnhancer C hf hg he hh hef.symm hfg hgh
+  rcases exists_flipAt_or_cutEnhancer C hf hg he hh
+      (degree_of_color (Or.inl hf)) (degree_of_color (Or.inr hg))
+      hef.symm hfg hgh
       with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
     let D := M.toGoodColoring

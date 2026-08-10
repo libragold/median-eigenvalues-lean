@@ -61,7 +61,7 @@ theorem lemma5_13_case4_g_meets_f
     have heu : Q.e ≠ u := by
       intro h; subst u; exact Q.hef hfu.symm
     apply HasReachableNegativeReduction.of_current_ntr C
-    apply containsNegativeR C
+    apply containsNegativeS C
       (a := a) (b := b) (c := Q.f) (d := Q.g) (e := Q.e)
       (f := c) (g := d) (h := u)
       ha hb Q.hf Q.hg Q.he hc hd hu hab Q.hag Q.heaEdge.symm
