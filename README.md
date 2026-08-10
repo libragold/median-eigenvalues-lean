@@ -11,19 +11,22 @@ The initial organization is:
 - `Subcubic/ColoringLemmas.lean`: reusable consequences of the matching and
   degree-three assumptions, independent of the pattern catalogs;
 - `Subcubic/MatchingCut.lean`: matching cuts as first-class objects, color
-  recomputation, valid cut-preserver flips, and the explicitly documented
-  Lemma 3.4 axiom for degree-three red/blue vertices;
+  recomputation, and valid cut-preserver flips;
 - `Subcubic/Pattern.lean`: finite colored patterns and induced occurrence (for
   both tail reducers and cut enhancers), including reversal under the symmetry
   `A ↔ B`, red ↔ blue, and reddish ↔ bluish. It also provides reusable
   induced-occurrence certificates: displayed edges are checked explicitly,
   while saturation and the matching cut force the remaining nonedges;
-- `Subcubic/TailReducers.lean`: 24 positive and 42 exact-color negative
-  reducers, generated in a readable format from the compact source table;
-- `Subcubic/CutEnhancers.lean`: the seven explicitly colored induced
+- `Subcubic/TailReducers.lean`: 27 positive and 56 negative reducers,
+  generated in a readable format from `detailed-input.txt`;
+- `Subcubic/CutEnhancers.lean`: the nine explicitly colored induced
   cut-enhancer patterns;
 - `Subcubic/Lemma3_3.lean`: Lemma 3.3, including the explicit induced copy of
   cut enhancer `a`;
+- `Subcubic/Lemma3_6.lean`: the degree-three lemma, with absolute-reducer and
+  cut-enhancer alternatives proved explicitly;
+- `Subcubic/Lemma3_7.lean`: the degree-three-neighbor lemma obtained after a
+  valid cut-preserver flip;
 - `Subcubic/Lemma4_2.lean`: the complete proof of Lemma 4.2, including all
   four-, three-, and two-crossing-edge cases.
 - `Subcubic/Lemma4_3.lean`: Lemma 4.3, concluding that there is a positive

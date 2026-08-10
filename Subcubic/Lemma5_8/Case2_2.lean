@@ -255,7 +255,7 @@ private theorem case2_2_blue
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -502,7 +502,7 @@ theorem lemma5_8_case2_2
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -549,7 +549,7 @@ theorem lemma5_8_case2_2
     · exact current_ntr (case2_2_o_left C hp.reverseShift hf he hd hc hb ha
         hj hi hk (degree_of_color (Or.inl he)) (degree_of_color (Or.inl hb))
         hej hbi hdk hck hkj hki)
-    · rcases lemma3_5 C hb hc hk hbc hck with hkdeg | hce
+    · rcases lemma3_7 C hb hc hk hbc hck with hkdeg | hce
       · obtain ⟨l, hkl, hlc, hld⟩ :=
           exists_third_neighbor_of_degree_three hkdeg hcd.ne
         have hlSide : C.color l = .blue ∨ C.color l = .bluish := by
@@ -562,6 +562,6 @@ theorem lemma5_8_case2_2
             hai hbi hej hfj hck hdk hkl hlc hld hki hkg hkh hkj hij hkdeg
         · exact current_ntr (case2_2_al C hp ha hb hc hd he hf hg hh hi hj
             hk hl hai hbi hej hfj hck hdk hkl hki hkg hkh hkj hij)
-      · exact HasReachableNegativeReduction.of_lemma3_4 C hce
+      · exact HasReachableNegativeReduction.of_lemma3_6 C hce
 
 end Subcubic

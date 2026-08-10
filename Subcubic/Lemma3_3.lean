@@ -1,4 +1,4 @@
-import Subcubic.Lemma3_4
+import Subcubic.Lemma3_6
 import Mathlib.Tactic.FinCases
 
 /-!

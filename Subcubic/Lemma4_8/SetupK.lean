@@ -1,11 +1,11 @@
 import Subcubic.Lemma4_8.Cases3_1To3_3
-import Subcubic.Lemma3_5
+import Subcubic.Lemma3_7
 
 /-!
 # Lemma 4.8: entering case (3.4)
 
 Here `i` is oriented so that `i` is not adjacent to `c`.  The third neighbor
-`k` of `c` is reddish; enhancer `b` excludes `k-g`, and Lemma 3.5 supplies
+`k` of `c` is reddish; enhancer `b` excludes `k-g`, and Lemma 3.7 supplies
 the degree-three fact needed to expose the other two neighbors of `k`.
 -/
 
@@ -42,7 +42,7 @@ theorem lemma4_8_setup_k
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -103,14 +103,14 @@ theorem lemma4_8_setup_k
       exact HasReachableReduction.of_current_ce C
         (containsCutEnhancerB_of C hk hc hb hg hf hck.symm hkg
           hbc.symm hfg.symm hkbAdj hkf hcg hcf hbg hbf)
-    · rcases lemma3_5 C hb hc hk hbc hck with hkdeg | hce
+    · rcases lemma3_7 C hb hc hk hbc hck with hkdeg | hce
       · right
         exact ⟨Lemma4_8KConfiguration.mk
           ⟨⟨i, j, x, y, hi, hj, hx, hy, hdi, hih, hej, hja,
             hax, hxb, hxj, hby, hya, hyc, hig, hjb⟩,
             hxy, hij, hnotBoth⟩
           hic k hk hck hkb hkd hkg hkdeg⟩
-      · exact Or.inl (HasReachableReduction.of_lemma3_4 C hce)
+      · exact Or.inl (HasReachableReduction.of_lemma3_6 C hce)
   · exact Or.inl (HasReachableReduction.of_current_ce C hce)
 
 end Subcubic

@@ -26,7 +26,7 @@ theorem lemma2_7
   have noResult (hout : HasReachableReduction C) : False := hresult hout
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (noResult (.of_current_ptr C hptr)).elim
     · exact (noResult (.of_current_ce C hce)).elim

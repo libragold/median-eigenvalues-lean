@@ -1,5 +1,5 @@
 import Subcubic.Lemma5_4.RedF
-import Subcubic.Lemma3_5
+import Subcubic.Lemma3_7
 
 /-! Case 2.2.5 of Lemma 5.4. -/
 
@@ -105,7 +105,7 @@ private theorem flip_when_h_meets_neither
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -168,7 +168,7 @@ private theorem flip_when_h_meets_neither
       exact lemma5_4_red_f_blue_neighbor D haD hbD hab R hfD hz hfz
     · apply HasReachableNegativeReduction.of_current_ntr D
       have hfDDegree : vertexDegree G Q.f = 3 := by
-        rcases lemma3_4_negative D (Or.inl hfD) with hdegree | hntr | hce
+        rcases lemma3_6_negative D (Or.inl hfD) with hdegree | hntr | hce
         · exact hdegree
         · exact (hdone (HasReachableNegativeReduction.after_flip C hflip
             (.of_current_ntr D hntr))).elim
@@ -211,7 +211,7 @@ private theorem hard_oriented
       (hwe : w ≠ Q.e) : ¬ G.Adj h w :=
     C.not_adj_fourth_neighbor (Or.inl hh) hhr hgh.symm hhe
       hrg hreV hgeV hwr hwg hwe
-  rcases lemma3_5 C hh hg hf hgh.symm hfg.symm with hfdeg | hce
+  rcases lemma3_7 C hh hg hf hgh.symm hfg.symm with hfdeg | hce
   · by_cases hfi : G.Adj Q.f i
     · have hbf : ¬ G.Adj b Q.f := by
         exact fun h => C.reddish_not_adj_redSide hf (Or.inl hb) h.symm
@@ -392,7 +392,7 @@ private theorem hard_oriented
               vertex_ne_of_color_eq hg Q.he (by decide),
               vertex_ne_of_color_eq hi Q.he (by decide)])
         exact HasReachableNegativeReduction.of_current_ntr C hntr
-  · exact HasReachableNegativeReduction.of_lemma3_4 C hce
+  · exact HasReachableNegativeReduction.of_lemma3_6 C hce
 
 /-- Case 2.2.5. -/
 theorem lemma5_4_reddish_f_blue_neighbor
@@ -408,7 +408,7 @@ theorem lemma5_4_reddish_f_blue_neighbor
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim

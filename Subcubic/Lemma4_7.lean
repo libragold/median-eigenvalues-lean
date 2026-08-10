@@ -245,7 +245,7 @@ theorem lemma4_7
   have degreeC {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hfound
+    rcases lemma3_6_positive C hv with hdegree | hfound
     · exact hdegree
     · exact (hno hfound).elim
   dsimp [FormsInducedCycle8] at hcycle

@@ -5,7 +5,7 @@ import Subcubic.ColoringLemmas
 import Subcubic.MatchingCut
 
 /-!
-# Lemma 3.4
+# Lemma 3.6
 
 This file proves the constructive, disjunctive form intended to replace the
 former exact degree-three axiom. A red or blue vertex has ambient degree three
@@ -24,20 +24,20 @@ negative tail reducer. -/
 def ContainsAbsoluteTailReducer (C : GoodColoring G) : Prop :=
   ContainsPositiveTailReducer C ∧ ContainsNegativeTailReducer C
 
-/-- The alternatives to the degree-three conclusion in Lemma 3.4. -/
-def ContainsLemma3_4Obstruction (C : GoodColoring G) : Prop :=
+/-- The alternatives to the degree-three conclusion in Lemma 3.6. -/
+def ContainsLemma3_6Obstruction (C : GoodColoring G) : Prop :=
   ContainsAbsoluteTailReducer C ∨ ContainsCutEnhancer C
 
-/-- A Lemma 3.4 obstruction found after zero or more valid flips. -/
-def HasReachableLemma3_4Obstruction (C : GoodColoring G) : Prop :=
+/-- A Lemma 3.6 obstruction found after zero or more valid flips. -/
+def HasReachableLemma3_6Obstruction (C : GoodColoring G) : Prop :=
   ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-    ContainsLemma3_4Obstruction M.toGoodColoring
+    ContainsLemma3_6Obstruction M.toGoodColoring
 
-theorem HasReachableLemma3_4Obstruction.after_flip
+theorem HasReachableLemma3_6Obstruction.after_flip
     (C : GoodColoring G) {M₁ : MatchingCut G} {r s : V}
     (hflip : C.toMatchingCut.IsFlipAt M₁ r s)
-    (h : HasReachableLemma3_4Obstruction M₁.toGoodColoring) :
-    HasReachableLemma3_4Obstruction C := by
+    (h : HasReachableLemma3_6Obstruction M₁.toGoodColoring) :
+    HasReachableLemma3_6Obstruction C := by
   rcases h with ⟨M, hreach, hfound⟩
   have hround : M₁.toGoodColoring.toMatchingCut = M₁ := by
     apply MatchingCut.ext _ _
@@ -52,21 +52,21 @@ theorem HasReachableLemma3_4Obstruction.after_flip
     | @step N₁ N₂ x y hN hxy ih => exact .step ih hxy
   exact ⟨M, prepend hreach, hfound⟩
 
-/-- Lemma 3.4 obstructions depend only on the recomputed color function. -/
-theorem containsLemma3_4Obstruction_congr_color
+/-- Lemma 3.6 obstructions depend only on the recomputed color function. -/
+theorem containsLemma3_6Obstruction_congr_color
     {C D : GoodColoring G} (hcolor : C.color = D.color) :
-    ContainsLemma3_4Obstruction C ↔ ContainsLemma3_4Obstruction D := by
-  unfold ContainsLemma3_4Obstruction ContainsAbsoluteTailReducer
+    ContainsLemma3_6Obstruction C ↔ ContainsLemma3_6Obstruction D := by
+  unfold ContainsLemma3_6Obstruction ContainsAbsoluteTailReducer
     ContainsPositiveTailReducer ContainsNegativeTailReducer ContainsCutEnhancer
   rw [containsInducedUpToSwap_congr_color IsPositiveTailReducer hcolor,
     containsInducedUpToSwap_congr_color IsNegativeTailReducer hcolor,
     containsInducedUpToSwap_congr_color IsCutEnhancer hcolor]
 
-theorem HasReachableLemma3_4Obstruction.of_current
-    (C : GoodColoring G) (h : ContainsLemma3_4Obstruction C) :
-    HasReachableLemma3_4Obstruction C := by
+theorem HasReachableLemma3_6Obstruction.of_current
+    (C : GoodColoring G) (h : ContainsLemma3_6Obstruction C) :
+    HasReachableLemma3_6Obstruction C := by
   refine ⟨C.toMatchingCut, .refl, ?_⟩
-  exact (containsLemma3_4Obstruction_congr_color (by simp)).1 h
+  exact (containsLemma3_6Obstruction_congr_color (by simp)).1 h
 
 /-- A red vertex has a red mate, directly from the meaning of `red`. -/
 theorem GoodColoring.exists_red_mate
@@ -80,14 +80,14 @@ theorem GoodColoring.exists_red_mate
   · exact ⟨m, hm, hvm⟩
   · exact (C.reddish_not_adj_redSide hm (Or.inl hv) hvm.symm).elim
 
-/-- **Lemma 3.4, red-edge form.** If `ab` is a red edge, then `a` has
+/-- **Lemma 3.6, red-edge form.** If `ab` is a red edge, then `a` has
 degree three, or the degree-one/two local configuration is already an
 absolute tail reducer or a cut enhancer. -/
-theorem lemma3_4_redEdge
+theorem lemma3_6_redEdge
     (C : GoodColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) :
-    vertexDegree G a = 3 ∨ ContainsLemma3_4Obstruction C := by
+    vertexDegree G a = 3 ∨ ContainsLemma3_6Obstruction C := by
   have hpositive : 0 < vertexDegree G a := by
     unfold vertexDegree
     rw [Set.ncard_pos]
@@ -108,17 +108,17 @@ theorem lemma3_4_redEdge
         containsNegativeAbs C ha hc hac haDegree⟩)
   · exact Or.inl haDegree
 
-/-- **Lemma 3.4.** The color-reversed form is included automatically because
+/-- **Lemma 3.6.** The color-reversed form is included automatically because
 all three catalog predicates are defined up to exchange of the two sides. -/
-theorem lemma3_4
+theorem lemma3_6
     (C : GoodColoring G) {a : V}
     (ha : C.color a = .red ∨ C.color a = .blue) :
-    vertexDegree G a = 3 ∨ ContainsLemma3_4Obstruction C := by
+    vertexDegree G a = 3 ∨ ContainsLemma3_6Obstruction C := by
   rcases ha with ha | ha
   · obtain ⟨b, hb, hab⟩ := C.exists_red_mate ha
-    exact lemma3_4_redEdge C ha hb hab
+    exact lemma3_6_redEdge C ha hb hab
   · obtain ⟨b, hb, hab⟩ := C.exists_blue_mate ha
-    have h := lemma3_4_redEdge C.swapSides
+    have h := lemma3_6_redEdge C.swapSides
       (by simp [ha]) (by simp [hb]) hab
     rcases h with hdegree | habsolute | hce
     · exact Or.inl hdegree
@@ -128,24 +128,24 @@ theorem lemma3_4
     · exact Or.inr (Or.inr
         ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hce))
 
-/-- Lemma 3.4 specialized to proofs hunting positive tail reducers. -/
-theorem lemma3_4_positive
+/-- Lemma 3.6 specialized to proofs hunting positive tail reducers. -/
+theorem lemma3_6_positive
     (C : GoodColoring G) {a : V}
     (ha : C.color a = .red ∨ C.color a = .blue) :
     vertexDegree G a = 3 ∨
       (ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C) := by
-  rcases lemma3_4 C ha with hdegree | habsolute | hce
+  rcases lemma3_6 C ha with hdegree | habsolute | hce
   · exact Or.inl hdegree
   · exact Or.inr (Or.inl habsolute.1)
   · exact Or.inr (Or.inr hce)
 
-/-- Lemma 3.4 specialized to proofs hunting negative tail reducers. -/
-theorem lemma3_4_negative
+/-- Lemma 3.6 specialized to proofs hunting negative tail reducers. -/
+theorem lemma3_6_negative
     (C : GoodColoring G) {a : V}
     (ha : C.color a = .red ∨ C.color a = .blue) :
     vertexDegree G a = 3 ∨
       (ContainsNegativeTailReducer C ∨ ContainsCutEnhancer C) := by
-  rcases lemma3_4 C ha with hdegree | habsolute | hce
+  rcases lemma3_6 C ha with hdegree | habsolute | hce
   · exact Or.inl hdegree
   · exact Or.inr (Or.inl habsolute.2)
   · exact Or.inr (Or.inr hce)

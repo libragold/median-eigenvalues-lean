@@ -122,7 +122,7 @@ theorem lemma4_5
   have degreeC {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -360,7 +360,7 @@ theorem lemma4_5
                   have degreeD₁ {z : V}
                       (hz : D₁.color z = .red ∨ D₁.color z = .blue) :
                       vertexDegree G z = 3 := by
-                    rcases lemma3_4_positive D₁ hz with hdegree | hptr | hce
+                    rcases lemma3_6_positive D₁ hz with hdegree | hptr | hce
                     · exact hdegree
                     · exact (hdone ⟨M₁, .step .refl hflip₁, Or.inl hptr⟩).elim
                     · exact (hdone ⟨M₁, .step .refl hflip₁, Or.inr hce⟩).elim
@@ -556,7 +556,7 @@ theorem lemma4_5
                       have degreeD₂ {z : V}
                           (hz : D₂.color z = .red ∨ D₂.color z = .blue) :
                           vertexDegree G z = 3 := by
-                        rcases lemma3_4_positive D₂ hz with hdegree | hptr | hce
+                        rcases lemma3_6_positive D₂ hz with hdegree | hptr | hce
                         · exact hdegree
                         · exact (hdone ⟨M₂, .step (.step .refl hflip₁) hflip₂',
                               Or.inl hptr⟩).elim

@@ -80,7 +80,7 @@ theorem lemma5_7
   have degreeC {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -206,7 +206,7 @@ theorem lemma5_7
                 have degreeD₁ {v : V}
                     (hv : D₁.color v = .red ∨ D₁.color v = .blue) :
                     vertexDegree G v = 3 := by
-                  rcases lemma3_4_negative D₁ hv with hdegree | hntr | hceD
+                  rcases lemma3_6_negative D₁ hv with hdegree | hntr | hceD
                   · exact hdegree
                   · exact (hdone (HasReachableNegativeReduction.after_flip C hflip₁
                       (.of_current_ntr D₁ hntr))).elim

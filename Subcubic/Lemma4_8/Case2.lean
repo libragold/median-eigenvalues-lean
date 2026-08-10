@@ -105,7 +105,7 @@ theorem lemma4_8_case_i_not_adj_g_h
   have degreeD {z : V}
       (hz : D.color z = .red ∨ D.color z = .blue) :
       vertexDegree G z = 3 := by
-    rcases lemma3_4_positive D hz with hdegree | hptr | hce
+    rcases lemma3_6_positive D hz with hdegree | hptr | hce
     · exact hdegree
     · exact (hresult (HasReachableReduction.after_flip C hflip
         (HasReachableReduction.of_current_ptr D hptr))).elim

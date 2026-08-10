@@ -1,5 +1,5 @@
 import Subcubic.Lemma4_10
-import Subcubic.Lemma3_5
+import Subcubic.Lemma3_7
 import Mathlib.Data.Fin.VecNotation
 
 /-! Basic definitions for Lemma 4.12. -/

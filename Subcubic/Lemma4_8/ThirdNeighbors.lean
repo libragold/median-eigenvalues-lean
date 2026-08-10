@@ -14,14 +14,14 @@ theorem lemma4_8_third_neighbors
     (he : C.color e = .red) (hf : C.color f = .red) :
     (∃ i j, G.Adj d i ∧ C.color i = .reddish ∧
       G.Adj e j ∧ C.color j = .bluish) ∨
-      ContainsLemma3_4Obstruction C := by
+      ContainsLemma3_6Obstruction C := by
   classical
-  by_cases hobs : ContainsLemma3_4Obstruction C
+  by_cases hobs : ContainsLemma3_6Obstruction C
   · exact Or.inr hobs
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4 C hv with hdegree | hfound
+    rcases lemma3_6 C hv with hdegree | hfound
     · exact hdegree
     · exact (hobs hfound).elim
   dsimp [FormsInducedPath8] at hpath

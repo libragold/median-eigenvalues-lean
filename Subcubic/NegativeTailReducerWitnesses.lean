@@ -16,7 +16,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- The negative-catalog copy of the absolute degree-two reducer from
-Lemma 3.4. -/
+Lemma 3.6. -/
 theorem containsNegativeAbs
     (C : GoodColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .bluish)

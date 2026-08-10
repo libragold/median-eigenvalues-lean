@@ -57,7 +57,7 @@ private theorem three_crossing_edges
   by_contra hno
   apply hno
   have hbDegree : vertexDegree G b = 3 := by
-    rcases lemma3_4_positive C (Or.inl hb) with hdegree | hfound
+    rcases lemma3_6_positive C (Or.inl hb) with hdegree | hfound
     · exact hdegree
     · exact (hno hfound).elim
   have had_vertices : a ≠ d := by intro h; subst d; simp_all
@@ -119,7 +119,7 @@ private theorem two_crossing_matching
   by_contra hno
   apply hno
   have haDegree : vertexDegree G a = 3 := by
-    rcases lemma3_4_positive C (Or.inl ha) with hdegree | hfound
+    rcases lemma3_6_positive C (Or.inl ha) with hdegree | hfound
     · exact hdegree
     · exact (hno hfound).elim
   have hbc_vertices : b ≠ c := by intro h; subst c; simp_all
@@ -133,7 +133,7 @@ private theorem two_crossing_matching
       hx | henhancer
   · have had_vertices : a ≠ d := by intro h; subst d; simp_all
     have hbDegree : vertexDegree G b = 3 := by
-      rcases lemma3_4_positive C (Or.inl hb) with hdegree | hfound
+      rcases lemma3_6_positive C (Or.inl hb) with hdegree | hfound
       · exact hdegree
       · exact (hno hfound).elim
     obtain ⟨y, hby, hya, hyd⟩ := C.exists_third_neighbor hbDegree had_vertices
@@ -237,7 +237,7 @@ private theorem two_crossing_adjacent
   by_contra hno
   apply hno
   have hcDegree : vertexDegree G c = 3 := by
-    rcases lemma3_4_positive C (Or.inr hc) with hdegree | hfound
+    rcases lemma3_6_positive C (Or.inr hc) with hdegree | hfound
     · exact hdegree
     · exact (hno hfound).elim
   have had_vertices : a ≠ d := by intro h; subst d; simp_all
@@ -251,7 +251,7 @@ private theorem two_crossing_adjacent
       hx | henhancer
   · have hac_vertices : a ≠ c := by intro h; subst c; simp_all
     have hdDegree : vertexDegree G d = 3 := by
-      rcases lemma3_4_positive C (Or.inr hd) with hdegree | hfound
+      rcases lemma3_6_positive C (Or.inr hd) with hdegree | hfound
       · exact hdegree
       · exact (hno hfound).elim
     obtain ⟨y, hdy, hyc, hya⟩ := C.exists_third_neighbor hdDegree hac_vertices.symm

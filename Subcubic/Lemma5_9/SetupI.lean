@@ -1,10 +1,10 @@
 import Subcubic.Lemma5_9.Cases3_1To3_3
-import Subcubic.Lemma3_5
+import Subcubic.Lemma3_7
 
 /-!
 # Lemma 5.9, start of Case (3.4)
 
-After orienting so that `i` is not adjacent to `c`, Lemma 3.5 gives degree
+After orienting so that `i` is not adjacent to `c`, Lemma 3.7 gives degree
 three at `i`.  Its third neighbor `t` is bluish; if it were blue, the five
 vertices `d,e,h,i,t` would induce cut enhancer `c` after swapping sides.
 -/
@@ -58,7 +58,7 @@ theorem lemma5_9_setup_i
   have hde := edge 3 4 (by native_decide)
   have hef := edge 4 5 (by native_decide)
   have hgh := edge 6 7 (by native_decide)
-  rcases lemma3_5 C he hd hi hde.symm hdi with hideg | hce
+  rcases lemma3_7 C he hd hi hde.symm hdi with hideg | hce
   · obtain ⟨t, hit, htd, hth⟩ :=
       exists_third_neighbor_of_degree_three hideg
         (hv (u := (3 : Fin 8)) (v := 7) (by decide))
@@ -112,6 +112,6 @@ theorem lemma5_9_setup_i
         hit := hit
         htd := htd
         hth := hth }⟩
-  · exact Or.inl (HasReachableNegativeReduction.of_lemma3_4 C hce)
+  · exact Or.inl (HasReachableNegativeReduction.of_lemma3_6 C hce)
 
 end Subcubic

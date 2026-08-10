@@ -2,9 +2,9 @@ import Subcubic.FlipLemmas
 import Subcubic.Lemma3_3
 
 /-!
-# Lemma 3.5
+# Lemma 3.7
 
-The degree conclusion is now obtained constructively from Lemma 3.4. Its
+The degree conclusion is now obtained constructively from Lemma 3.6. Its
 alternative is recorded as a reducer or cut enhancer reachable after the
 flip used in the prose proof.
 -/
@@ -16,21 +16,21 @@ open scoped symmDiff
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- **Lemma 3.5.** If `a` is red, `b` is blue, `c` is reddish, and
+/-- **Lemma 3.7.** If `a` is red, `b` is blue, `c` is reddish, and
 `a-b-c` is a path, then `c` has degree three unless the argument reaches an
 absolute tail reducer or cut enhancer. The degree conclusion is obtained
 after flipping the cut preserver `ab`, at which point `c` is red. -/
-theorem lemma3_5
+theorem lemma3_7
     (C : GoodColoring G) {a b c : V}
     (ha : C.color a = .red) (hb : C.color b = .blue)
     (hc : C.color c = .reddish)
     (hab : G.Adj a b) (hbc : G.Adj b c) :
-    vertexDegree G c = 3 ∨ HasReachableLemma3_4Obstruction C := by
+    vertexDegree G c = 3 ∨ HasReachableLemma3_6Obstruction C := by
   classical
-  by_cases hreach : HasReachableLemma3_4Obstruction C
+  by_cases hreach : HasReachableLemma3_6Obstruction C
   · exact Or.inr hreach
   have haDegree : vertexDegree G a = 3 := by
-    rcases lemma3_4 C (Or.inl ha) with hdegree | hLow
+    rcases lemma3_6 C (Or.inl ha) with hdegree | hLow
     · exact hdegree
     · exact (hreach (.of_current C hLow)).elim
   have haCorrect := C.color_correct a
@@ -60,7 +60,7 @@ theorem lemma3_5
   have hcb : c ≠ b := by intro h; subst c; simp_all
   have degree_of_flip
       (hsafe : C.color d = .bluish ∨ d = ss) :
-      vertexDegree G c = 3 ∨ HasReachableLemma3_4Obstruction C := by
+      vertexDegree G c = 3 ∨ HasReachableLemma3_6Obstruction C := by
     obtain ⟨M, hflip⟩ := exists_flipAt_of_local C
       ha hb hrr hss hsafe (Or.inl hc) harr hab had hbss hbc
     have hside : M.side = C.redSide ∆ ({a, b} : Set V) := hflip.2
@@ -74,7 +74,7 @@ theorem lemma3_5
       change colorOfCut G M.side c = .red
       exact (colorOfCut_eq_red_iff G M.side c).2
         ⟨hcM, b, hbM, hbc.symm⟩
-    rcases lemma3_4 M.toGoodColoring (Or.inl hcRed) with hcDegree | hLow
+    rcases lemma3_6 M.toGoodColoring (Or.inl hcRed) with hcDegree | hLow
     · exact Or.inl hcDegree
     · exact Or.inr (.after_flip C hflip (.of_current M.toGoodColoring hLow))
   by_cases hds : d = ss

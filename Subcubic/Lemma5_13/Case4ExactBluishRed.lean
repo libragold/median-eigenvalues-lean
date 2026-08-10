@@ -56,7 +56,7 @@ theorem lemma5_13_case4_exact_bluish_red
   have noResult (hr : HasReachableNegativeReduction C) : False := hfinal hr
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (noResult (.of_current_ntr C hntr)).elim
     · exact (noResult (.of_current_ce C hce)).elim
@@ -139,7 +139,7 @@ theorem lemma5_13_case4_exact_bluish_red
     · let D := M.toGoodColoring
       have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
           vertexDegree G v = 3 := by
-        rcases lemma3_4_negative D hv with hdegree | hntr | hce
+        rcases lemma3_6_negative D hv with hdegree | hntr | hce
         · exact hdegree
         · exact (noResult (HasReachableNegativeReduction.after_flip C hflip
             (.of_current_ntr D hntr))).elim
@@ -315,7 +315,7 @@ theorem lemma5_13_case4_exact_bluish_red
       · let D := M.toGoodColoring
         have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
             vertexDegree G v = 3 := by
-          rcases lemma3_4_negative D hv with hdegree | hntr | hce
+          rcases lemma3_6_negative D hv with hdegree | hntr | hce
           · exact hdegree
           · exact (noResult (HasReachableNegativeReduction.after_flip C hflip
               (.of_current_ntr D hntr))).elim
@@ -1166,7 +1166,7 @@ theorem lemma5_13_case4_exact_bluish_red
                               have degreeE {v : V}
                                   (hv : E.color v = .red ∨ E.color v = .blue) :
                                   vertexDegree G v = 3 := by
-                                rcases lemma3_4_negative E hv with hdegree | hntr | hce
+                                rcases lemma3_6_negative E hv with hdegree | hntr | hce
                                 · exact hdegree
                                 · exact (noResult
                                     (HasReachableNegativeReduction.after_flip C hflip

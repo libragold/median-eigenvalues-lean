@@ -13,7 +13,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- The absolute degree-two reducer used in Lemma 3.4: a red vertex with
+/-- The absolute degree-two reducer used in Lemma 3.6: a red vertex with
 one displayed bluish neighbor and ambient degree two. -/
 theorem containsPositiveAbs
     (C : GoodColoring G) {a b : V}

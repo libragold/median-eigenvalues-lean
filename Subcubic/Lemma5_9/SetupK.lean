@@ -31,7 +31,7 @@ theorem lemma5_9_setup_k
   · exact Or.inl hdone
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -87,7 +87,7 @@ theorem lemma5_9_setup_k
       exact HasReachableNegativeReduction.of_current_ce C
         (containsCutEnhancerB_of C hk hc hb hg hf hck.symm hkg
           hbc.symm hfg.symm hkbAdj hkf hcg hcf hbg hbf)
-    · rcases lemma3_5 C hb hc hk hbc hck with hkdeg | hce
+    · rcases lemma3_7 C hb hc hk hbc hck with hkdeg | hce
       · right
         exact ⟨{
           toLemma5_9IConfiguration :=
@@ -102,7 +102,7 @@ theorem lemma5_9_setup_k
           hkd := hkd
           hkg := hkg
           hkdeg := hkdeg }⟩
-      · exact Or.inl (HasReachableNegativeReduction.of_lemma3_4 C hce)
+      · exact Or.inl (HasReachableNegativeReduction.of_lemma3_6 C hce)
   · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
 
 end Subcubic

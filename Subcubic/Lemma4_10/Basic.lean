@@ -1,5 +1,5 @@
 import Subcubic.Lemma4_8
-import Subcubic.Lemma3_5
+import Subcubic.Lemma3_7
 import Subcubic.PositiveTailReducerWitnesses
 import Mathlib.Data.Fin.VecNotation
 

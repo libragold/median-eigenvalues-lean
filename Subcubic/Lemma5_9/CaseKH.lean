@@ -23,7 +23,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
   · exact hdone
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -85,7 +85,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
     let D := M₁.toGoodColoring
     have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
         vertexDegree G v = 3 := by
-      rcases lemma3_4_negative D hv with hdegree | hntr | hce
+      rcases lemma3_6_negative D hv with hdegree | hntr | hce
       · exact hdegree
       · exact (hdone (HasReachableNegativeReduction.after_flip C hflip1
           (.of_current_ntr D hntr))).elim
@@ -139,7 +139,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
       let E := M₂.toGoodColoring
       have degreeE {v : V} (hv : E.color v = .red ∨ E.color v = .blue) :
           vertexDegree G v = 3 := by
-        rcases lemma3_4_negative E hv with hdegree | hntr | hce
+        rcases lemma3_6_negative E hv with hdegree | hntr | hce
         · exact hdegree
         · exact (hdone (HasReachableNegativeReduction.after_flip C hflip1
             (HasReachableNegativeReduction.after_flip D hflip2

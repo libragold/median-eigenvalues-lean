@@ -21,7 +21,7 @@ theorem lemma5_9_case_lm_mixed_adjacent
   have noResult (hr : HasReachableNegativeReduction C) : False := hgoal hr
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (noResult (.of_current_ntr C hntr)).elim
     · exact (noResult (.of_current_ce C hce)).elim
@@ -230,7 +230,7 @@ theorem lemma5_9_case_lm_mixed_adjacent
     exact noCE ((containsInducedUpToSwap_swapSides IsCutEnhancer C).1 hceSwap)
 
   -- The rest of this branch starts by exposing the third neighbor of `l`.
-  rcases lemma3_5 C.swapSides (by simp [Q.hn]) (by simp [Q.hp])
+  rcases lemma3_7 C.swapSides (by simp [Q.hn]) (by simp [Q.hp])
       (by simp [Q.hl]) Q.hnp hpl with hldeg | hce
   · obtain ⟨q, hlq, hqk, hqp⟩ :=
       exists_third_neighbor_of_degree_three hldeg
@@ -458,6 +458,6 @@ theorem lemma5_9_case_lm_mixed_adjacent
           (by simp [Q.hp]) (Or.inr (by simp [Q.hk]))
           nNoBlue mNoBlue lNoBlue))
   · exact noResult (HasReachableNegativeReduction.of_swapSides C
-      (HasReachableNegativeReduction.of_lemma3_4 C.swapSides hce))
+      (HasReachableNegativeReduction.of_lemma3_6 C.swapSides hce))
 
 end Subcubic

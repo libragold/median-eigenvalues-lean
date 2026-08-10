@@ -3,7 +3,7 @@ import Subcubic.Lemma5_11.Case3_1
 /-!
 # Entering case (3.2) of Lemma 5.11
 
-The third neighbor `i` of `c` is reddish.  Lemma 3.5 supplies its ambient
+The third neighbor `i` of `c` is reddish.  Lemma 3.7 supplies its ambient
 degree, and cut enhancer `d` rules out the edge `i-g`.
 -/
 
@@ -37,7 +37,7 @@ theorem lemma5_11_setup_i
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hdone (.of_current_ntr C hntr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -64,7 +64,7 @@ theorem lemma5_11_setup_i
   have hia : i ≠ a := by intro h; subst i; exact hca hci
   rcases lemma3_3_reversed C hc hb ha hiSide hbc.symm hci hab.symm
       hib.symm hia.symm with hi | hce
-  · rcases lemma3_5 C hb hc hi hbc hci with hideg | hce
+  · rcases lemma3_7 C hb hc hi hbc hci with hideg | hce
     · by_cases hig : G.Adj i Q.g
       · left
         have hbi : ¬ G.Adj b i :=
@@ -82,7 +82,7 @@ theorem lemma5_11_setup_i
             Q.hgf hbi hbf hif hcg hcf
             (hv (x := (1 : Fin 6)) (y := 5) (by decide)))
       · exact Or.inr ⟨⟨Q, i, hi, hci, hib, hid, hideg, hig⟩⟩
-    · exact Or.inl (HasReachableNegativeReduction.of_lemma3_4 C hce)
+    · exact Or.inl (HasReachableNegativeReduction.of_lemma3_6 C hce)
   · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
 
 end Subcubic

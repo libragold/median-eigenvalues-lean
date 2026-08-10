@@ -52,7 +52,7 @@ theorem lemma4_10_flip_bc_isolates_ef
   have degreeC {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hresult (.of_current_ptr C hptr)).elim
     · exact (noCurrentCE hce).elim
@@ -116,7 +116,7 @@ theorem lemma4_10_flip_bc_isolates_ef
     have degreeD {v : V}
         (hv : D.color v = .red ∨ D.color v = .blue) :
         vertexDegree G v = 3 := by
-      rcases lemma3_4_positive D hv with hdegree | hptr | hceD
+      rcases lemma3_6_positive D hv with hdegree | hptr | hceD
       · exact hdegree
       · exact (hresult (HasReachableReduction.after_flip C hflip
           (.of_current_ptr D hptr))).elim

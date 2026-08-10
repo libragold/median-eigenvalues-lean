@@ -1,5 +1,5 @@
 import Subcubic.NegativeTailReducerWitnesses
-import Subcubic.Lemma3_5
+import Subcubic.Lemma3_7
 import Subcubic.NegativeReduction
 
 /-!
@@ -49,7 +49,7 @@ private theorem matching_open
   by_contra hno
   apply hno
   have haDegree : vertexDegree G a = 3 := by
-    rcases lemma3_4_negative C (Or.inl ha) with hdegree | hfound
+    rcases lemma3_6_negative C (Or.inl ha) with hdegree | hfound
     · exact hdegree
     · exact (hno hfound).elim
   have hbcV : b ≠ c := by intro h; subst c; simp_all
@@ -93,7 +93,7 @@ private theorem crossing_matching
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hNoReach (.of_current_ntr C hntr)).elim
     · exact (hNoReach (.of_current_ce C hce)).elim
@@ -119,7 +119,7 @@ private theorem crossing_matching
       rcases lemma3_3_reversed C hd hb ha hfSide hbd.symm hdf hab.symm
           hfbV.symm hfaV with hf | hce
       · by_cases hfc : G.Adj f c
-        · rcases lemma3_5 C.swapSides
+        · rcases lemma3_7 C.swapSides
             (by simp [hd]) (by simp [hb]) (by simp [he])
             hbd.symm hbe with hedeg | hce
           · by_cases hef : G.Adj e f
@@ -247,7 +247,7 @@ private theorem crossing_matching
                 exact (containsInducedUpToSwap_swapSides
                   IsNegativeTailReducer C).1 hntrSwap
           · have hnegSwap :=
-              HasReachableNegativeReduction.of_lemma3_4 C.swapSides hce
+              HasReachableNegativeReduction.of_lemma3_6 C.swapSides hce
             exact (hNoReach
               (HasReachableNegativeReduction.of_swapSides C hnegSwap)).elim
         · have hout := matching_open C.swapSides

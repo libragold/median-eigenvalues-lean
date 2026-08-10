@@ -15,7 +15,7 @@ open Set
 namespace Subcubic
 
 /-- Names of the seven supplied cut enhancers and the two low-degree
-enhancers used in Lemma 3.4. -/
+enhancers used in Lemma 3.6. -/
 inductive CutEnhancerName
   | a | b | c | d | e | f | g
   | degreeOne | degreeTwoCross
@@ -162,7 +162,7 @@ theorem containsCutEnhancerA_of {V : Type*} [Fintype V] {G : SimpleGraph V}
   · intro x d hdegree
     fin_cases x <;> simp [cutEnhancer] at hdegree
 
-/-- The one-vertex cut enhancer from Lemma 3.4(1). -/
+/-- The one-vertex cut enhancer from Lemma 3.6(1). -/
 theorem containsCutEnhancerDegreeOne_of
     {V : Type*} [Fintype V] {G : SimpleGraph V}
     (C : GoodColoring G) {a : V}
@@ -186,7 +186,7 @@ theorem containsCutEnhancerDegreeOne_of
     have hd : d = 1 := by simpa [cutEnhancer] using hdegree.symm
     simpa [hd] using haDegree
 
-/-- The red--blue degree-two cut enhancer from Lemma 3.4(2.1). -/
+/-- The red--blue degree-two cut enhancer from Lemma 3.6(2.1). -/
 theorem containsCutEnhancerDegreeTwoCross_of
     {V : Type*} [Fintype V] {G : SimpleGraph V}
     (C : GoodColoring G) {a b : V}

@@ -1,6 +1,6 @@
 import Subcubic.FlipLemmas
 import Subcubic.TailReducers
-import Subcubic.Lemma3_4
+import Subcubic.Lemma3_6
 
 /-!
 # Reachable positive reductions
@@ -31,10 +31,10 @@ theorem HasReachableReduction.of_current_ce (C : GoodColoring G)
   exact (containsInducedUpToSwap_congr_color IsCutEnhancer
     (by simp)).1 hce
 
-/-- An absolute reducer or cut enhancer reachable in the sense of Lemma 3.4
+/-- An absolute reducer or cut enhancer reachable in the sense of Lemma 3.6
 is a reachable positive reduction. -/
-theorem HasReachableReduction.of_lemma3_4
-    (C : GoodColoring G) (h : HasReachableLemma3_4Obstruction C) :
+theorem HasReachableReduction.of_lemma3_6
+    (C : GoodColoring G) (h : HasReachableLemma3_6Obstruction C) :
     HasReachableReduction C := by
   rcases h with ⟨M, hreach, habsolute | hce⟩
   · exact ⟨M, hreach, Or.inl habsolute.1⟩

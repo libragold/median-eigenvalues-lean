@@ -53,7 +53,7 @@ theorem lemma5_11_flip_bc_isolates_ef
   have degreeC {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hresult (.of_current_ntr C hntr)).elim
     · exact (noCurrentCE hce).elim

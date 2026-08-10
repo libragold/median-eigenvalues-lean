@@ -37,7 +37,7 @@ theorem lemma4_10_case_3_2_1
   have degreeC {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hresult (.of_current_ptr C hptr)).elim
     · exact (noCurrentCE hce).elim

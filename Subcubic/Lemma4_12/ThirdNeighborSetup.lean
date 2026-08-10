@@ -18,7 +18,7 @@ theorem lemma4_12_third_neighbor_setup
   · exact Or.inl hdone
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -54,14 +54,14 @@ theorem lemma4_12_third_neighbor_setup
     have hfa : f ≠ a := by intro h; subst f; exact hca hcf
     rcases lemma3_3_reversed C hc hb ha hfSide hbc.symm hcf hab.symm
         hfb.symm hfa.symm with hf | hce
-    · rcases lemma3_5 C.swapSides (by simp [hc]) (by simp [hb])
+    · rcases lemma3_7 C.swapSides (by simp [hc]) (by simp [hb])
           (by simp [he]) hbc.symm hbe with hedeg | hce
-      · rcases lemma3_5 C hb hc hf hbc hcf with hfdeg | hce
+      · rcases lemma3_7 C hb hc hf hbc hcf with hfdeg | hce
         · exact Or.inr ⟨⟨e, f, he, hf, hbe, hcf, hea, hec,
             hfb, hfd, hedeg, hfdeg⟩⟩
-        · exact Or.inl (HasReachableReduction.of_lemma3_4 C hce)
+        · exact Or.inl (HasReachableReduction.of_lemma3_6 C hce)
       · exact Or.inl (HasReachableReduction.of_swapSides C
-          (HasReachableReduction.of_lemma3_4 C.swapSides hce))
+          (HasReachableReduction.of_lemma3_6 C.swapSides hce))
     · exact Or.inl (HasReachableReduction.of_current_ce C hce)
   · exact Or.inl (HasReachableReduction.of_current_ce C hce)
 

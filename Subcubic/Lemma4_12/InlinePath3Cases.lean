@@ -88,7 +88,7 @@ theorem lemma4_12_case2_flip_path
   · exact Or.inl hdone
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -197,7 +197,7 @@ theorem lemma4_12_case4_red_flip_path
   · exact Or.inl hdone
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -309,7 +309,7 @@ theorem lemma4_12_shared_h_red_flip_path
   · exact Or.inl hdone
   have degreeC {v : V} (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim

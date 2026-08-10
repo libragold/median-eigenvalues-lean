@@ -30,10 +30,10 @@ theorem HasReachableNegativeReduction.of_current_ce (C : GoodColoring G)
   exact (containsInducedUpToSwap_congr_color IsCutEnhancer
     (by simp)).1 hce
 
-/-- An absolute reducer or cut enhancer reachable in the sense of Lemma 3.4
+/-- An absolute reducer or cut enhancer reachable in the sense of Lemma 3.6
 is a reachable negative reduction. -/
-theorem HasReachableNegativeReduction.of_lemma3_4
-    (C : GoodColoring G) (h : HasReachableLemma3_4Obstruction C) :
+theorem HasReachableNegativeReduction.of_lemma3_6
+    (C : GoodColoring G) (h : HasReachableLemma3_6Obstruction C) :
     HasReachableNegativeReduction C := by
   rcases h with ⟨M, hreach, habsolute | hce⟩
   · exact ⟨M, hreach, Or.inl habsolute.2⟩

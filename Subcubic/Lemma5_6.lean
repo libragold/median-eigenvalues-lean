@@ -122,7 +122,7 @@ theorem lemma5_6
     have degree_of_color {v : V}
         (hv : C.color v = .red ∨ C.color v = .blue) :
         vertexDegree G v = 3 := by
-      rcases lemma3_4_negative C hv with hdegree | hntr | hce
+      rcases lemma3_6_negative C hv with hdegree | hntr | hce
       · exact hdegree
       · exact (hdone (.of_current_ntr C hntr)).elim
       · exact (hdone (.of_current_ce C hce)).elim
@@ -158,7 +158,7 @@ theorem lemma5_6
     rcases lemma3_3 C hb hc hd hgSide hbc hbg hcd
         (by intro h; subst g; exact hce heg.symm)
         hgdV.symm with hg | hceFound
-    · rcases lemma3_5 C.swapSides (by simp [hc]) (by simp [hb])
+    · rcases lemma3_7 C.swapSides (by simp [hc]) (by simp [hb])
           (by simp [hg]) hbc.symm hbg with hgdeg | hceFound
       · by_cases hgf : G.Adj g f
         · exact finish (lemma5_6_endpoint_case C hp ha hb hc hd he hf hg hgdeg
@@ -269,7 +269,7 @@ theorem lemma5_6
               · exact finish (Or.inr hceFound)
             · exact finish (Or.inr hceFound)
       · exact HasReachableNegativeReduction.of_swapSides C
-          (HasReachableNegativeReduction.of_lemma3_4 C.swapSides hceFound)
+          (HasReachableNegativeReduction.of_lemma3_6 C.swapSides hceFound)
     · exact finish (Or.inr hceFound)
   · exact Or.inl hshared
 

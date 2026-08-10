@@ -1,5 +1,5 @@
 import Subcubic.NegativeTailReducerWitnesses
-import Subcubic.Lemma3_5
+import Subcubic.Lemma3_7
 import Subcubic.NegativeReduction
 
 /-!
@@ -63,7 +63,7 @@ private theorem lemma5_5_current
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_negative C hv with hdegree | hntr | hce
+    rcases lemma3_6_negative C hv with hdegree | hntr | hce
     · exact hdegree
     · exact (hNoReach (.of_current_ntr C hntr)).elim
     · exact (hNoReach (.of_current_ce C hce)).elim
@@ -93,7 +93,7 @@ private theorem lemma5_5_current
   have haeV : a ≠ e := hv (u := (0 : Fin 5)) (v := 4) (by decide)
   have hdeV : d ≠ e := hv (u := (3 : Fin 5)) (v := 4) (by decide)
 
-  rcases lemma3_5 C ha hd hc had hcd.symm with hcdeg | hfound
+  rcases lemma3_7 C ha hd hc had hcd.symm with hcdeg | hfound
   · obtain ⟨x, hax, hxb, hxd⟩ :=
       C.exists_third_neighbor (degree_of_color (Or.inl ha)) hbdV
     have hxe : x ≠ e := by intro h; subst x; exact hae hax
@@ -416,7 +416,7 @@ private theorem lemma5_5_current
               hfe, hye.symm, hxe.symm]
             exact ⟨⟨hab.ne.symm, vertex_ne_of_color_eq hb hf (by decide)⟩,
               (fun h => hyf h.symm), fun h => hxf h.symm⟩
-  · exact (hNoReach (.of_lemma3_4 C hfound)).elim
+  · exact (hNoReach (.of_lemma3_6 C hfound)).elim
 
 /-- **Lemma 5.5.** The pentagon configuration reaches a negative tail
 reducer or a cut enhancer. -/

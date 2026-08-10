@@ -61,7 +61,7 @@ theorem lemma4_8_case_lm_mixed_setup
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (noPTR hptr).elim
     · exact (noCE hce).elim
@@ -489,7 +489,7 @@ theorem lemma4_8_case_lm_mixed_complete
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim

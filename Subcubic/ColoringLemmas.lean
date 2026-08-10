@@ -156,7 +156,7 @@ theorem GoodColoring.exists_blue_mate
   · exact (C.bluish_not_adj_blueSide hm (Or.inl hv) hvm.symm).elim
 
 /-- A degree-three vertex has a neighbor outside any two distinct vertices.
-The degree proof is explicit: red/blue vertices obtain it from Lemma 3.4,
+The degree proof is explicit: red/blue vertices obtain it from Lemma 3.6,
 whose other branch is a reducer or cut enhancer. -/
 theorem GoodColoring.exists_third_neighbor
     (_C : GoodColoring G) {v x y : V}

@@ -55,7 +55,7 @@ theorem lemma4_8_case3_setup
   have degree_of_color {v : V}
       (hv : C.color v = .red ∨ C.color v = .blue) :
       vertexDegree G v = 3 := by
-    rcases lemma3_4_positive C hv with hdegree | hptr | hce
+    rcases lemma3_6_positive C hv with hdegree | hptr | hce
     · exact hdegree
     · exact (hdone (.of_current_ptr C hptr)).elim
     · exact (hdone (.of_current_ce C hce)).elim
@@ -229,8 +229,8 @@ theorem lemma4_8_cases1_and_2_setup3
       · left
         exact lemma4_8_case_i_not_adj_g_h C hp hc hd he hf hg hh hi hj
           hdi hej hig hih hNoRedAtH
-  · exact Or.inl (HasReachableReduction.of_lemma3_4 C
-      (HasReachableLemma3_4Obstruction.of_current C hce))
+  · exact Or.inl (HasReachableReduction.of_lemma3_6 C
+      (HasReachableLemma3_6Obstruction.of_current C hce))
 
 
 end Subcubic
