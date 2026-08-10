@@ -40,7 +40,8 @@ theorem lemma5_13_case4_setup
     (Q : Lemma5_13ThirdNeighborConfiguration C a b c d)
     (hea : G.Adj Q.e a) (hef : ¬ G.Adj Q.e Q.f) :
     HasReachableNegativeReduction C ∨
-      Nonempty (Lemma5_13Case4Configuration C a b c d) := by
+      ∃ R : Lemma5_13Case4Configuration C a b c d,
+        R.toLemma4_12ThirdNeighborConfiguration = Q := by
   classical
   dsimp [FormsInducedPath4] at hpath
   rcases hpath with ⟨hinj, hedge⟩
@@ -70,7 +71,7 @@ theorem lemma5_13_case4_setup
         exact Or.inl P.reduces
   | reddish =>
       exact Or.inr ⟨⟨Q, hea, hef, g, hg, hag, hgb, hge,
-        r, hr, her, hra, hrb⟩⟩
+        r, hr, her, hra, hrb⟩, rfl⟩
   | blue =>
       exact (C.bluish_not_adj_blueSide Q.he (Or.inl hr) her).elim
   | bluish =>

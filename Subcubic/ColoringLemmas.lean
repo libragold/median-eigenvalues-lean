@@ -176,6 +176,24 @@ theorem GoodColoring.exists_third_neighbor
   rw [hdegree, Set.ncard_pair hxy] at hle
   omega
 
+/-- In a subcubic graph, a vertex with two specified distinct neighbors has
+degree two or three. -/
+theorem GoodColoring.degree_eq_two_or_three_of_two_neighbors
+    (C : GoodColoring G) {v x y : V} (hxy : x ≠ y)
+    (hvx : G.Adj v x) (hvy : G.Adj v y) :
+    vertexDegree G v = 2 ∨ vertexDegree G v = 3 := by
+  have hsubset : ({x, y} : Set V) ⊆ G.neighborSet v := by
+    intro z hz
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hz
+    rcases hz with rfl | rfl
+    · exact hvx
+    · exact hvy
+  have hge := Set.ncard_le_ncard hsubset
+  rw [Set.ncard_pair hxy] at hge
+  change 2 ≤ vertexDegree G v at hge
+  have hle := C.subcubic v
+  omega
+
 /-- A degree-three vertex has a neighbor outside any two distinct vertices.
 Unlike `GoodColoring.exists_third_neighbor`, this also applies to a reddish
 or bluish vertex once degree three has been established separately. -/
@@ -214,6 +232,50 @@ theorem exists_other_neighbor_of_degree_two
     exact hzm (h z hz)
   have hle := Set.ncard_le_ncard hsubset
   simp [hcard] at hle
+
+/-- Every neighbor of a degree-one vertex is its displayed neighbor. -/
+theorem neighbor_eq_of_degree_one
+    {v x w : V} (hdeg : vertexDegree G v = 1)
+    (hvx : G.Adj v x) (hvw : G.Adj v w) : w = x := by
+  by_contra hwx
+  have hpair : ({x, w} : Set V).ncard = 2 := by
+    rw [Set.ncard_pair (Ne.symm hwx)]
+  have hsubset : ({x, w} : Set V) ⊆ G.neighborSet v := by
+    intro z hz
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hz
+    rcases hz with rfl | rfl
+    · exact hvx
+    · exact hvw
+  have hle := Set.ncard_le_ncard hsubset
+  have hcard : (G.neighborSet v).ncard = 1 := by
+    simpa [vertexDegree] using hdeg
+  rw [hpair, hcard] at hle
+  omega
+
+/-- Every neighbor of a degree-two vertex is one of any two displayed
+distinct neighbors. -/
+theorem neighbor_eq_of_degree_two
+    {v x y w : V} (hdeg : vertexDegree G v = 2)
+    (hvx : G.Adj v x) (hvy : G.Adj v y) (hxy : x ≠ y)
+    (hvw : G.Adj v w) : w = x ∨ w = y := by
+  by_cases hwx : w = x
+  · exact Or.inl hwx
+  by_cases hwy : w = y
+  · exact Or.inr hwy
+  have htriple : ({x, y, w} : Set V).ncard = 3 := by
+    simp [hxy, Ne.symm hwx, Ne.symm hwy]
+  have hsubset : ({x, y, w} : Set V) ⊆ G.neighborSet v := by
+    intro z hz
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hz
+    rcases hz with rfl | rfl | rfl
+    · exact hvx
+    · exact hvy
+    · exact hvw
+  have hle := Set.ncard_le_ncard hsubset
+  have hcard : (G.neighborSet v).ncard = 2 := by
+    simpa [vertexDegree] using hdeg
+  rw [htriple, hcard] at hle
+  omega
 
 /-- A red or blue vertex with one displayed neighbor has two distinct other
 neighbors. -/
@@ -293,6 +355,23 @@ theorem not_adj_fourth_neighbor_of_degree_three
   · exact hwx h
   · exact hwy h
   · exact hwz h
+
+/-- Every neighbor of a degree-three vertex is one of any three displayed
+pairwise-distinct neighbors.  Unlike `GoodColoring.neighbor_eq_of_three_neighbors`,
+this form also applies to reddish and bluish vertices. -/
+theorem neighbor_eq_of_degree_three
+    {v x y z w : V} (hdeg : vertexDegree G v = 3)
+    (hvx : G.Adj v x) (hvy : G.Adj v y) (hvz : G.Adj v z)
+    (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
+    (hvw : G.Adj v w) : w = x ∨ w = y ∨ w = z := by
+  by_cases hwx : w = x
+  · exact Or.inl hwx
+  by_cases hwy : w = y
+  · exact Or.inr (Or.inl hwy)
+  by_cases hwz : w = z
+  · exact Or.inr (Or.inr hwz)
+  exact (not_adj_fourth_neighbor_of_degree_three hdeg hvx hvy hvz
+    hxy hxz hyz hwx hwy hwz) hvw |>.elim
 
 /-- If a degree-three red or blue vertex already has three pairwise-distinct
 displayed neighbors, it has no fourth neighbor. -/

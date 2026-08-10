@@ -21,7 +21,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Six distinct vertices containing the displayed path; extra edges are
 allowed. -/
-def FormsPath6Subgraph (G : SimpleGraph V)
+def FormsNegativePath6Subgraph (G : SimpleGraph V)
     (a b c d e f : V) : Prop :=
   let p : Fin 6 → V := ![a, b, c, d, e, f]
   Function.Injective p ∧
@@ -34,13 +34,13 @@ Every possible extra crossing between consecutive monochromatic edges gives
 Lemma 5.2; matching on each side excludes all remaining chords. -/
 theorem path6_induced_or_negative_reduction
     (C : GoodColoring G) {a b c d e f : V}
-    (hpath : FormsPath6Subgraph G a b c d e f)
+    (hpath : FormsNegativePath6Subgraph G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red) :
     HasReachableNegativeReduction C ∨ FormsInducedPath6 G a b c d e f := by
   classical
-  dsimp [FormsPath6Subgraph] at hpath
+  dsimp [FormsNegativePath6Subgraph] at hpath
   rcases hpath with ⟨hinj, hedge⟩
   have hv {x y : Fin 6} (hxy : x ≠ y) :
       (![a, b, c, d, e, f] x) ≠ (![a, b, c, d, e, f] y) :=
@@ -106,7 +106,7 @@ theorem path6_induced_or_negative_reduction
 required inlined conclusion. -/
 theorem path6_subgraph_with_clean_ends_negative
     (C : GoodColoring G) {a b c d e f : V}
-    (hpath : FormsPath6Subgraph G a b c d e f)
+    (hpath : FormsNegativePath6Subgraph G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
@@ -123,7 +123,7 @@ set_option maxHeartbeats 1000000
 of Lemmas 5.2, 5.7, 5.8, 5.9, and 5.11. -/
 theorem lemma5_12_inline
     (C : GoodColoring G) {a b c d e f : V}
-    (hpath : FormsPath6Subgraph G a b c d e f)
+    (hpath : FormsNegativePath6Subgraph G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red) :

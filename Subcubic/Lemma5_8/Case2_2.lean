@@ -68,7 +68,7 @@ private theorem case2_2_al
       color_ne hk he (by decide), color_ne hk hf (by decide),
       color_ne hk hg (by decide), color_ne hk hh (by decide)⟩
   have hlout := outBluish hl
-  apply containsNegativeAl C hk ha hb he hf hl hi hc hd hg hh hj
+  apply containsNegativeAm C hk ha hb he hf hl hi hc hd hg hh hj
     hkl hck.symm hdk.symm hab hai hha.symm hbi hbc
     hef hde.symm hej hfg hfj hcd hgh
     hki hkg hkh hkj

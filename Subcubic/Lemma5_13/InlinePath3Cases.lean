@@ -25,7 +25,7 @@ structure NegativeOneFlipPath3Configuration (C : GoodColoring G) where
   r₂ : V
   r₃ : V
   hflip : ∃ x y, C.toMatchingCut.IsFlipAt M x y
-  hpath : FormsPath6Subgraph G r₀ r₁ b₀ b₁ r₂ r₃
+  hpath : FormsNegativePath6Subgraph G r₀ r₁ b₀ b₁ r₂ r₃
   hr₀ : M.toGoodColoring.color r₀ = .red
   hr₁ : M.toGoodColoring.color r₁ = .red
   hb₀ : M.toGoodColoring.color b₀ = .blue
@@ -147,7 +147,7 @@ theorem lemma5_13_case2_flip_path
         color_ne hb Q.he (by decide), Q.hgb.symm, hhb.symm,
         color_ne Q.he Q.hg (by decide), color_ne Q.he Q.hh (by decide),
         Q.hgh.ne]
-    have hsub : FormsPath6Subgraph G Q.f c b Q.e Q.g Q.h := by
+    have hsub : FormsNegativePath6Subgraph G Q.f c b Q.e Q.g Q.h := by
       refine ⟨?_, ?_⟩
       · have hvec : (![Q.f, c, b, Q.e, Q.g, Q.h] : Fin 6 → V) =
             [Q.f, c, b, Q.e, Q.g, Q.h].get := by
@@ -244,7 +244,7 @@ theorem lemma5_13_case4_red_flip_path
         color_ne hb Q.he (by decide), Q.hgb.symm, hhb.symm,
         color_ne Q.he Q.hg (by decide), color_ne Q.he Q.hh (by decide),
         Q.hgh.ne]
-    have hsub : FormsPath6Subgraph G Q.f c b Q.e Q.g Q.h := by
+    have hsub : FormsNegativePath6Subgraph G Q.f c b Q.e Q.g Q.h := by
       refine ⟨?_, ?_⟩
       · have hvec : (![Q.f, c, b, Q.e, Q.g, Q.h] : Fin 6 → V) =
             [Q.f, c, b, Q.e, Q.g, Q.h].get := by
@@ -374,7 +374,7 @@ theorem lemma5_13_shared_h_red_flip_path
         color_ne hb R.hg (by decide), color_ne hb R.hh (by decide),
         color_ne hc R.hg (by decide), hhc.symm,
         color_ne hd R.hg (by decide), R.hhd.symm, R.hgh.ne]
-    have hsub : FormsPath6Subgraph G a b c d R.g R.h := by
+    have hsub : FormsNegativePath6Subgraph G a b c d R.g R.h := by
       refine ⟨?_, ?_⟩
       · have hvec : (![a, b, c, d, R.g, R.h] : Fin 6 → V) =
             [a, b, c, d, R.g, R.h].get := by

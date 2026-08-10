@@ -19,11 +19,15 @@ POSITIVE_REDDISH = {
 NEGATIVE_REDDISH = {
     "e": [1], "h": [1], "i": [1], "j": [1], "k": [2],
     "n": [2], "o": [0], "p": [0], "q": [0], "r": [2],
-    "s": [2], "t": [2], "u": [0, 1], "v": [0, 1],
-    "w": [1], "x": [2], "y": [1], "z": [0],
+    "s": [2], "t": [2], "u": [0, 1], "uMinus": [0, 1], "v": [0, 1],
+    "w": [1], "w0Minus": [0, 1], "x": [2], "y": [1], "z": [0],
     "aa": [2], "ab": [0, 1], "ac": [0, 1], "ad": [0, 1],
     "ae": [2], "af": [0], "ag": [0, 1], "ah": [0, 1],
-    "ak": [0, 1], "al": [0], "am": [0, 1, 4], "an": [0, 1, 2],
+    "ai": [0, 1], "al": [0, 1], "am": [0], "an": [0, 1, 4],
+    "ao": [0, 1, 2],
+    "abMinus": [0, 1], "acMinus": [0, 1], "adMinus": [0, 1],
+    "anMinus": [0, 1, 2], "anMinus2": [0, 1, 2],
+    "l0": [2],
     "e0Minus": [1], "s0Minus": [2], "s0Minus2": [2],
 }
 
@@ -35,6 +39,35 @@ SPECIAL_LABELS = {
     ("-", "s1Minus"): "s1-minus-",
     ("-", "s0Minus2"): "s0-minus2-",
     ("-", "s1Minus2"): "s1-minus2-",
+    ("-", "uMinus"): "u-minus-",
+    ("-", "w0Minus"): "w0-minus-",
+    ("-", "abMinus"): "ab-minus-",
+    ("-", "acMinus"): "ac-minus-",
+    ("-", "adMinus"): "ad-minus-",
+    ("-", "anMinus"): "an-minus-",
+    ("-", "anMinus2"): "an-minus2-",
+}
+
+# A reddish vertex can have an unlisted opposite-side neighbor.  These are
+# precisely the catalogue variants whose use therefore needs an ambient
+# degree equality at the indicated canonical vertex.  Witness constructors
+# and indexed witness call sites carry the corresponding hypotheses; this
+# table makes the expected guard auditable against the compact source data.
+AMBIENT_DEGREE_GUARDS = {
+    ("+", "mMinus"): (0, 2),
+    ("-", "a0"): (0, 2),
+    ("-", "e0Minus"): (1, 2),
+    ("-", "s0Minus"): (2, 2),
+    ("-", "s0Minus2"): (2, 1),
+    ("-", "uMinus"): (0, 2),
+    ("-", "w0"): (0, 2),
+    ("-", "w0Minus"): (0, 1),
+    ("-", "abMinus"): (0, 2),
+    ("-", "acMinus"): (0, 2),
+    ("-", "adMinus"): (0, 2),
+    ("-", "anMinus"): (0, 2),
+    ("-", "anMinus2"): (0, 1),
+    ("-", "l0"): (2, 2),
 }
 
 
@@ -160,7 +193,7 @@ def parse_rows():
             "edges": edges,
         })
     assert len(rows["+"]) == 26
-    assert len(rows["-"]) == 46
+    assert len(rows["-"]) == 55
     return rows
 
 
@@ -185,9 +218,22 @@ def exact_rows():
             negative.append({**row, "reddish": NEGATIVE_REDDISH.get(name, [])})
 
     assert len(positive) == 26
-    assert len(negative) == 48
+    assert len(negative) == 57
     for row in positive + negative:
         assert all(i < row["side_count"] for i in row["reddish"])
+    catalog = {
+        **{("+", row["name"]): row for row in positive},
+        **{("-", row["name"]): row for row in negative},
+    }
+    assert set(AMBIENT_DEGREE_GUARDS) <= set(catalog)
+    for key, (vertex, required_degree) in AMBIENT_DEGREE_GUARDS.items():
+        row = catalog[key]
+        assert row_colors(row)[vertex] == "reddish", (key, "guard is not reddish")
+        actual_degree = sum(vertex in edge for edge in row["edges"])
+        assert actual_degree == required_degree, (
+            key, "guard disagrees with displayed degree", actual_degree,
+            required_degree,
+        )
     return positive, negative
 
 
