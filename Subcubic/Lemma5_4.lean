@@ -13,7 +13,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- **Lemma 5.4.** Let `ab` be an isolated red edge. Then a negative tail
 reducer or cut enhancer is reachable by cut-preserver flips. -/
 theorem lemma5_4
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (ha_other : ∀ v, G.Adj a v → v ≠ b → C.color v = .bluish)
     (hb_other : ∀ v, G.Adj b v → v ≠ a → C.color v = .bluish) :

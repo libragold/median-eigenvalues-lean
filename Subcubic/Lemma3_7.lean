@@ -21,7 +21,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 absolute tail reducer or cut enhancer. The degree conclusion is obtained
 after flipping the cut preserver `ab`, at which point `c` is red. -/
 theorem lemma3_7
-    (C : GoodColoring G) {a b c : V}
+    (C : MatchingCutColoring G) {a b c : V}
     (ha : C.color a = .red) (hb : C.color b = .blue)
     (hc : C.color c = .reddish)
     (hab : G.Adj a b) (hbc : G.Adj b c) :
@@ -70,13 +70,13 @@ theorem lemma3_7
     have hbM : b ∈ M.side := by
       rw [hside]
       simp [Set.mem_symmDiff, hb]
-    have hcRed : M.toGoodColoring.color c = .red := by
+    have hcRed : M.toColoring.color c = .red := by
       change colorOfCut G M.side c = .red
       exact (colorOfCut_eq_red_iff G M.side c).2
         ⟨hcM, b, hbM, hbc.symm⟩
-    rcases lemma3_6 M.toGoodColoring (Or.inl hcRed) with hcDegree | hLow
+    rcases lemma3_6 M.toColoring (Or.inl hcRed) with hcDegree | hLow
     · exact Or.inl hcDegree
-    · exact Or.inr (.after_flip C hflip (.of_current M.toGoodColoring hLow))
+    · exact Or.inr (.after_flip C hflip (.of_current M.toColoring hLow))
   by_cases hds : d = ss
   · exact degree_of_flip (Or.inr hds)
   rcases lemma3_3 C ha hb hss hdSide hab had hbss hdb.symm (Ne.symm hds) with

@@ -7,7 +7,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_8NConfiguration (C : GoodColoring G)
+structure Lemma4_8NConfiguration (C : MatchingCutColoring G)
     (a b c d e f g h : V) extends
     Lemma4_8BluishHardConfiguration C a b c d e f g h where
   n : V
@@ -16,9 +16,9 @@ structure Lemma4_8NConfiguration (C : GoodColoring G)
   hna : n ≠ a
   hlf : ¬ G.Adj l f
 
-/-- Case (3.4.3.1.3.2), using the corrected Figure 4(r). -/
+/-- Case (3.4.3.1.3.2), using the corresponding corrected configuration. -/
 theorem lemma4_8_case_l_adj_f
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -154,7 +154,7 @@ theorem lemma4_8_case_l_adj_f
   · exact HasReachableReduction.of_current_ce C hce
 
 theorem lemma4_8_bluish_hard_setup
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -273,7 +273,7 @@ theorem lemma4_8_bluish_hard_setup
 /-- Case (3.4.3.1.3.3.2): the additional red neighbor of `l` has no blue
 neighbor. -/
 theorem lemma4_8_n_no_blue
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -406,9 +406,9 @@ theorem lemma4_8_n_no_blue
     exact HasReachableReduction.of_current_ptr C hnptr
 
 /-- Case (3.4.3.1.3.3.1): flip a blue neighbor of `n` and invoke the
-distance-free five-edge subgraph lemma. -/
+five-edge subgraph lemma. -/
 theorem lemma4_8_n_has_blue
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -538,7 +538,7 @@ theorem lemma4_8_n_has_blue
           (degree_of_color (Or.inl Q.hn)) (degree_of_color (Or.inr ho))
           hnq hno hop with hflip | hce
         · obtain ⟨M, hflip⟩ := hflip
-          let D := M.toGoodColoring
+          let D := M.toColoring
           have hnD : D.color Q.n = .blue :=
             blue_of_flipped_red_endpoint C hflip hq hnq
               (degree_of_color (Or.inl Q.hn))
@@ -652,7 +652,7 @@ theorem lemma4_8_n_has_blue
         · exact HasReachableReduction.of_current_ce C hce
 
 theorem lemma4_8_n_cases
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -668,7 +668,7 @@ theorem lemma4_8_n_cases
     exact hblue ⟨z, hnz, hz⟩
 
 theorem lemma4_8_case_lm_bluish_complete
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -695,7 +695,7 @@ listed explicitly.  In particular, the colors of the auxiliary third
 neighbors `x` and `y` are reconstructed here rather than transported across
 the flip. -/
 theorem lemma4_8_case_lm_bluish_restart
-    (C₀ C : GoodColoring G) {a b c d e f g h : V}
+    (C₀ C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

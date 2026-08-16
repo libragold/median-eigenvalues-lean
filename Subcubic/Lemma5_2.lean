@@ -7,7 +7,7 @@ import Subcubic.NegativeReduction
 
 This is the negative-tail analogue of Lemma 4.2.  The two crossing edges
 either share an endpoint, immediately giving `ntr-a`, or form a matching.
-The matching case follows the corresponding reducers in `detailed-input.txt`.
+The matching case follows the corresponding reducers in `tail_reducers.cvs`.
 -/
 
 namespace Subcubic
@@ -16,15 +16,15 @@ open Set
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem color_ne {C : GoodColoring G} {x y : V} {cx cy : Color}
+private theorem color_ne {C : MatchingCutColoring G} {x y : V} {cx cy : Color}
     (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) : x ≠ y := by
   intro h
   subst y
   simp_all
 
-/-- Two crossings sharing their red endpoint give Figure 5(a). -/
+/-- Two crossings sharing their red endpoint give reducer `ntr-a`. -/
 private theorem shared_red_endpoint
-    (C : GoodColoring G) {a c d : V}
+    (C : MatchingCutColoring G) {a c d : V}
     (ha : C.color a = .red) (hc : C.color c = .blue)
     (hd : C.color d = .blue) (hcd : G.Adj c d)
     (hac : G.Adj a c) (had : G.Adj a d) :
@@ -33,10 +33,10 @@ private theorem shared_red_endpoint
     simp [hcd.ne, color_ne ha hc (by decide), color_ne ha hd (by decide)]
   exact containsNegativeA C ha hc hd hac had hcd hn
 
-/-- Figure 5(f): in a crossing matching, the third neighbor of `b` is not
+/-- In a crossing matching, the third neighbor of `b` is not
 also adjacent to `a`. -/
 private theorem matching_open
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .bluish)
@@ -82,7 +82,7 @@ private theorem matching_open
 
 /-- The canonical matching case: the crossing edges are `ac` and `bd`. -/
 private theorem crossing_matching
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hcd : G.Adj c d)
@@ -269,7 +269,7 @@ private theorem crossing_matching
 edges between their endpoint pairs, then a negative tail reducer or cut
 enhancer is reachable. -/
 theorem lemma5_2
-    (C : GoodColoring G) (a b c d : V)
+    (C : MatchingCutColoring G) (a b c d : V)
     (hab : G.Adj a b) (ha : C.color a = .red) (hb : C.color b = .red)
     (hcd : G.Adj c d) (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hmulti : 2 ≤ fourVertexCrossEdgeCount G a b c d) :

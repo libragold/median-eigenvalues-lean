@@ -1,7 +1,7 @@
 import Subcubic.Lemma4_12
 
 /-!
-# Lemma 2.7 (distance-free form)
+# Lemma 2.7
 
 Starting from a red edge, either every other neighbor is bluish and Lemma
 4.4 applies, or a blue edge can be appended.  A further strong-colored edge
@@ -15,10 +15,9 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- **Lemma 2.7.** Every red edge yields, after zero or more permitted
-cut-preserver flips, a positive tail reducer or a cut enhancer.  Distance
-bounds from the paper are deliberately omitted. -/
+cut-preserver flips, a positive tail reducer or a cut enhancer. -/
 theorem lemma2_7
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) : HasReachableReduction C := by
   classical

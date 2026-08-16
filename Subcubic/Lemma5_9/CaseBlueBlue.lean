@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_9_case_lm_blue
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -54,7 +54,7 @@ theorem lemma5_9_case_lm_blue
   rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     ⟨M, hflip⟩ | hce
-  · let D := M.toGoodColoring
+  · let D := M.toColoring
     have hkc : k ≠ c := hck.ne.symm
     have hcD : D.color c = .red :=
       red_of_flipped_blue_with_reddish_neighbor C hflip hk hck hkb hkc

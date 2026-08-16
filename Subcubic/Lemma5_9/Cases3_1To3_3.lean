@@ -7,12 +7,12 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-abbrev Lemma5_9Case3_4Configuration (C : GoodColoring G)
+abbrev Lemma5_9Case3_4Configuration (C : MatchingCutColoring G)
     (a b c d e f g h : V) :=
   Lemma4_8Case3_4Configuration C a b c d e f g h
 
 theorem lemma5_9_cases3_1_to_3_3
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

@@ -7,21 +7,21 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem redSide_ne_bluish_5_4 {C : GoodColoring G} {x y : V}
+private theorem redSide_ne_bluish_5_4 {C : MatchingCutColoring G} {x y : V}
     (hx : C.color x = .red ∨ C.color x = .reddish)
     (hy : C.color y = .bluish) : x ≠ y := by
   intro h
   subst y
   rcases hx with hx | hx <;> simp_all
 
-private theorem blue_not_adj_bluish_5_4 (C : GoodColoring G) {x y : V}
+private theorem blue_not_adj_bluish_5_4 (C : MatchingCutColoring G) {x y : V}
     (hx : C.color x = .blue) (hy : C.color y = .bluish) :
     ¬ G.Adj x y := by
   simpa [SimpleGraph.adj_comm] using
     C.bluish_not_adj_blueSide hy (Or.inl hx)
 
 private theorem saturated_a_not_adj
-    (C : GoodColoring G) {a b w : V}
+    (C : MatchingCutColoring G) {a b w : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hwa : w ≠ b) (hwc : w ≠ Q.c) (hwd : w ≠ Q.d) :
@@ -32,7 +32,7 @@ private theorem saturated_a_not_adj
     hwa hwc hwd
 
 private theorem saturated_b_not_adj
-    (C : GoodColoring G) {a b w : V}
+    (C : MatchingCutColoring G) {a b w : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hwa : w ≠ a) (hwd : w ≠ Q.d) (hwe : w ≠ Q.e) :
@@ -44,7 +44,7 @@ private theorem saturated_b_not_adj
 
 /-- The `h` reddish alternative in Case 2.2.5. -/
 private theorem reddish_second_neighbor_gives_H
-    (C : GoodColoring G) {a b f g h : V}
+    (C : MatchingCutColoring G) {a b f g h : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hf : C.color f = .reddish) (hff : f = Q.f)
@@ -89,7 +89,7 @@ private theorem reddish_second_neighbor_gives_H
 /-- Case 2.2.5.2: after flipping `gh`, the configuration is either the
 no-blue case 2.2.2 or the red case 2.2.4. -/
 private theorem flip_when_h_meets_neither
-    (C : GoodColoring G) {a b g i h r : V}
+    (C : MatchingCutColoring G) {a b g i h r : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hf : C.color Q.f = .reddish) (hg : C.color g = .blue)
@@ -114,7 +114,7 @@ private theorem flip_when_h_meets_neither
       hhr hgh.symm hgi with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hga : ¬ G.Adj g a := by
       simpa [SimpleGraph.adj_comm] using saturated_a_not_adj C ha hb hab Q
         (vertex_ne_of_color_eq hg hb (by decide))
@@ -183,7 +183,7 @@ private theorem flip_when_h_meets_neither
 
 /-- Case 2.2.5.3, oriented by `h-e`. -/
 private theorem hard_oriented
-    (C : GoodColoring G) {a b g i h r : V}
+    (C : MatchingCutColoring G) {a b g i h r : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hf : C.color Q.f = .reddish) (hg : C.color g = .blue)
@@ -396,7 +396,7 @@ private theorem hard_oriented
 
 /-- Case 2.2.5. -/
 theorem lemma5_4_reddish_f_blue_neighbor
-    (C : GoodColoring G) {a b g : V}
+    (C : MatchingCutColoring G) {a b g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hf : C.color Q.f = .reddish) (hg : C.color g = .blue)

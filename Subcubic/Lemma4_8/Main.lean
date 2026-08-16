@@ -15,7 +15,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 not adjacent to `c`. The right disjunct is precisely Case (3.4.3.3.2.2),
 where the prose flips `np` and returns to the all-bluish case. -/
 theorem lemma4_8_case3_4_split
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -61,7 +61,7 @@ theorem lemma4_8_case3_4_split
 `i` is not adjacent to `c`.  In the last mixed case, Case (3.4.3.3.2.2)
 flips `np` and restarts the refactored all-bluish argument. -/
 theorem lemma4_8_case3_4_complete
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -79,10 +79,9 @@ theorem lemma4_8_case3_4_complete
 /-- **Lemma 4.8.**  An induced path whose end pairs are red edges and whose
 two intervening pairs are blue edges contains a positive tail reducer after
 zero or more permitted flips, or contains a cut enhancer.  The endpoint
-hypotheses are the additional assumptions from the paper: `a` has no blue
-neighbor and `h` has no red neighbor. -/
+hypotheses say that `a` has no blue neighbor and `h` has no red neighbor. -/
 theorem lemma4_8
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_12NoShareConfiguration (C : GoodColoring G)
+structure Lemma4_12NoShareConfiguration (C : MatchingCutColoring G)
     (a b c d : V) extends Lemma4_12ThirdNeighborConfiguration C a b c d where
   x : V
   y : V
@@ -32,7 +32,7 @@ structure Lemma4_12NoShareConfiguration (C : GoodColoring G)
   hdy : ¬ G.Adj d y
 
 theorem lemma4_12_no_share_setup
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hd : C.color d = .blue) (hc : C.color c = .blue)
     (hcd : G.Adj c d)
     (hddeg : vertexDegree G d = 3)
@@ -73,7 +73,7 @@ theorem lemma4_12_no_share_setup
     hNoShare y hy hey⟩, rfl⟩
 
 theorem lemma4_12_case3_no_share
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

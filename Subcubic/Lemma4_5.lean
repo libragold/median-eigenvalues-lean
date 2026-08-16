@@ -29,7 +29,7 @@ def FormsInducedPath10 (G : SimpleGraph V)
        (5, 6), (6, 7), (7, 8), (8, 9)]).Adj x y ↔ G.Adj (p x) (p y)
 
 private theorem contains_cutEnhancerB
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .reddish) (hb : C.color b = .blue)
     (hc : C.color c = .red) (hd : C.color d = .blue)
     (he : C.color e = .red)
@@ -63,7 +63,7 @@ private theorem contains_cutEnhancerB
     fin_cases x <;> simp [cutEnhancer, ha, hb, hc, hd, he]
 
 private theorem contains_positiveC
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .bluish)
@@ -106,7 +106,7 @@ private theorem contains_positiveC
 the original coloring or a coloring reached by sequential cut-preserver
 flips contains a positive tail reducer or a cut enhancer. -/
 theorem lemma4_5
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (hpath : FormsInducedPath10 G a b c d e f g h i j)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -114,8 +114,8 @@ theorem lemma4_5
     (hg : C.color g = .blue) (hh : C.color h = .blue)
     (hi : C.color i = .red) (hj : C.color j = .red) :
     ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-      (ContainsPositiveTailReducer M.toGoodColoring ∨
-       ContainsCutEnhancer M.toGoodColoring) := by
+      (ContainsPositiveTailReducer M.toColoring ∨
+       ContainsCutEnhancer M.toColoring) := by
   classical
   by_cases hdone : HasReachableReduction C
   · exact hdone
@@ -169,15 +169,15 @@ theorem lemma4_5
     exact hxy ((hedge x y).mpr h)
   have finish_ptr (hptr : ContainsPositiveTailReducer C) :
       ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-        (ContainsPositiveTailReducer M.toGoodColoring ∨
-         ContainsCutEnhancer M.toGoodColoring) := by
+        (ContainsPositiveTailReducer M.toColoring ∨
+         ContainsCutEnhancer M.toColoring) := by
     refine ⟨C.toMatchingCut, .refl, Or.inl ?_⟩
     exact (containsInducedUpToSwap_congr_color IsPositiveTailReducer
       (by simp)).1 hptr
   have finish_ce (hce : ContainsCutEnhancer C) :
       ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-        (ContainsPositiveTailReducer M.toGoodColoring ∨
-         ContainsCutEnhancer M.toGoodColoring) := by
+        (ContainsPositiveTailReducer M.toColoring ∨
+         ContainsCutEnhancer M.toColoring) := by
     refine ⟨C.toMatchingCut, .refl, Or.inr ?_⟩
     exact (containsInducedUpToSwap_congr_color IsCutEnhancer
       (by simp)).1 hce
@@ -305,7 +305,7 @@ theorem lemma4_5
                     hab.symm hub.symm hua.symm with hu | hce
                 · obtain ⟨M₁, hflip₁⟩ := exists_flipAt_of_local C
                     hb hc ha hd (Or.inl hx) (Or.inl hu) hab.symm hbc hbx hcd hcu
-                  let D₁ := M₁.toGoodColoring
+                  let D₁ := M₁.toColoring
                   have hside₁ : M₁.side = C.redSide ∆ ({b, c} : Set V) :=
                     hflip₁.2
                   have hib : i ≠ b := by
@@ -354,8 +354,8 @@ theorem lemma4_5
                       ⟨hgM₁, h, hhM₁, hgh⟩
                   have finish₁_ce (hce₁ : ContainsCutEnhancer D₁) :
                       ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-                        (ContainsPositiveTailReducer M.toGoodColoring ∨
-                         ContainsCutEnhancer M.toGoodColoring) := by
+                        (ContainsPositiveTailReducer M.toColoring ∨
+                         ContainsCutEnhancer M.toColoring) := by
                     exact ⟨M₁, .step .refl hflip₁, Or.inr hce₁⟩
                   have degreeD₁ {z : V}
                       (hz : D₁.color z = .red ∨ D₁.color z = .blue) :
@@ -396,12 +396,12 @@ theorem lemma4_5
                     · obtain ⟨M₂, hflip₂⟩ := exists_flipAt_of_local D₁
                         hi₁ hh₁ hj₁ hg₁ (Or.inl hy) (Or.inl hv)
                         hij hhi.symm hiy hgh.symm hhv
-                      let D₂ := M₂.toGoodColoring
+                      let D₂ := M₂.toColoring
                       have hflip₂' : M₁.IsFlipAt M₂ i h := by
                         constructor
                         · exact ⟨hhi.symm, by simpa [D₁] using hi₁,
                             by simpa [D₁] using hh₁⟩
-                        · simpa [D₁, GoodColoring.redSide,
+                        · simpa [D₁, MatchingCutColoring.redSide,
                             MatchingCut.redSideOf_color] using hflip₂.2
                       have hside₂ : M₂.side = M₁.side ∆ ({i, h} : Set V) :=
                         hflip₂'.2

@@ -17,7 +17,7 @@ set_option maxHeartbeats 1000000
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_13_case4_exact_bluish_red
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -136,7 +136,7 @@ theorem lemma5_13_case4_exact_bluish_red
     rcases exists_flipAt_or_cutEnhancer C hj hl hk hm
         (degreeC (Or.inl hj)) (degreeC (Or.inr hl)) hjk hjl hlm with
       ⟨M, hflip⟩ | hce
-    · let D := M.toGoodColoring
+    · let D := M.toColoring
       have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
           vertexDegree G v = 3 := by
         rcases lemma3_6_negative D hv with hdegree | hntr | hce
@@ -312,7 +312,7 @@ theorem lemma5_13_case4_exact_bluish_red
     · rcases exists_flipAt_or_cutEnhancer C hk ho hj hom
           (degreeC (Or.inl hk)) (degreeC (Or.inr ho)) hjk.symm hko hoom with
         ⟨M, hflip⟩ | hce
-      · let D := M.toGoodColoring
+      · let D := M.toColoring
         have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
             vertexDegree G v = 3 := by
           rcases lemma3_6_negative D hv with hdegree | hntr | hce
@@ -1162,7 +1162,7 @@ theorem lemma5_13_case4_exact_bluish_red
                           · rcases exists_flipAt_or_cutEnhancer D hnD hqD hmD hqmD
                                 (degreeD (Or.inl hnD)) (degreeD (Or.inr hqD))
                                 hmn.symm hnq hqqm with ⟨N, hflip2⟩ | hce2
-                            · let E := N.toGoodColoring
+                            · let E := N.toColoring
                               have degreeE {v : V}
                                   (hv : E.color v = .red ∨ E.color v = .blue) :
                                   vertexDegree G v = 3 := by

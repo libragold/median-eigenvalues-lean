@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
-"""Generate the Lean tail-reducer catalogue from detailed-input.txt."""
+"""Generate the Lean tail-reducer catalogue from tail_reducers.cvs."""
 
+import csv
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
 import re
 import sys
 
-DETAILED_LINE = re.compile(
-    r"^(ptr|ntr)-([^ ]+) ([a-z]+)"
-    r"(?: deg\(([a-z])\)=([0-9]+))?"
-    r" reddish ([a-z]+|-); red ([a-z]+|-);"
-    r" bluish ([a-z]+|-); blue ([a-z]+|-)$"
-)
+SOURCE = Path("tail_reducers.cvs")
+FIELDNAMES = [
+    "name",
+    "edges",
+    "reddish",
+    "red",
+    "bluish",
+    "blue",
+    "degree_constraint",
+]
+LABEL = re.compile(r"^(ptr|ntr)-(.+)$")
+DEGREE_CONSTRAINT = re.compile(r"^deg\(([a-z])\)=([0-9]+)$")
 
 
 def letter(index):
@@ -26,7 +33,25 @@ def lean_name(name):
 
 
 def indices(text):
-    return [] if text == "-" else [ord(c) - ord("a") for c in text]
+    text = text.strip()
+    return [] if text in {"", "-"} else [ord(c) - ord("a") for c in text]
+
+
+def parse_name(text):
+    match = LABEL.fullmatch(text.strip())
+    assert match is not None, ("invalid name", text)
+    kind, detailed_name = match.groups()
+    return kind, detailed_name
+
+
+def parse_degree_constraint(text):
+    text = text.strip()
+    if not text:
+        return None
+    match = DEGREE_CONSTRAINT.fullmatch(text)
+    assert match is not None, ("invalid degree constraint", text)
+    vertex, degree = match.groups()
+    return ord(vertex) - ord("a"), int(degree)
 
 
 def row_colors(row):
@@ -111,14 +136,18 @@ def boundary_nonedges(row):
 
 def parse_rows():
     rows = {"+": [], "-": []}
-    source = Path("detailed-input.txt")
-    for line_number, line in enumerate(source.read_text().splitlines(), 1):
-        match = DETAILED_LINE.fullmatch(line)
-        assert match is not None, (line_number, "cannot parse", line)
-        kind, detailed_name, code, degree_vertex, required_degree, reddish, red, bluish, blue = (
-            match.groups()
+    with SOURCE.open(newline="") as source:
+        reader = csv.DictReader(source)
+        assert reader.fieldnames == FIELDNAMES, (
+            "unexpected CSV header",
+            reader.fieldnames,
+            FIELDNAMES,
         )
+        records = list(reader)
+    for line_number, record in enumerate(records, 2):
+        kind, detailed_name = parse_name(record["name"])
         sign = "+" if kind == "ptr" else "-"
+        code = record["edges"].strip()
         assert len(code) % 2 == 0, (line_number, "odd edge encoding")
         edges = [
             (ord(code[i]) - ord("a"), ord(code[i + 1]) - ord("a"))
@@ -126,12 +155,13 @@ def parse_rows():
         ]
         assert all(0 <= u < 26 and 0 <= v < 26 and u != v for u, v in edges)
         unordered = [tuple(sorted(edge)) for edge in edges]
-        assert len(unordered) == len(set(unordered)), (head, "duplicate edge")
+        assert len(unordered) == len(set(unordered)), (
+            line_number, "duplicate edge")
         color_groups = {
-            "reddish": indices(reddish),
-            "red": indices(red),
-            "bluish": indices(bluish),
-            "blue": indices(blue),
+            "reddish": indices(record["reddish"]),
+            "red": indices(record["red"]),
+            "bluish": indices(record["bluish"]),
+            "blue": indices(record["blue"]),
         }
         colored_vertices = [v for group in color_groups.values() for v in group]
         assert len(colored_vertices) == len(set(colored_vertices)), (
@@ -158,9 +188,9 @@ def parse_rows():
         assert max(side_degrees) <= 1, (
             detailed_name, "not a matching cut", side_degrees)
         ambient_degree = []
-        if degree_vertex is not None:
-            vertex = ord(degree_vertex) - ord("a")
-            degree = int(required_degree)
+        degree_constraint = parse_degree_constraint(record["degree_constraint"])
+        if degree_constraint is not None:
+            vertex, degree = degree_constraint
             assert degrees[vertex] <= degree <= 3, (
                 detailed_name, "invalid ambient-degree guard")
             ambient_degree = [(vertex, degree)]

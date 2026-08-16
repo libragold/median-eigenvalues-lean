@@ -12,7 +12,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_8Case3Configuration (C : GoodColoring G)
+structure Lemma4_8Case3Configuration (C : MatchingCutColoring G)
     (a b c d e f g h : V) where
   i : V
   j : V
@@ -36,7 +36,7 @@ structure Lemma4_8Case3Configuration (C : GoodColoring G)
   hjb : ¬ G.Adj j b
 
 theorem lemma4_8_case3_setup
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -104,7 +104,7 @@ theorem lemma4_8_case3_setup
 /-- Formalization of Cases (1) and (2), followed by the orientation and
 third-neighbor setup at the start of Case (3). -/
 theorem lemma4_8_cases1_and_2_setup3
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

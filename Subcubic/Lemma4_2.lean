@@ -6,7 +6,7 @@ import Mathlib.Tactic.FinCases
 # Lemma 4.2
 
 The proof handles all cases of four, three, and two crossing edges. Reusable
-facts about good colorings live in `Subcubic.ColoringLemmas`.
+facts about matching-cut colorings live in `Subcubic.ColoringLemmas`.
 -/
 
 namespace Subcubic
@@ -16,7 +16,7 @@ open Set
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 private theorem contains_positiveA
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hcd : G.Adj c d)
@@ -47,7 +47,7 @@ private theorem contains_positiveA
 /-- The canonical three-crossing-edge case: `ac`, `ad`, and `bd` are
 present, while `bc` is absent. -/
 private theorem three_crossing_edges
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hcd : G.Adj c d)
@@ -109,7 +109,7 @@ private theorem three_crossing_edges
 
 /-- Canonical matching case: the two crossing edges are `ac` and `bd`. -/
 private theorem two_crossing_matching
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hcd : G.Adj c d)
@@ -227,7 +227,7 @@ private theorem two_crossing_matching
 
 /-- Canonical adjacent case: the two crossing edges are `ac` and `ad`. -/
 private theorem two_crossing_adjacent
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hcd : G.Adj c d)
@@ -349,7 +349,7 @@ private theorem two_crossing_adjacent
 
 /-- The remaining case of exactly two crossing edges. -/
 private theorem two_crossing_edges
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hcd : G.Adj c d)
@@ -390,7 +390,7 @@ private theorem two_crossing_edges
 edges between their endpoint pairs, then there is an induced positive tail
 reducer or an induced cut enhancer (in either side orientation). -/
 theorem lemma4_2
-    (C : GoodColoring G) (a b c d : V)
+    (C : MatchingCutColoring G) (a b c d : V)
     (hab : G.Adj a b) (ha : C.color a = .red) (hb : C.color b = .red)
     (hcd : G.Adj c d) (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hmulti : 2 ≤ fourVertexCrossEdgeCount G a b c d) :

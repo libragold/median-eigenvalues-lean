@@ -22,7 +22,7 @@ displayed neighbors `ss` (blue) and `sr` (reddish). The neighbor `rb` may be
 bluish, or it may coincide with `ss`; in the latter case `ss` loses `s` as its
 blue mate exactly when it gains `r`. -/
 theorem exists_flipAt_of_local
-    (C : GoodColoring G) {r s rr ss rb sr : V}
+    (C : MatchingCutColoring G) {r s rr ss rb sr : V}
     (hr : C.color r = .red) (hs : C.color s = .blue)
     (hrr : C.color rr = .red) (hss : C.color ss = .blue)
     (hrb : C.color rb = .bluish ∨ rb = ss)
@@ -193,15 +193,15 @@ theorem exists_flipAt_of_local
     subcubic := C.subcubic
     matching := hmatching }
   refine ⟨M', ⟨?_, rfl⟩⟩
-  exact ⟨hrsEdge, by simpa [GoodColoring.toMatchingCut_color] using hr,
-    by simpa [GoodColoring.toMatchingCut_color] using hs⟩
+  exact ⟨hrsEdge, by simpa [MatchingCutColoring.toMatchingCut_color] using hr,
+    by simpa [MatchingCutColoring.toMatchingCut_color] using hs⟩
 
-/-- A reusable form of the paper's instruction "flip the cut preserver".
+/-- A reusable form of a permitted cut-preserver flip.
 Once the red mate `rr` and blue mate `ss` are displayed, Lemma 3.3 identifies
 the two remaining neighbors needed by `exists_flipAt_of_local`.  The mild
 nonedge `s-rr` rules out the only shared-mate degeneracy on the red side. -/
 theorem exists_flipAt_or_cutEnhancer
-    (C : GoodColoring G) {r s rr ss : V}
+    (C : MatchingCutColoring G) {r s rr ss : V}
     (hr : C.color r = .red) (hs : C.color s = .blue)
     (hrr : C.color rr = .red) (hss : C.color ss = .blue)
     (hrDegree : vertexDegree G r = 3)
@@ -245,7 +245,7 @@ theorem exists_flipAt_or_cutEnhancer
 /-! Small color-recomputation lemmas.  They keep later flip proofs focused on
 the displayed graph rather than on symmetric-difference bookkeeping. -/
 
-theorem mem_side_iff_of_flipAt (C : GoodColoring G)
+theorem mem_side_iff_of_flipAt (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s z : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hzr : z ≠ r) (hzs : z ≠ s) :
@@ -253,23 +253,23 @@ theorem mem_side_iff_of_flipAt (C : GoodColoring G)
   rw [hflip.2]
   simp [Set.mem_symmDiff, hzr, hzs]
 
-theorem red_of_untouched_red_edge (C : GoodColoring G)
+theorem red_of_untouched_red_edge (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x y : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : x ∈ C.redSide) (hy : y ∈ C.redSide) (hxy : G.Adj x y)
     (hxr : x ≠ r) (hxs : x ≠ s) (hyr : y ≠ r) (hys : y ≠ s) :
-    M.toGoodColoring.color x = .red := by
+    M.toColoring.color x = .red := by
   change colorOfCut G M.side x = .red
   rw [colorOfCut_eq_red_iff]
   exact ⟨(mem_side_iff_of_flipAt C hflip hxr hxs).2 hx, y,
     (mem_side_iff_of_flipAt C hflip hyr hys).2 hy, hxy⟩
 
-theorem blue_of_untouched_blue_edge (C : GoodColoring G)
+theorem blue_of_untouched_blue_edge (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x y : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : x ∉ C.redSide) (hy : y ∉ C.redSide) (hxy : G.Adj x y)
     (hxr : x ≠ r) (hxs : x ≠ s) (hyr : y ≠ r) (hys : y ≠ s) :
-    M.toGoodColoring.color x = .blue := by
+    M.toColoring.color x = .blue := by
   change colorOfCut G M.side x = .blue
   rw [colorOfCut_eq_blue_iff]
   refine ⟨fun hxM => hx ((mem_side_iff_of_flipAt C hflip hxr hxs).1 hxM),
@@ -277,28 +277,28 @@ theorem blue_of_untouched_blue_edge (C : GoodColoring G)
   intro hyM
   exact hy ((mem_side_iff_of_flipAt C hflip hyr hys).1 hyM)
 
-theorem red_of_reddish_gains_flipped_blue (C : GoodColoring G)
+theorem red_of_reddish_gains_flipped_blue (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .reddish) (hxs : G.Adj x s)
     (hxr : x ≠ r) (hxsV : x ≠ s) :
-    M.toGoodColoring.color x = .red := by
+    M.toColoring.color x = .red := by
   have hxOld : x ∈ C.redSide := by simp [hx]
   have hxM := (mem_side_iff_of_flipAt C hflip hxr hxsV).2 hxOld
   have hsM : s ∈ M.side := by
     rw [hflip.2]
     have hsOld : s ∉ C.redSide := by
       exact (C.not_mem_redSide_iff s).2 (Or.inl (by
-        simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.2))
+        simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.2))
     simp [Set.mem_symmDiff, hsOld, hflip.1.1.ne.symm]
   exact (colorOfCut_eq_red_iff G M.side x).2 ⟨hxM, s, hsM, hxs⟩
 
-theorem blue_of_bluish_gains_flipped_red (C : GoodColoring G)
+theorem blue_of_bluish_gains_flipped_red (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .bluish) (hxrEdge : G.Adj x r)
     (hxr : x ≠ r) (hxs : x ≠ s) :
-    M.toGoodColoring.color x = .blue := by
+    M.toColoring.color x = .blue := by
   have hxOld : x ∉ C.redSide := by simp [hx]
   have hxM : x ∉ M.side := by
     intro hxNew
@@ -307,16 +307,16 @@ theorem blue_of_bluish_gains_flipped_red (C : GoodColoring G)
     rw [hflip.2]
     have hrOld : r ∈ C.redSide := by
       exact (C.mem_redSide_iff r).2 (Or.inl (by
-        simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.1))
+        simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.1))
     simp [Set.mem_symmDiff, hrOld, hflip.1.1.ne]
   exact (colorOfCut_eq_blue_iff G M.side x).2 ⟨hxM, r, hrM, hxrEdge⟩
 
-theorem reddish_of_red_loses_flipped_mate (C : GoodColoring G)
+theorem reddish_of_red_loses_flipped_mate (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .red) (hxrEdge : G.Adj x r)
     (hxsEdge : ¬ G.Adj x s) (hxr : x ≠ r) (hxs : x ≠ s) :
-    M.toGoodColoring.color x = .reddish := by
+    M.toColoring.color x = .reddish := by
   have hxOld : x ∈ C.redSide := by simp [hx]
   have hxM := (mem_side_iff_of_flipAt C hflip hxr hxs).2 hxOld
   apply (colorOfCut_eq_reddish_iff G M.side x).2
@@ -326,7 +326,7 @@ theorem reddish_of_red_loses_flipped_mate (C : GoodColoring G)
   · subst z
     have hrOld : r ∈ C.redSide := by
       exact (C.mem_redSide_iff r).2 (Or.inl (by
-        simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.1))
+        simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.1))
     have : r ∉ M.side := by
       rw [hflip.2]
       simp [Set.mem_symmDiff, hrOld, hflip.1.1.ne]
@@ -338,16 +338,16 @@ theorem reddish_of_red_loses_flipped_mate (C : GoodColoring G)
   have hnot := C.redSide_not_adj_second_neighbor hxOld
     (by
       exact (C.mem_redSide_iff r).2 (Or.inl (by
-        simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.1))) hzOld
+        simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.1))) hzOld
     hxrEdge (Ne.symm hzr)
   exact hnot hxz
 
-theorem bluish_of_blue_loses_flipped_mate (C : GoodColoring G)
+theorem bluish_of_blue_loses_flipped_mate (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .blue) (hxsEdge : G.Adj x s)
     (hxrEdge : ¬ G.Adj x r) (hxr : x ≠ r) (hxs : x ≠ s) :
-    M.toGoodColoring.color x = .bluish := by
+    M.toColoring.color x = .bluish := by
   have hxOld : x ∉ C.redSide := by simp [hx]
   have hxM : x ∉ M.side := by
     intro hxNew
@@ -362,7 +362,7 @@ theorem bluish_of_blue_loses_flipped_mate (C : GoodColoring G)
   · subst z
     have hsOld : s ∉ C.redSide := by
       exact (C.not_mem_redSide_iff s).2 (Or.inl (by
-        simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.2))
+        simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.2))
     have : s ∈ M.side := by
       rw [hflip.2]
       simp [Set.mem_symmDiff, hsOld, hflip.1.1.ne.symm]
@@ -372,16 +372,16 @@ theorem bluish_of_blue_loses_flipped_mate (C : GoodColoring G)
     exact hzM ((mem_side_iff_of_flipAt C hflip hzr hzs).2 hzOld)
   have hsOld : s ∉ C.redSide := by
     exact (C.not_mem_redSide_iff s).2 (Or.inl (by
-      simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.2))
+      simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.2))
   exact (C.blueSide_not_adj_second_neighbor hxOld hsOld hzOld
     hxsEdge (Ne.symm hzs)) hxz
 
-theorem reddish_of_untouched_reddish (C : GoodColoring G)
+theorem reddish_of_untouched_reddish (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .reddish) (hxsEdge : ¬ G.Adj x s)
     (hxr : x ≠ r) (hxs : x ≠ s) :
-    M.toGoodColoring.color x = .reddish := by
+    M.toColoring.color x = .reddish := by
   have hxOld : x ∈ C.redSide := by simp [hx]
   have hxM := (mem_side_iff_of_flipAt C hflip hxr hxs).2 hxOld
   apply (colorOfCut_eq_reddish_iff G M.side x).2
@@ -391,7 +391,7 @@ theorem reddish_of_untouched_reddish (C : GoodColoring G)
   · subst z
     have hrOld : r ∈ C.redSide :=
       (C.mem_redSide_iff r).2 (Or.inl (by
-        simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.1))
+        simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.1))
     have : r ∉ M.side := by
       rw [hflip.2]
       simp [Set.mem_symmDiff, hrOld, hflip.1.1.ne]
@@ -403,12 +403,12 @@ theorem reddish_of_untouched_reddish (C : GoodColoring G)
   exact (C.reddish_not_adj_redSide hx
     ((C.mem_redSide_iff z).1 hzOld)) hxz
 
-theorem bluish_of_untouched_bluish (C : GoodColoring G)
+theorem bluish_of_untouched_bluish (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .bluish) (hxrEdge : ¬ G.Adj x r)
     (hxr : x ≠ r) (hxs : x ≠ s) :
-    M.toGoodColoring.color x = .bluish := by
+    M.toColoring.color x = .bluish := by
   have hxOld : x ∉ C.redSide := by simp [hx]
   have hxM : x ∉ M.side := by
     intro hxNew
@@ -423,7 +423,7 @@ theorem bluish_of_untouched_bluish (C : GoodColoring G)
   · subst z
     have hsOld : s ∉ C.redSide :=
       (C.not_mem_redSide_iff s).2 (Or.inl (by
-        simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.2))
+        simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.2))
     have : s ∈ M.side := by
       rw [hflip.2]
       simp [Set.mem_symmDiff, hsOld, hflip.1.1.ne.symm]
@@ -434,15 +434,15 @@ theorem bluish_of_untouched_bluish (C : GoodColoring G)
   exact (C.bluish_not_adj_blueSide hx
     ((C.not_mem_redSide_iff z).1 hzOld)) hxz
 
-theorem red_of_flipped_blue_with_reddish_neighbor (C : GoodColoring G)
+theorem red_of_flipped_blue_with_reddish_neighbor (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .reddish) (hsx : G.Adj s x)
     (hxr : x ≠ r) (hxs : x ≠ s) :
-    M.toGoodColoring.color s = .red := by
+    M.toColoring.color s = .red := by
   have hsOld : s ∉ C.redSide :=
     (C.not_mem_redSide_iff s).2 (Or.inl (by
-      simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.2))
+      simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.2))
   have hsM : s ∈ M.side := by
     rw [hflip.2]
     simp [Set.mem_symmDiff, hsOld, hflip.1.1.ne.symm]
@@ -450,15 +450,15 @@ theorem red_of_flipped_blue_with_reddish_neighbor (C : GoodColoring G)
   have hxM := (mem_side_iff_of_flipAt C hflip hxr hxs).2 hxOld
   exact (colorOfCut_eq_red_iff G M.side s).2 ⟨hsM, x, hxM, hsx⟩
 
-theorem blue_of_flipped_red_with_bluish_neighbor (C : GoodColoring G)
+theorem blue_of_flipped_red_with_bluish_neighbor (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s x : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hx : C.color x = .bluish) (hrx : G.Adj r x)
     (hxr : x ≠ r) (hxs : x ≠ s) :
-    M.toGoodColoring.color r = .blue := by
+    M.toColoring.color r = .blue := by
   have hrOld : r ∈ C.redSide :=
     (C.mem_redSide_iff r).2 (Or.inl (by
-      simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.1))
+      simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.1))
   have hrM : r ∉ M.side := by
     rw [hflip.2]
     simp [Set.mem_symmDiff, hrOld, hflip.1.1.ne]
@@ -471,14 +471,14 @@ theorem blue_of_flipped_red_with_bluish_neighbor (C : GoodColoring G)
 /-- The red endpoint of a valid flip becomes blue.  Its old red mate and the
 blue endpoint account for two neighbors; degree three supplies a third old
 blue-side neighbor which is not flipped. -/
-theorem blue_of_flipped_red_endpoint (C : GoodColoring G)
+theorem blue_of_flipped_red_endpoint (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s rr : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hrr : C.color rr = .red) (hrrEdge : G.Adj r rr)
     (hrDegree : vertexDegree G r = 3)
-    (hrrs : rr ≠ s) : M.toGoodColoring.color r = .blue := by
+    (hrrs : rr ≠ s) : M.toColoring.color r = .blue := by
   have hr : C.color r = .red := by
-    simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.1
+    simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.1
   obtain ⟨z, hrz, hzrr, hzs⟩ :=
     C.exists_third_neighbor hrDegree hrrs
   have hzBlue : z ∉ C.redSide := by
@@ -495,14 +495,14 @@ theorem blue_of_flipped_red_endpoint (C : GoodColoring G)
 
 /-- The blue endpoint of a valid flip becomes red; this is the color-reversed
 form of `blue_of_flipped_red_endpoint`. -/
-theorem red_of_flipped_blue_endpoint (C : GoodColoring G)
+theorem red_of_flipped_blue_endpoint (C : MatchingCutColoring G)
     {M : MatchingCut G} {r s ss : V}
     (hflip : C.toMatchingCut.IsFlipAt M r s)
     (hss : C.color ss = .blue) (hssEdge : G.Adj s ss)
     (hsDegree : vertexDegree G s = 3)
-    (hssr : ss ≠ r) : M.toGoodColoring.color s = .red := by
+    (hssr : ss ≠ r) : M.toColoring.color s = .red := by
   have hs : C.color s = .blue := by
-    simpa [GoodColoring.toMatchingCut_color] using hflip.1.2.2
+    simpa [MatchingCutColoring.toMatchingCut_color] using hflip.1.2.2
   obtain ⟨z, hsz, hzss, hzr⟩ :=
     C.exists_third_neighbor hsDegree hssr
   have hzRed : z ∈ C.redSide := by

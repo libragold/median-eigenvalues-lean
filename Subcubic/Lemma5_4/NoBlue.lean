@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem redSide_ne_bluish {C : GoodColoring G} {x y : V}
+private theorem redSide_ne_bluish {C : MatchingCutColoring G} {x y : V}
     (hx : C.color x = .red ∨ C.color x = .reddish)
     (hy : C.color y = .bluish) : x ≠ y := by
   intro h
@@ -14,7 +14,7 @@ private theorem redSide_ne_bluish {C : GoodColoring G} {x y : V}
   rcases hx with hx | hx <;> simp_all
 
 private theorem no_blue_neighbor_is_bluish
-    (C : GoodColoring G) {f g : V}
+    (C : MatchingCutColoring G) {f g : V}
     (hf : C.color f = .reddish) (hfg : G.Adj f g)
     (hnoBlue : ∀ v, G.Adj f v → C.color v ≠ .blue) :
     C.color g = .bluish := by
@@ -28,7 +28,7 @@ private theorem no_blue_neighbor_is_bluish
 The reducers `ntr-dc-b` and `ntr-b` are exactly the degree-two reddish and
 red alternatives. -/
 theorem lemma5_4_noBlue_meets_e
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hfe : G.Adj Q.f Q.e)
@@ -86,7 +86,7 @@ theorem lemma5_4_noBlue_meets_e
 /-- Case 2.2.2: `f` meets neither exclusive bluish neighbor.  Its number of
 displayed bluish neighbors selects `s-`, `sx-minus-`, or `sx-minus2-`. -/
 theorem lemma5_4_noBlue_meets_neither
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hfDegree : C.color Q.f = .red → vertexDegree G Q.f = 3)

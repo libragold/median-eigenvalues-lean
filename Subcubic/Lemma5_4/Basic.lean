@@ -15,7 +15,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma5_4SharedConfiguration (C : GoodColoring G) (a b : V) where
+structure Lemma5_4SharedConfiguration (C : MatchingCutColoring G) (a b : V) where
   c : V
   d : V
   e : V
@@ -39,7 +39,7 @@ structure Lemma5_4SharedConfiguration (C : GoodColoring G) (a b : V) where
 /-- Exchange the two endpoints of the isolated red edge, together with their
 exclusive bluish neighbors.  This packages the only left-right symmetry used
 in the later cases of Lemma 5.4. -/
-def Lemma5_4SharedConfiguration.reverse {C : GoodColoring G} {a b : V}
+def Lemma5_4SharedConfiguration.reverse {C : MatchingCutColoring G} {a b : V}
     (Q : Lemma5_4SharedConfiguration C a b) :
     Lemma5_4SharedConfiguration C b a where
   c := Q.e
@@ -63,7 +63,7 @@ def Lemma5_4SharedConfiguration.reverse {C : GoodColoring G} {a b : V}
   hdDegree := Q.hdDegree
 
 private theorem contains_negativeC
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (hab : G.Adj a b) (hac : G.Adj a c) (had : G.Adj a d)
@@ -73,7 +73,7 @@ private theorem contains_negativeC
   simp [hab.ne, hac.ne, had.ne, hbc.ne, hbd.ne, hcd]
 
 private theorem contains_negativeG
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -91,7 +91,7 @@ private theorem contains_negativeG
     vertex_ne_of_color_eq hb hd (by decide)]
 
 theorem lemma5_4_initial
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (ha_other : ∀ v, G.Adj a v → v ≠ b → C.color v = .bluish)
     (hb_other : ∀ v, G.Adj b v → v ≠ a → C.color v = .bluish) :

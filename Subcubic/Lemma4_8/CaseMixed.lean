@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_8MixedPConfiguration (C : GoodColoring G)
+structure Lemma4_8MixedPConfiguration (C : MatchingCutColoring G)
     (a b c d e f g h : V) extends
     Lemma4_8LMConfiguration C a b c d e f g h where
   hl : C.color l = .bluish
@@ -40,7 +40,7 @@ structure Lemma4_8MixedPConfiguration (C : GoodColoring G)
   hpj : ¬ G.Adj p j
 
 theorem lemma4_8_case_lm_mixed_setup
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -475,7 +475,7 @@ theorem lemma4_8_case_lm_mixed_setup
 /-- Case (3.4.3.3.2.2).  Flip `np`, recompute only the colors needed by
 the local argument, and restart Case (3.4.3.1). -/
 theorem lemma4_8_case_lm_mixed_complete
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -526,7 +526,7 @@ theorem lemma4_8_case_lm_mixed_complete
       (degree_of_color (Or.inl Q.hp)) (degree_of_color (Or.inr Q.hn))
       hpq Q.hnp.symm Q.hmn.symm with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hen : ¬ G.Adj e Q.n := by
       apply C.not_adj_fourth_neighbor (Or.inl he) hef hde.symm Q.hej
       · exact hv (u := (5 : Fin 8)) (v := 3) (by decide)

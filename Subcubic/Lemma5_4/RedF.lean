@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem redSide_ne_bluish'' {C : GoodColoring G} {x y : V}
+private theorem redSide_ne_bluish'' {C : MatchingCutColoring G} {x y : V}
     (hx : C.color x = .red ∨ C.color x = .reddish)
     (hy : C.color y = .bluish) : x ≠ y := by
   intro h; subst y; rcases hx with hx | hx <;> simp_all
@@ -14,7 +14,7 @@ private theorem redSide_ne_bluish'' {C : GoodColoring G} {x y : V}
 /-- Case 2.2.4: when `f` is red and has a blue neighbor, flipping `fg`
 turns the common bluish neighbor `d` blue, giving reversed `ntr-a`. -/
 theorem lemma5_4_red_f_blue_neighbor
-    (C : GoodColoring G) {a b g : V}
+    (C : MatchingCutColoring G) {a b g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hf : C.color Q.f = .red) (hg : C.color g = .blue)
@@ -49,7 +49,7 @@ theorem lemma5_4_red_f_blue_neighbor
       hfr hfg hgi with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hdf : Q.d ≠ Q.f := Q.hdf.ne
     have hdg : Q.d ≠ g := vertex_ne_of_color_eq Q.hd hg (by decide)
     have hdD : D.color Q.d = .blue :=

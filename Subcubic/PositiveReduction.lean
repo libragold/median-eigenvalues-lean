@@ -14,18 +14,18 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-def HasReachableReduction (C : GoodColoring G) : Prop :=
+def HasReachableReduction (C : MatchingCutColoring G) : Prop :=
   ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-    (ContainsPositiveTailReducer M.toGoodColoring ∨
-     ContainsCutEnhancer M.toGoodColoring)
+    (ContainsPositiveTailReducer M.toColoring ∨
+     ContainsCutEnhancer M.toColoring)
 
-theorem HasReachableReduction.of_current_ptr (C : GoodColoring G)
+theorem HasReachableReduction.of_current_ptr (C : MatchingCutColoring G)
     (hptr : ContainsPositiveTailReducer C) : HasReachableReduction C := by
   refine ⟨C.toMatchingCut, .refl, Or.inl ?_⟩
   exact (containsInducedUpToSwap_congr_color IsPositiveTailReducer
     (by simp)).1 hptr
 
-theorem HasReachableReduction.of_current_ce (C : GoodColoring G)
+theorem HasReachableReduction.of_current_ce (C : MatchingCutColoring G)
     (hce : ContainsCutEnhancer C) : HasReachableReduction C := by
   refine ⟨C.toMatchingCut, .refl, Or.inr ?_⟩
   exact (containsInducedUpToSwap_congr_color IsCutEnhancer
@@ -34,7 +34,7 @@ theorem HasReachableReduction.of_current_ce (C : GoodColoring G)
 /-- An absolute reducer or cut enhancer reachable in the sense of Lemma 3.6
 is a reachable positive reduction. -/
 theorem HasReachableReduction.of_lemma3_6
-    (C : GoodColoring G) (h : HasReachableLemma3_6Obstruction C) :
+    (C : MatchingCutColoring G) (h : HasReachableLemma3_6Obstruction C) :
     HasReachableReduction C := by
   rcases h with ⟨M, hreach, habsolute | hce⟩
   · exact ⟨M, hreach, Or.inl habsolute.1⟩
@@ -42,15 +42,15 @@ theorem HasReachableReduction.of_lemma3_6
 
 /-- A reduction reachable after one valid first flip is also reachable from
 the original coloring. -/
-theorem HasReachableReduction.after_flip (C : GoodColoring G)
+theorem HasReachableReduction.after_flip (C : MatchingCutColoring G)
     {M₁ : MatchingCut G} {r s : V}
     (hflip : C.toMatchingCut.IsFlipAt M₁ r s)
-    (hresult : HasReachableReduction M₁.toGoodColoring) :
+    (hresult : HasReachableReduction M₁.toColoring) :
     HasReachableReduction C := by
   rcases hresult with ⟨M, hreach, hfound⟩
-  have hround : M₁.toGoodColoring.toMatchingCut = M₁ := by
+  have hround : M₁.toColoring.toMatchingCut = M₁ := by
     apply MatchingCut.ext _ _
-    simp [GoodColoring.toMatchingCut_side, GoodColoring.redSide,
+    simp [MatchingCutColoring.toMatchingCut_side, MatchingCutColoring.redSide,
       MatchingCut.redSideOf_color]
   rw [hround] at hreach
   have prepend : ∀ {N : MatchingCut G},
@@ -64,19 +64,19 @@ theorem HasReachableReduction.after_flip (C : GoodColoring G)
 /-- The reduction conclusion is invariant under exchanging the two sides of
 the cut.  Flip directions reverse, but the underlying toggled pair is the
 same. -/
-theorem HasReachableReduction.of_swapSides (C : GoodColoring G)
+theorem HasReachableReduction.of_swapSides (C : MatchingCutColoring G)
     (h : HasReachableReduction C.swapSides) : HasReachableReduction C := by
   rcases h with ⟨M, hreach, hfound⟩
   have hstart : C.swapSides.toMatchingCut.swapSides = C.toMatchingCut := by
     apply MatchingCut.ext
     ext v
     cases hc : C.color v <;>
-      simp [GoodColoring.toMatchingCut_side, GoodColoring.redSide,
+      simp [MatchingCutColoring.toMatchingCut_side, MatchingCutColoring.redSide,
         redSideOf, Color.IsRedSide, Color.swap, hc]
   have hreach' := hreach.swapSides
   rw [hstart] at hreach'
-  let D := M.toGoodColoring
-  have hcolor : M.swapSides.toGoodColoring.color = D.swapSides.color := by
+  let D := M.toColoring
+  have hcolor : M.swapSides.toColoring.color = D.swapSides.color := by
     funext v
     simp [D]
   have hfoundD : ContainsPositiveTailReducer D.swapSides ∨

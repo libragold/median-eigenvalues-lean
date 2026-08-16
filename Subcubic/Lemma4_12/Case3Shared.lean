@@ -9,7 +9,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- Case (3.1.1): the shared reddish neighbor has no blue neighbor other
 than `d`.  Degree two gives `ptr-dc-a`; degree three gives `ptr-m`. -/
 theorem lemma4_12_case3_shared_no_other_blue
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -112,7 +112,7 @@ theorem lemma4_12_case3_shared_no_other_blue
 /-- The data at the start of Case (3.1.2): `g` is a shared reddish
 neighbor of `e,d`, and its additional blue neighbor `h` lies on a blue edge
 `hi`. -/
-structure Lemma4_12SharedBlueConfiguration (C : GoodColoring G)
+structure Lemma4_12SharedBlueConfiguration (C : MatchingCutColoring G)
     (a b c d : V) extends Lemma4_12ThirdNeighborConfiguration C a b c d where
   g : V
   h : V
@@ -129,7 +129,7 @@ structure Lemma4_12SharedBlueConfiguration (C : GoodColoring G)
 /-- Split the shared-neighbor case exactly as in Cases (3.1.1) and
 (3.1.2) of the prose proof. -/
 theorem lemma4_12_case3_shared_setup
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -159,7 +159,7 @@ theorem lemma4_12_case3_shared_setup
 /-- Case (3.1.2.1): if neither endpoint of the blue edge `hi` has a red
 neighbor, the color-reversed form of Lemma 4.4 applies. -/
 theorem lemma4_12_case3_shared_blue_isolated
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (R : Lemma4_12SharedBlueConfiguration C a b c d)
     (hNoRedH : ∀ z, G.Adj R.h z → C.color z ≠ .red)
     (hNoRedI : ∀ z, G.Adj R.i z → C.color z ≠ .red) :
@@ -179,7 +179,7 @@ theorem lemma4_12_case3_shared_blue_isolated
       R.hh R.hi R.hhi hhz hzi
     rcases hzSide with hz | hz
     · exact (hNoRedH z hhz hz).elim
-    · simp [GoodColoring.swapSides, hz]
+    · simp [MatchingCutColoring.swapSides, hz]
   have hOtherI : ∀ z, G.Adj R.i z → z ≠ R.h →
       C.swapSides.color z = .bluish := by
     intro z hiz hzh
@@ -187,7 +187,7 @@ theorem lemma4_12_case3_shared_blue_isolated
       R.hi R.hh R.hhi.symm hiz hzh
     rcases hzSide with hz | hz
     · exact (hNoRedI z hiz hz).elim
-    · simp [GoodColoring.swapSides, hz]
+    · simp [MatchingCutColoring.swapSides, hz]
   apply HasReachableReduction.of_current_ptr C
   apply (containsInducedUpToSwap_swapSides IsPositiveTailReducer C).1
   exact lemma4_4 C.swapSides (by simp [R.hh]) (by simp [R.hi])

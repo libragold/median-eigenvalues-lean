@@ -3,11 +3,11 @@ import Subcubic.Lemma4_6
 import Subcubic.Lemma4_7
 
 /-!
-# The distance-free Lemma 4.11 step used inside Lemma 4.12
+# The Lemma 4.11 step used inside Lemma 4.12
 
-The paper phrases this step as extending three alternating monochromatic
-edges.  This file first records the completely local part: unless Lemma 4.2
-already applies, the six displayed vertices induce the expected path.
+This file first records the local part of extending three alternating
+monochromatic edges: unless Lemma 4.2 already applies, the six displayed
+vertices induce the expected path.
 -/
 
 namespace Subcubic
@@ -28,7 +28,7 @@ def FormsPath6Subgraph (G : SimpleGraph V)
 Every possible extra crossing between consecutive monochromatic edges gives
 Lemma 4.2; matching on each side excludes all remaining chords. -/
 theorem path6_induced_or_reduction
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsPath6Subgraph G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -100,7 +100,7 @@ theorem path6_induced_or_reduction
 /-- If the path-extension process stops at both ends, Lemma 4.10 is the
 required inlined conclusion. -/
 theorem path6_subgraph_with_clean_ends
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsPath6Subgraph G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -114,10 +114,10 @@ theorem path6_subgraph_with_clean_ends
   · exact lemma4_10 C hinduced ha hb hc hd he hf hNoBlueAtA hNoBlueAtF
 
 set_option maxHeartbeats 1000000
-/-- The distance-free content of the paper's Lemma 4.11, expanded in terms
+/-- The inlined Lemma 4.11 argument, expanded in terms
 of Lemmas 4.2, 4.6, 4.7, 4.8, and 4.10. -/
 theorem lemma4_11_inline
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsPath6Subgraph G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

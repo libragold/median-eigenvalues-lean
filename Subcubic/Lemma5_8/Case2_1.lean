@@ -6,21 +6,21 @@ import Subcubic.NegativeTailReducerWitnesses
 
 The four red vertices have bluish third neighbors `p,q,r,s`.  Once the
 crossed coincidences have been excluded, failure of either red edge to share
-its third neighbor gives Figure 5(ai) or Figure 5(aj).
+its third neighbor gives one of the terminal negative reducer configurations.
 -/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem color_ne {C : GoodColoring G} {x y : V} {cx cy : Color}
+private theorem color_ne {C : MatchingCutColoring G} {x y : V} {cx cy : Color}
     (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) : x ≠ y := by
   intro h
   subst y
   simp_all
 
 theorem lemma5_8_case2_1
-    (C : GoodColoring G) {a b c d e f g h p q r s : V}
+    (C : MatchingCutColoring G) {a b c d e f g h p q r s : V}
     (hcycle : FormsInducedCycle8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

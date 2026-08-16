@@ -1,13 +1,13 @@
 import Subcubic.Lemma5_9.Case3_2
 
-/-! Lemma 5.9, Case (3.3): Figure 5(aa). -/
+/-! Lemma 5.9, Case (3.3): the crossed third-neighbor configuration. -/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_9_case_aa
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (he : C.color e = .red)
     (hf : C.color f = .red)

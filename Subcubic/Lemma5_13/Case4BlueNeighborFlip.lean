@@ -17,7 +17,7 @@ set_option linter.unusedSimpArgs false
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_13_case4_blue_neighbor_flip
-    (C : GoodColoring G) {a b c d h s i r t q qm : V}
+    (C : MatchingCutColoring G) {a b c d h s i r t q qm : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -59,7 +59,7 @@ theorem lemma5_13_case4_blue_neighbor_flip
   rcases exists_flipAt_or_cutEnhancer C hr hq ht hqm
       (degreeC (Or.inl hr)) (degreeC (Or.inr hq)) hrt hrq hqqm with
     ⟨M, hflip⟩ | hce
-  · let D := M.toGoodColoring
+  · let D := M.toColoring
     have haD : D.color a = .red :=
       red_of_untouched_red_edge C hflip (by simp [ha]) (by simp [hb]) hab
         hra.symm hqa.symm hrb.symm hqb.symm

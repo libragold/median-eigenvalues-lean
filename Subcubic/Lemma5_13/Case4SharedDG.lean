@@ -6,9 +6,9 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- Figure 5(ag): `d` meets `f`, and `d,g` share the reddish vertex `s`. -/
+/-- The vertex `d` meets `f`, and `d,g` share the reddish vertex `s`. -/
 theorem lemma5_13_case4_shared_dg_meets_f
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -123,10 +123,10 @@ theorem lemma5_13_case4_shared_dg_meets_f
       | exact fun h => hex h.symm | exact fun h => Q.hef h.symm
       | exact fun h => hes h.symm
 
-/-- Figure 5(ah): `d` does not meet `f`, and both remaining neighbors of
+/-- The vertex `d` does not meet `f`, and both remaining neighbors of
 `g` are also neighbors of `d`. -/
 theorem lemma5_13_case4_two_shared_dg
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

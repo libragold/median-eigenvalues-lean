@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_8BluishHardConfiguration (C : GoodColoring G)
+structure Lemma4_8BluishHardConfiguration (C : MatchingCutColoring G)
     (a b c d e f g h : V) extends
     Lemma4_8LMConfiguration C a b c d e f g h where
   hl : C.color l = .bluish
@@ -16,7 +16,7 @@ structure Lemma4_8BluishHardConfiguration (C : GoodColoring G)
   hal : G.Adj a l
 
 theorem lemma4_8_case_lm_bluish
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

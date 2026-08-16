@@ -2,7 +2,7 @@ import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Data.Set.Card
 
 /-!
-# Subcubic graphs with a good four-coloring
+# Subcubic graphs with a matching-cut four-coloring
 
 The four colors contain the cut information: red and reddish vertices form one
 side, while blue and bluish vertices form the other.  Thus no separate set `A`
@@ -83,15 +83,15 @@ def IsMatchingColoring [Fintype V] (G : SimpleGraph V) (color : V → Color) : P
 graph-theoretic meaning.  In particular, the cut is recovered from `color` and
 is not stored separately.
 -/
-structure GoodColoring [Fintype V] (G : SimpleGraph V) where
+structure MatchingCutColoring [Fintype V] (G : SimpleGraph V) where
   color : V → Color
   subcubic : IsSubcubic G
   matching : IsMatchingColoring G color
   color_correct : ∀ v, HasGraphColor G color v (color v)
 
-namespace GoodColoring
+namespace MatchingCutColoring
 
-variable [Fintype V] {G : SimpleGraph V} (C : GoodColoring G)
+variable [Fintype V] {G : SimpleGraph V} (C : MatchingCutColoring G)
 
 /-- The red side, derived from the coloring. -/
 def redSide : Set V := redSideOf C.color
@@ -137,8 +137,8 @@ private theorem hasGraphColor_swap (v : V) (c : Color) :
   all_goals rw [C.redSideOf_swap]
   all_goals simp only [Color.swap, mem_compl_iff, not_not]
 
-/-- Exchange red with blue and reddish with bluish throughout a good coloring. -/
-def swapSides : GoodColoring G where
+/-- Exchange red with blue and reddish with bluish throughout a matching-cut coloring. -/
+def swapSides : MatchingCutColoring G where
   color v := (C.color v).swap
   subcubic := C.subcubic
   matching := C.isMatchingColoring_swap
@@ -152,16 +152,16 @@ def swapSides : GoodColoring G where
   cases C
   simp [swapSides]
 
-end GoodColoring
+end MatchingCutColoring
 
 /-- A cut preserver is a red--blue edge. -/
 def IsCutPreserver [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) (a b : V) : Prop :=
+    (C : MatchingCutColoring G) (a b : V) : Prop :=
   G.Adj a b ∧ C.color a = .red ∧ C.color b = .blue
 
 /-- Under side-swap, a cut preserver is read with its endpoints reversed. -/
 @[simp] theorem isCutPreserver_swap_reverse [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) (a b : V) :
+    (C : MatchingCutColoring G) (a b : V) :
     IsCutPreserver C.swapSides b a ↔ IsCutPreserver C a b := by
   constructor
   · rintro ⟨hba, hb, ha⟩

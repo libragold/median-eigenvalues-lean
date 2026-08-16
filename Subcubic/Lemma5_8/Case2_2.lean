@@ -13,14 +13,14 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem color_ne {C : GoodColoring G} {x y : V} {cx cy : Color}
+private theorem color_ne {C : MatchingCutColoring G} {x y : V} {cx cy : Color}
     (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) : x ≠ y := by
   intro h
   subst y
   simp_all
 
 private theorem case2_2_al
-    (C : GoodColoring G) {a b c d e f g h i j k l : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k l : V}
     (hcycle : FormsInducedCycle8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -77,7 +77,7 @@ private theorem case2_2_al
   grind
 
 private theorem case2_2_o_left
-    (C : GoodColoring G) {a b c d e f g h i j k : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k : V}
     (hcycle : FormsInducedCycle8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -153,7 +153,7 @@ private theorem case2_2_o_left
 
 /-- The CE(b) exclusion used twice in Case (2.2.2.2.2). -/
 private theorem red_neighbor_not_shared_or_ce
-    (C : GoodColoring G) {rMate r b bMate x y l m o : V}
+    (C : MatchingCutColoring G) {rMate r b bMate x y l m o : V}
     (hrMate : C.color rMate = .red) (hr : C.color r = .red)
     (hb : C.color b = .blue) (hbMate : C.color bMate = .blue)
     (hx : C.color x = .bluish) (hl : C.color l = .blue)
@@ -233,7 +233,7 @@ private theorem red_neighbor_not_shared_or_ce
   · exact Or.inl hox
 
 private theorem case2_2_blue
-    (C : GoodColoring G) {a b c d e f g h i j k l : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k l : V}
     (hcycle : FormsInducedCycle8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -377,7 +377,7 @@ private theorem case2_2_blue
               (degree_of_color (Or.inl ho)) (degree_of_color (Or.inr hm))
               hot hmo.symm hlm.symm with
             ⟨M, hflip⟩ | hce
-          · let D := M.toGoodColoring
+          · let D := M.toColoring
             have hoa : o ≠ a := by intro q; subst o; exact hoi hai
             have hob : o ≠ b := by intro q; subst o; exact hoi hbi
             have hoe : o ≠ e := by intro q; subst o; exact hoj hej
@@ -483,7 +483,7 @@ private theorem FormsInducedCycle8.reverseShift
 
 /-- Case (2.2), through the split on the third neighbor of `k`. -/
 theorem lemma5_8_case2_2
-    (C : GoodColoring G) {a b c d e f g h i j k : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k : V}
     (hcycle : FormsInducedCycle8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

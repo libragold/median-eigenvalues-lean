@@ -11,7 +11,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_10IConfiguration (C : GoodColoring G)
+structure Lemma4_10IConfiguration (C : MatchingCutColoring G)
     (a b c d e f : V) extends
     Lemma4_10Case3_2Configuration C a b c d e f where
   i : V
@@ -23,7 +23,7 @@ structure Lemma4_10IConfiguration (C : GoodColoring G)
   hig : ¬ G.Adj i g
 
 theorem lemma4_10_setup_i
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

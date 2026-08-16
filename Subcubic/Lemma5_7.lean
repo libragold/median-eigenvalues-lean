@@ -6,7 +6,7 @@ import Subcubic.Lemma4_5
 # Lemma 5.7
 
 This is the negative-tail analogue of Lemma 4.5.  The proof follows the two
-sequential flips in the paper.
+sequential permitted flips.
 -/
 
 namespace Subcubic
@@ -66,7 +66,7 @@ private theorem FormsInducedPath10.suffix6
 /-- **Lemma 5.7.** The alternating induced ten-vertex path has a reachable
 negative reducer or cut enhancer. -/
 theorem lemma5_7
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (hpath : FormsInducedPath10 G a b c d e f g h i j)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -174,7 +174,7 @@ theorem lemma5_7
             · rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
                 (degreeC (Or.inl hb)) (degreeC (Or.inr hc))
                 hab.symm hbc hcd with ⟨M₁, hflip₁⟩ | hce
-              · let D₁ := M₁.toGoodColoring
+              · let D₁ := M₁.toColoring
                 have hi₁ : D₁.color i = .red :=
                   red_of_untouched_red_edge C hflip₁ (by simp [hi]) (by simp [hj])
                     hij
@@ -215,7 +215,7 @@ theorem lemma5_7
                 rcases exists_flipAt_or_cutEnhancer D₁ hi₁ hh₁ hj₁ hg₁
                     (degreeD₁ (Or.inl hi₁)) (degreeD₁ (Or.inr hh₁))
                     hij hhi.symm hgh.symm with ⟨M₂, hflip₂⟩ | hce₁
-                · let D₂ := M₂.toGoodColoring
+                · let D₂ := M₂.toColoring
                   have he₁ : D₁.color e = .red :=
                     red_of_untouched_red_edge C hflip₁ (by simp [he]) (by simp [hf])
                       hef

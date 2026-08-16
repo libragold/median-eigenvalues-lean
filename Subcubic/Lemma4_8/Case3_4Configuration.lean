@@ -13,7 +13,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- The configuration entering Case (3.4), after Cases (3.1)--(3.3) fail. -/
-structure Lemma4_8Case3_4Configuration (C : GoodColoring G)
+structure Lemma4_8Case3_4Configuration (C : MatchingCutColoring G)
     (a b c d e f g h : V) extends
     Lemma4_8Case3Configuration C a b c d e f g h where
   hxy : x ≠ y

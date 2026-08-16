@@ -7,7 +7,7 @@ import Subcubic.Lemma4_12.Case3Shared
 
 This file handles Cases (2), (4.1), and (3.1.2.2), where one valid flip
 produces three alternating monochromatic edges.  `InlinePath3.lean` proves
-the common distance-free reduction applied by these cases.
+the common reduction applied by these cases.
 -/
 
 namespace Subcubic
@@ -15,8 +15,8 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- A single valid flip has produced the three alternating monochromatic
-edges to which the distance-free Lemma 5.12 argument is applied. -/
-structure NegativeOneFlipPath3Configuration (C : GoodColoring G) where
+edges to which the inlined Lemma 5.12 argument is applied. -/
+structure NegativeOneFlipPath3Configuration (C : MatchingCutColoring G) where
   M : MatchingCut G
   r₀ : V
   r₁ : V
@@ -26,27 +26,27 @@ structure NegativeOneFlipPath3Configuration (C : GoodColoring G) where
   r₃ : V
   hflip : ∃ x y, C.toMatchingCut.IsFlipAt M x y
   hpath : FormsNegativePath6Subgraph G r₀ r₁ b₀ b₁ r₂ r₃
-  hr₀ : M.toGoodColoring.color r₀ = .red
-  hr₁ : M.toGoodColoring.color r₁ = .red
-  hb₀ : M.toGoodColoring.color b₀ = .blue
-  hb₁ : M.toGoodColoring.color b₁ = .blue
-  hr₂ : M.toGoodColoring.color r₂ = .red
-  hr₃ : M.toGoodColoring.color r₃ = .red
+  hr₀ : M.toColoring.color r₀ = .red
+  hr₁ : M.toColoring.color r₁ = .red
+  hb₀ : M.toColoring.color b₀ = .blue
+  hb₁ : M.toColoring.color b₁ = .blue
+  hr₂ : M.toColoring.color r₂ = .red
+  hr₃ : M.toColoring.color r₃ = .red
 
 /-- Discharge the three-edge alternating path produced in Cases (2), (4.1),
-and (3.1.2.2) by the distance-free, inlined form of Lemma 5.12, and transport
+and (3.1.2.2) by the inlined form of Lemma 5.12, and transport
 the result back across the flip. -/
 theorem NegativeOneFlipPath3Configuration.reduces
-    {C : GoodColoring G} (Q : NegativeOneFlipPath3Configuration C) :
+    {C : MatchingCutColoring G} (Q : NegativeOneFlipPath3Configuration C) :
     HasReachableNegativeReduction C := by
   obtain ⟨x, y, hflip⟩ := Q.hflip
   exact HasReachableNegativeReduction.after_flip C hflip
-    (lemma5_12_inline Q.M.toGoodColoring Q.hpath
+    (lemma5_12_inline Q.M.toColoring Q.hpath
       Q.hr₀ Q.hr₁ Q.hb₀ Q.hb₁ Q.hr₂ Q.hr₃)
 
 /-- Case (2): besides its red neighbor `b`, the bluish vertex `e` has a red
 neighbor `g`; `h` is the red mate of `g`. -/
-structure Lemma5_13Case2Configuration (C : GoodColoring G)
+structure Lemma5_13Case2Configuration (C : MatchingCutColoring G)
     (a b c d : V) extends Lemma5_13ThirdNeighborConfiguration C a b c d where
   g : V
   h : V
@@ -58,7 +58,7 @@ structure Lemma5_13Case2Configuration (C : GoodColoring G)
   hgb : g ≠ b
 
 theorem lemma5_13_case2_setup
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (Q : Lemma5_13ThirdNeighborConfiguration C a b c d)
     {g : V} (hg : C.color g = .red) (heg : G.Adj Q.e g)
     (hga : g ≠ a) (hgb : g ≠ b) :
@@ -78,7 +78,7 @@ theorem lemma5_13_case2_setup
 found while validating the flip; otherwise the recomputed coloring contains
 the path `f-c-b-e-g-h`. -/
 theorem lemma5_13_case2_flip_path
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -108,7 +108,7 @@ theorem lemma5_13_case2_flip_path
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hbD : D.color b = .blue :=
       blue_of_flipped_red_endpoint C hflip ha hab.symm
         (degreeC (Or.inl hb))
@@ -186,7 +186,7 @@ theorem lemma5_13_case2_flip_path
 
 /-- Case (4.1) has the same recomputed path as Case (2). -/
 theorem lemma5_13_case4_red_flip_path
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -216,7 +216,7 @@ theorem lemma5_13_case4_red_flip_path
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hbD : D.color b = .blue :=
       blue_of_flipped_red_endpoint C hflip ha hab.symm
         (degreeC (Or.inl hb))
@@ -295,7 +295,7 @@ theorem lemma5_13_case4_red_flip_path
 /-- Case (3.1.2.2): flipping the red neighbor `j` of `h` produces the
 three-edge path `a-b-c-d-g-h`. -/
 theorem lemma5_13_shared_h_red_flip_path
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -371,7 +371,7 @@ theorem lemma5_13_shared_h_red_flip_path
       (degreeC (Or.inl hj)) (degreeC (Or.inr R.hh))
       hjk hhj.symm R.hhi with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hjc : j ≠ c := by intro h; subst j; simp_all
     have hjd : j ≠ d := by intro h; subst j; simp_all
     have hhb : R.h ≠ b := by

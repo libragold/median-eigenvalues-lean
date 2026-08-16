@@ -6,10 +6,10 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- Figure 5(e): the bluish vertex `i` and the blue vertex `d` have the
+/-- The bluish vertex `i` and the blue vertex `d` have the
 reddish neighbors `h,z` in common. -/
 theorem lemma5_13_case4_exact_no_red_shared_d
-    (C : GoodColoring G) {d h i z u : V}
+    (C : MatchingCutColoring G) {d h i z u : V}
     (hd : C.color d = .blue) (hi : C.color i = .bluish)
     (hh : C.color h = .reddish) (hz : C.color z = .reddish)
     (hu : C.color u = .reddish)

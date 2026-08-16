@@ -9,7 +9,7 @@ import Mathlib.Tactic.FinCases
 The displayed configuration is the induced path
 `a-b-c-d-e-f-g-h`, with red edges `ab`, `ef` and blue edges `cd`, `gh`.
 This file first isolates the routine third-neighbor setup used throughout the
-case analysis in the paper.
+case analysis.
 -/
 
 namespace Subcubic

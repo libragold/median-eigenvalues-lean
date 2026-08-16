@@ -9,7 +9,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_9_case_k_not_adj_j_adj_h
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -82,7 +82,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd
       with hflip1 | hce
   · obtain ⟨M₁, hflip1⟩ := hflip1
-    let D := M₁.toGoodColoring
+    let D := M₁.toColoring
     have degreeD {v : V} (hv : D.color v = .red ∨ D.color v = .blue) :
         vertexDegree G v = 3 := by
       rcases lemma3_6_negative D hv with hdegree | hntr | hce
@@ -136,7 +136,7 @@ theorem lemma5_9_case_k_not_adj_j_adj_h
         (degreeD (Or.inl hkD)) (degreeD (Or.inr hhD)) hck.symm hkh hgh.symm
         with hflip2 | hceD
     · obtain ⟨M₂, hflip2⟩ := hflip2
-      let E := M₂.toGoodColoring
+      let E := M₂.toColoring
       have degreeE {v : V} (hv : E.color v = .red ∨ E.color v = .blue) :
           vertexDegree G v = 3 := by
         rcases lemma3_6_negative E hv with hdegree | hntr | hce

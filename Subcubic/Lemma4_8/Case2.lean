@@ -7,7 +7,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- The second top-level case.  The endpoint hypothesis at `h` is what makes
 the blue edge `gh` isolated after flipping `de`. -/
 theorem lemma4_8_case_i_not_adj_g_h
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
@@ -40,7 +40,7 @@ theorem lemma4_8_case_i_not_adj_g_h
     fun hxyG => hxy ((hedge x y).mpr hxyG)
   obtain ⟨M, hflip⟩ := exists_flipAt_of_local C
     he hd hf hc (Or.inl hj) (Or.inl hi) hef hde.symm hej hcd.symm hdi
-  let D := M.toGoodColoring
+  let D := M.toColoring
   have hgD : D.color g = .blue := by
     apply blue_of_untouched_blue_edge C hflip
       (by simp [hg]) (by simp [hh]) hgh

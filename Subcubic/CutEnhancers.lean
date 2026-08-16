@@ -5,9 +5,9 @@ import Mathlib.Tactic.FinCases
 /-!
 # Cut enhancers
 
-The drawing coordinates from the TikZ source play no role here. Vertices
-`0, 1, ...` represent `a, b, ...`; the edge lists come only from `\drawe`, and
-the colors come only from the corresponding node declarations.
+Only the graph-theoretic data of each enhancer is formalized here. Vertices
+`0, 1, ...` represent `a, b, ...`; the edge lists and colors are written
+explicitly below.
 -/
 
 open Set
@@ -85,13 +85,13 @@ theorem IsCutEnhancer.subcubic {P : ColoredPattern}
 /-- The colored graph contains an induced cut enhancer in the catalog's
 displayed orientation. -/
 def ContainsOrientedCutEnhancer {V : Type*}
-    [Fintype V] {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+    [Fintype V] {G : SimpleGraph V} (C : MatchingCutColoring G) : Prop :=
   ∃ P, IsCutEnhancer P ∧ P.OccursInduced C
 
 /-- The colored graph contains an induced copy of a supplied cut enhancer,
 possibly after exchanging `A` with `B` and hence red with blue. -/
 def ContainsCutEnhancer {V : Type*} [Fintype V]
-    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+    {G : SimpleGraph V} (C : MatchingCutColoring G) : Prop :=
   ContainsInducedUpToSwap IsCutEnhancer C
 
 /-! Named facts for the first enhancer make its interpretation explicit. -/
@@ -135,7 +135,7 @@ def ContainsCutEnhancer {V : Type*} [Fintype V]
 the red vertex induce cut enhancer `a`.  This is the standard constructor used
 whenever a red vertex has two nonadjacent blue neighbors. -/
 theorem containsCutEnhancerA_of {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b c : V}
+    (C : MatchingCutColoring G) {a b c : V}
     (ha : C.color a = .red) (hb : C.color b = .blue)
     (hc : C.color c = .blue) (hab : G.Adj a b) (hac : G.Adj a c)
     (hbc_vertices : b ≠ c) (hbc : ¬ G.Adj b c) : ContainsCutEnhancer C := by
@@ -165,7 +165,7 @@ theorem containsCutEnhancerA_of {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- The one-vertex cut enhancer from Lemma 3.6(1). -/
 theorem containsCutEnhancerDegreeOne_of
     {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a : V}
+    (C : MatchingCutColoring G) {a : V}
     (ha : C.color a = .red) (haDegree : vertexDegree G a = 1) :
     ContainsCutEnhancer C := by
   refine ⟨cutEnhancer .degreeOne, ⟨.degreeOne, rfl⟩, Or.inl ?_⟩
@@ -189,7 +189,7 @@ theorem containsCutEnhancerDegreeOne_of
 /-- The red--blue degree-two cut enhancer from Lemma 3.6(2.1). -/
 theorem containsCutEnhancerDegreeTwoCross_of
     {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .blue)
     (hab : G.Adj a b) (haDegree : vertexDegree G a = 2) :
     ContainsCutEnhancer C := by
@@ -215,7 +215,7 @@ theorem containsCutEnhancerDegreeTwoCross_of
 
 /-- Exact constructor for cut enhancer `b`. -/
 theorem containsCutEnhancerB_of {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .reddish) (hb : C.color b = .blue)
     (hc : C.color c = .red) (hd : C.color d = .blue)
     (he : C.color e = .red)
@@ -251,7 +251,7 @@ theorem containsCutEnhancerB_of {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Exact constructor for cut enhancer `c`. -/
 theorem containsCutEnhancerC_of {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .bluish)
     (he : C.color e = .red)
@@ -288,7 +288,7 @@ theorem containsCutEnhancerC_of {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Exact constructor for cut enhancer `d`. -/
 theorem containsCutEnhancerD_of {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .blue) (hd : C.color d = .bluish)
     (he : C.color e = .red)
@@ -322,7 +322,7 @@ theorem containsCutEnhancerD_of {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Exact constructor for cut enhancer `e`. -/
 theorem containsCutEnhancerE_of {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .red) (hd : C.color d = .reddish)
     (he : C.color e = .bluish) (hf : C.color f = .blue)
@@ -352,7 +352,7 @@ theorem containsCutEnhancerE_of {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Exact constructor for cut enhancer `f`. -/
 theorem containsCutEnhancerF_of {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .reddish) (hd : C.color d = .red)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -382,7 +382,7 @@ theorem containsCutEnhancerF_of {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Exact constructor for cut enhancer `g`. -/
 theorem containsCutEnhancerG_of {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish) (hd : C.color d = .red)
     (he : C.color e = .bluish) (hf : C.color f = .blue)

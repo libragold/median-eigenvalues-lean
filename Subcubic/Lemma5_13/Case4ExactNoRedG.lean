@@ -6,9 +6,9 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- Figure 5(v), used when `i` meets `f`. -/
+/-- Shared-`g` overlap case, used when `i` meets `f`. -/
 theorem lemma5_13_case4_exact_no_red_shared_g_meets_f
-    (C : GoodColoring G) {a b c i g h z f : V}
+    (C : MatchingCutColoring G) {a b c i g h z f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hi : C.color i = .bluish)
     (hg : C.color g = .bluish)
@@ -75,9 +75,9 @@ theorem lemma5_13_case4_exact_no_red_shared_g_meets_f
       | exact fun h => hch h.symm | exact fun h => hcz h.symm
       | exact fun h => hca h.symm
 
-/-- Figure 5(ab), used when `i` does not meet `f`. -/
+/-- Shared-`g` overlap case, used when `i` does not meet `f`. -/
 theorem lemma5_13_case4_exact_no_red_shared_g_avoids_f
-    (C : GoodColoring G) {a b c i g u h z f : V}
+    (C : MatchingCutColoring G) {a b c i g u h z f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hi : C.color i = .bluish)
     (hg : C.color g = .bluish)

@@ -13,7 +13,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma5_9IConfiguration (C : GoodColoring G)
+structure Lemma5_9IConfiguration (C : MatchingCutColoring G)
     (a b c d e f g h : V) extends
     Lemma5_9Case3_4Configuration C a b c d e f g h where
   hic : ¬ G.Adj i c
@@ -25,7 +25,7 @@ structure Lemma5_9IConfiguration (C : GoodColoring G)
   hth : t ≠ h
 
 theorem lemma5_9_setup_i
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)

@@ -6,7 +6,8 @@ import Subcubic.NegativeReduction
 # Lemma 5.5
 
 The displayed pentagon has edges `ab`, `ad`, `be`, `cd`, and `ce`.
-The proof below follows the overlap split in the paper.
+The proof below splits according to the possible overlaps among third
+neighbors.
 -/
 
 namespace Subcubic
@@ -24,7 +25,7 @@ def FormsInducedPentagon (G : SimpleGraph V) (a b c d e : V) : Prop :=
       G.Adj (p x) (p y)
 
 private theorem bluish_third_of_no_blue_outside
-    (C : GoodColoring G) {v mate d e x : V}
+    (C : MatchingCutColoring G) {v mate d e x : V}
     (hv : C.color v = .red) (hmate : C.color mate = .red)
     (hvmate : G.Adj v mate) (hvx : G.Adj v x) (hxmate : x ≠ mate)
     (hxd : x ≠ d) (hxe : x ≠ e)
@@ -36,7 +37,7 @@ private theorem bluish_third_of_no_blue_outside
   · exact hx
 
 private theorem blue_mate
-    (C : GoodColoring G) {v : V} (hv : C.color v = .blue) :
+    (C : MatchingCutColoring G) {v : V} (hv : C.color v = .blue) :
     ∃ m, C.color m = .blue ∧ G.Adj v m := by
   have hcorrect := C.color_correct v
   rw [hv] at hcorrect
@@ -47,9 +48,9 @@ private theorem blue_mate
   · exact (C.bluish_not_adj_blueSide hm (Or.inl hv) hvm.symm).elim
 
 /-- **Lemma 5.5.**  The induced pentagon contains a negative tail reducer or
-a cut enhancer.  The paper's distance bound is omitted. -/
+a cut enhancer. -/
 private theorem lemma5_5_current
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (hpentagon : FormsInducedPentagon G a b c d e)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish) (hd : C.color d = .blue)
@@ -421,7 +422,7 @@ private theorem lemma5_5_current
 /-- **Lemma 5.5.** The pentagon configuration reaches a negative tail
 reducer or a cut enhancer. -/
 theorem lemma5_5
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (hpentagon : FormsInducedPentagon G a b c d e)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish) (hd : C.color d = .blue)

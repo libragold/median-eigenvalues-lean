@@ -14,7 +14,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma4_10_other_red_complete
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -234,7 +234,7 @@ theorem lemma4_10_other_red_complete
           (degreeC (Or.inl hm)) (degreeC (Or.inr hn))
           hlm.symm hmn hno with hflip | hce
       · obtain ⟨M, hflip⟩ := hflip
-        let D := M.toGoodColoring
+        let D := M.toColoring
         have noD (hout : HasReachableReduction D) : False :=
           hresult (HasReachableReduction.after_flip C hflip hout)
         have color_neD {x y : V} {cx cy : Color}
@@ -374,7 +374,7 @@ theorem lemma4_10_other_red_complete
         (degreeC (Or.inl Q.hl)) (degreeC (Or.inr hn))
         hlm hln hno with hflip | hce
     · obtain ⟨M, hflip⟩ := hflip
-      let D := M.toGoodColoring
+      let D := M.toColoring
       have noD (hout : HasReachableReduction D) : False :=
         hresult (HasReachableReduction.after_flip C hflip hout)
       have color_neD {x y : V} {cx cy : Color}

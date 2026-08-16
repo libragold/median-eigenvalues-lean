@@ -5,15 +5,14 @@ import Subcubic.Lemma5_13.Case3
 
 We have oriented the path so that the bluish third neighbor `e` of `b`
 is adjacent to `a`.  The vertex `g` is the remaining neighbor of `a`.
-The paper's reduction to Case (2) lets us assume that every neighbor of `e`
-other than `a,b` is reddish.
+After excluding Case (2), every neighbor of `e` other than `a,b` is reddish.
 -/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma5_13Case4Configuration (C : GoodColoring G)
+structure Lemma5_13Case4Configuration (C : MatchingCutColoring G)
     (a b c d : V) extends Lemma5_13ThirdNeighborConfiguration C a b c d where
   heaEdge : G.Adj e a
   hef : ¬ G.Adj e f
@@ -32,7 +31,7 @@ structure Lemma5_13Case4Configuration (C : GoodColoring G)
 /-- Construct the fixed vertices in Case (4).  A red third neighbor of `e`
 is exactly the path-extension Case (2), so it is returned separately. -/
 theorem lemma5_13_case4_setup
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

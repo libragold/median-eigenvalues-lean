@@ -4,7 +4,7 @@ import Mathlib.Data.Set.SymmDiff
 /-!
 # Matching cuts and cut-preserver flips
 
-Unlike `GoodColoring`, a `MatchingCut` stores the cut itself.  This is the
+Unlike `MatchingCutColoring`, a `MatchingCut` stores the cut itself.  This is the
 right representation while flipping cut preservers: the side is changed and
 all four colors are then recomputed from the new side.
 -/
@@ -135,15 +135,15 @@ theorem color_correct (M : MatchingCut G) (v : V) :
     · simp [colorOfCut, hv, hn, HasGraphColor, redSideOf_colorOfCut]
 
 /-- View a matching cut through the existing color-based API. -/
-noncomputable def toGoodColoring (M : MatchingCut G) : GoodColoring G where
+noncomputable def toColoring (M : MatchingCut G) : MatchingCutColoring G where
   color := M.color
   subcubic := M.subcubic
   matching := by
     simpa [IsMatchingColoring, IsMatchingCut, M.redSideOf_color] using M.matching
   color_correct := M.color_correct
 
-@[simp] theorem toGoodColoring_color (M : MatchingCut G) :
-    M.toGoodColoring.color = M.color := rfl
+@[simp] theorem toColoring_color (M : MatchingCut G) :
+    M.toColoring.color = M.color := rfl
 
 /-- A directed red--blue edge in the current, recomputed coloring. -/
 def IsCutPreserver (M : MatchingCut G) (a b : V) : Prop :=
@@ -183,28 +183,28 @@ theorem FlipReachable.swapSides {M N : MatchingCut G}
 
 end MatchingCut
 
-namespace GoodColoring
+namespace MatchingCutColoring
 
-/-- Recover the matching cut represented by a good coloring. -/
-noncomputable def toMatchingCut (C : GoodColoring G) : MatchingCut G where
+/-- Recover the matching cut represented by a matching-cut coloring. -/
+noncomputable def toMatchingCut (C : MatchingCutColoring G) : MatchingCut G where
   side := C.redSide
   subcubic := C.subcubic
   matching := by
-    simpa [IsMatchingCut, IsMatchingColoring, GoodColoring.redSide] using C.matching
+    simpa [IsMatchingCut, IsMatchingColoring, MatchingCutColoring.redSide] using C.matching
 
-@[simp] theorem toMatchingCut_side (C : GoodColoring G) :
+@[simp] theorem toMatchingCut_side (C : MatchingCutColoring G) :
     C.toMatchingCut.side = C.redSide := rfl
 
-@[simp] theorem toMatchingCut_color (C : GoodColoring G) :
+@[simp] theorem toMatchingCut_color (C : MatchingCutColoring G) :
     C.toMatchingCut.color = C.color := by
   funext v
   have hc := C.color_correct v
   cases h : C.color v <;> rw [h] at hc
-  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, GoodColoring.redSide]
-  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, GoodColoring.redSide]
-  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, GoodColoring.redSide]
-  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, GoodColoring.redSide]
+  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, MatchingCutColoring.redSide]
+  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, MatchingCutColoring.redSide]
+  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, MatchingCutColoring.redSide]
+  · simp [MatchingCut.color, colorOfCut, hc.1, hc.2, MatchingCutColoring.redSide]
 
-end GoodColoring
+end MatchingCutColoring
 
 end Subcubic

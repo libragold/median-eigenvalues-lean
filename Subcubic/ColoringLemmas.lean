@@ -2,9 +2,9 @@ import Subcubic.Basic
 import Mathlib.Tactic.FinCases
 
 /-!
-# Reusable facts about good colorings
+# Reusable facts about matching-cut colorings
 
-This file contains graph- and color-theoretic consequences of `GoodColoring`.
+This file contains graph- and color-theoretic consequences of `MatchingCutColoring`.
 It deliberately contains no tail-reducer or cut-enhancer data, so later local
 configuration proofs can reuse these results without importing a catalog.
 -/
@@ -16,7 +16,7 @@ open Set
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- Vertices carrying two provably different colors are distinct. -/
-theorem vertex_ne_of_color_eq {C : GoodColoring G} {x y : V} {cx cy : Color}
+theorem vertex_ne_of_color_eq {C : MatchingCutColoring G} {x y : V} {cx cy : Color}
     (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) : x ≠ y := by
   intro h
   subst y
@@ -49,8 +49,8 @@ theorem not_adj_fourth_neighbor_of_subcubic
   omega
 
 /-- A vertex on the red side cannot have two distinct red-side neighbors. -/
-theorem GoodColoring.redSide_not_adj_second_neighbor
-    (C : GoodColoring G) {v x y : V}
+theorem MatchingCutColoring.redSide_not_adj_second_neighbor
+    (C : MatchingCutColoring G) {v x y : V}
     (hv : v ∈ C.redSide) (hx : x ∈ C.redSide) (hy : y ∈ C.redSide)
     (hvx : G.Adj v x) (hxy : x ≠ y) :
     ¬ G.Adj v y := by
@@ -68,8 +68,8 @@ theorem GoodColoring.redSide_not_adj_second_neighbor
   omega
 
 /-- A vertex on the blue side cannot have two distinct blue-side neighbors. -/
-theorem GoodColoring.blueSide_not_adj_second_neighbor
-    (C : GoodColoring G) {v x y : V}
+theorem MatchingCutColoring.blueSide_not_adj_second_neighbor
+    (C : MatchingCutColoring G) {v x y : V}
     (hv : v ∉ C.redSide) (hx : x ∉ C.redSide) (hy : y ∉ C.redSide)
     (hvx : G.Adj v x) (hxy : x ≠ y) :
     ¬ G.Adj v y := by
@@ -89,8 +89,8 @@ theorem GoodColoring.blueSide_not_adj_second_neighbor
   omega
 
 /-- A bluish vertex has no neighbor whose color is blue or bluish. -/
-@[simp] theorem GoodColoring.bluish_not_adj_blueSide
-    (C : GoodColoring G) {v w : V}
+@[simp] theorem MatchingCutColoring.bluish_not_adj_blueSide
+    (C : MatchingCutColoring G) {v w : V}
     (hv : C.color v = .bluish)
     (hw : C.color w = .blue ∨ C.color w = .bluish) :
     ¬ G.Adj v w := by
@@ -104,8 +104,8 @@ theorem GoodColoring.blueSide_not_adj_second_neighbor
   exact (C.not_mem_redSide_iff w).2 hw
 
 /-- A reddish vertex has no neighbor whose color is red or reddish. -/
-@[simp] theorem GoodColoring.reddish_not_adj_redSide
-    (C : GoodColoring G) {v w : V}
+@[simp] theorem MatchingCutColoring.reddish_not_adj_redSide
+    (C : MatchingCutColoring G) {v w : V}
     (hv : C.color v = .reddish)
     (hw : C.color w = .red ∨ C.color w = .reddish) :
     ¬ G.Adj v w := by
@@ -120,8 +120,8 @@ theorem GoodColoring.blueSide_not_adj_second_neighbor
 
 /-- A red vertex already using its red-side edge can only have any distinct
 additional neighbor on the blue side. -/
-theorem GoodColoring.other_neighbor_of_red_is_blueSide
-    (C : GoodColoring G) {v x y : V}
+theorem MatchingCutColoring.other_neighbor_of_red_is_blueSide
+    (C : MatchingCutColoring G) {v x y : V}
     (hv : C.color v = .red) (hx : C.color x = .red)
     (hvx : G.Adj v x) (hvy : G.Adj v y) (hyx : y ≠ x) :
     C.color y = .blue ∨ C.color y = .bluish := by
@@ -132,8 +132,8 @@ theorem GoodColoring.other_neighbor_of_red_is_blueSide
   exact (C.redSide_not_adj_second_neighbor hv' hx' hy hvx hyx.symm) hvy
 
 /-- The red/blue reverse of `other_neighbor_of_red_is_blueSide`. -/
-theorem GoodColoring.other_neighbor_of_blue_is_redSide
-    (C : GoodColoring G) {v x y : V}
+theorem MatchingCutColoring.other_neighbor_of_blue_is_redSide
+    (C : MatchingCutColoring G) {v x y : V}
     (hv : C.color v = .blue) (hx : C.color x = .blue)
     (hvx : G.Adj v x) (hvy : G.Adj v y) (hyx : y ≠ x) :
     C.color y = .red ∨ C.color y = .reddish := by
@@ -144,8 +144,8 @@ theorem GoodColoring.other_neighbor_of_blue_is_redSide
   exact (C.blueSide_not_adj_second_neighbor hv' hx' hy hvx hyx.symm) hvy
 
 /-- Every blue vertex has its unique same-side (blue) mate. -/
-theorem GoodColoring.exists_blue_mate
-    (C : GoodColoring G) {v : V} (hv : C.color v = .blue) :
+theorem MatchingCutColoring.exists_blue_mate
+    (C : MatchingCutColoring G) {v : V} (hv : C.color v = .blue) :
     ∃ m, C.color m = .blue ∧ G.Adj v m := by
   have hcorrect := C.color_correct v
   rw [hv] at hcorrect
@@ -158,8 +158,8 @@ theorem GoodColoring.exists_blue_mate
 /-- A degree-three vertex has a neighbor outside any two distinct vertices.
 The degree proof is explicit: red/blue vertices obtain it from Lemma 3.6,
 whose other branch is a reducer or cut enhancer. -/
-theorem GoodColoring.exists_third_neighbor
-    (_C : GoodColoring G) {v x y : V}
+theorem MatchingCutColoring.exists_third_neighbor
+    (_C : MatchingCutColoring G) {v x y : V}
     (hdegree : vertexDegree G v = 3)
     (hxy : x ≠ y) :
     ∃ z, G.Adj v z ∧ z ≠ x ∧ z ≠ y := by
@@ -179,8 +179,8 @@ theorem GoodColoring.exists_third_neighbor
 
 /-- In a subcubic graph, a vertex with two specified distinct neighbors has
 degree two or three. -/
-theorem GoodColoring.degree_eq_two_or_three_of_two_neighbors
-    (C : GoodColoring G) {v x y : V} (hxy : x ≠ y)
+theorem MatchingCutColoring.degree_eq_two_or_three_of_two_neighbors
+    (C : MatchingCutColoring G) {v x y : V} (hxy : x ≠ y)
     (hvx : G.Adj v x) (hvy : G.Adj v y) :
     vertexDegree G v = 2 ∨ vertexDegree G v = 3 := by
   have hsubset : ({x, y} : Set V) ⊆ G.neighborSet v := by
@@ -197,7 +197,7 @@ theorem GoodColoring.degree_eq_two_or_three_of_two_neighbors
 
 /-- A degree-three vertex has a neighbor outside any two distinct vertices.
 This standalone form is retained for callers which do not otherwise need a
-`GoodColoring`. -/
+`MatchingCutColoring`. -/
 theorem exists_third_neighbor_of_degree_three
     {v x y : V} (hdeg : vertexDegree G v = 3) (hxy : x ≠ y) :
     ∃ z, G.Adj v z ∧ z ≠ x ∧ z ≠ y := by
@@ -280,8 +280,8 @@ theorem neighbor_eq_of_degree_two
 
 /-- A degree-three vertex with one displayed neighbor has two distinct other
 neighbors. -/
-theorem GoodColoring.exists_two_other_neighbors
-    (C : GoodColoring G) {v mate : V}
+theorem MatchingCutColoring.exists_two_other_neighbors
+    (C : MatchingCutColoring G) {v mate : V}
     (hdegree : vertexDegree G v = 3)
     (hvm : G.Adj v mate) :
     ∃ x y, G.Adj v x ∧ G.Adj v y ∧
@@ -292,7 +292,7 @@ theorem GoodColoring.exists_two_other_neighbors
     C.exists_third_neighbor hdegree hxmate.symm
   exact ⟨x, y, hvx, hvy, hxmate, hymate, hyx.symm⟩
 
-/-- Standalone version of `GoodColoring.exists_two_other_neighbors`. -/
+/-- Standalone version of `MatchingCutColoring.exists_two_other_neighbors`. -/
 theorem exists_two_other_neighbors_of_degree_three
     {v mate : V} (hdeg : vertexDegree G v = 3) (_hvm : G.Adj v mate) :
     ∃ x y, G.Adj v x ∧ G.Adj v y ∧
@@ -355,7 +355,7 @@ theorem not_adj_fourth_neighbor_of_degree_three
   · exact hwz h
 
 /-- Every neighbor of a degree-three vertex is one of any three displayed
-pairwise-distinct neighbors.  Unlike `GoodColoring.neighbor_eq_of_three_neighbors`,
+pairwise-distinct neighbors.  Unlike `MatchingCutColoring.neighbor_eq_of_three_neighbors`,
 this form also applies to reddish and bluish vertices. -/
 theorem neighbor_eq_of_degree_three
     {v x y z w : V} (hdeg : vertexDegree G v = 3)
@@ -373,8 +373,8 @@ theorem neighbor_eq_of_degree_three
 
 /-- If a degree-three red or blue vertex already has three pairwise-distinct
 displayed neighbors, it has no fourth neighbor. -/
-theorem GoodColoring.not_adj_fourth_neighbor
-    (C : GoodColoring G) {v x y z w : V}
+theorem MatchingCutColoring.not_adj_fourth_neighbor
+    (C : MatchingCutColoring G) {v x y z w : V}
     (_hv : C.color v = .red ∨ C.color v = .blue)
     (hvx : G.Adj v x) (hvy : G.Adj v y) (hvz : G.Adj v z)
     (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
@@ -408,8 +408,8 @@ theorem GoodColoring.not_adj_fourth_neighbor
 
 /-- Every neighbor of a degree-three red or blue vertex is one of any three
 displayed pairwise-distinct neighbors. -/
-theorem GoodColoring.neighbor_eq_of_three_neighbors
-    (C : GoodColoring G) {v x y z w : V}
+theorem MatchingCutColoring.neighbor_eq_of_three_neighbors
+    (C : MatchingCutColoring G) {v x y z w : V}
     (hv : C.color v = .red ∨ C.color v = .blue)
     (hvx : G.Adj v x) (hvy : G.Adj v y) (hvz : G.Adj v z)
     (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)

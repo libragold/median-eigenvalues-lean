@@ -13,7 +13,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_9_case_lm_mixed_flip
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -70,7 +70,7 @@ theorem lemma5_9_case_lm_mixed_flip
   rcases exists_flipAt_or_cutEnhancer C Q.hp Q.hn hq Q.hm
       (degreeC (Or.inl Q.hp)) (degreeC (Or.inr Q.hn))
       hpq Q.hnp.symm Q.hmn.symm with ⟨M, hflip⟩ | hce
-  · let D := M.toGoodColoring
+  · let D := M.toColoring
     have hen : ¬ G.Adj e Q.n := by
       apply C.not_adj_fourth_neighbor (Or.inl he) hef hde.symm Q.hej
       · exact hv (u := (5 : Fin 8)) (v := 3) (by decide)

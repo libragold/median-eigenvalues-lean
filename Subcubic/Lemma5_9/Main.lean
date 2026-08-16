@@ -7,11 +7,11 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- **Lemma 5.9.**  For the induced eight-vertex path with alternating red
-and blue matching edges, and the endpoint hypotheses from the paper, a
-negative tail reducer is reachable by permitted flips or a cut enhancer is
-already present.  Distance bounds are intentionally omitted. -/
+and blue matching edges, with endpoint hypotheses ruling out a blue neighbor
+at `a` and a red neighbor at `h`, a negative tail reducer is reachable by
+permitted flips or a cut enhancer is already present. -/
 theorem lemma5_9
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

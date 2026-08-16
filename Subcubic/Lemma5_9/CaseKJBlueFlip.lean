@@ -15,7 +15,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 private theorem restart_kj_with_bluish_l
-    (C₀ C : GoodColoring G) {a b c d e f g h : V}
+    (C₀ C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -167,7 +167,7 @@ private theorem restart_kj_with_bluish_l
     · exact HasReachableNegativeReduction.of_current_ce C hce
 
 theorem lemma5_9_case_kj_blue_flip
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -195,7 +195,7 @@ theorem lemma5_9_case_kj_blue_flip
   rcases exists_flipAt_or_cutEnhancer C hn hm hr Q.hl
       (degreeC (Or.inl hn)) (degreeC (Or.inr hm)) hnr hmn.symm hlm.symm with
     ⟨M, hflip⟩ | hce
-  · let D := M.toGoodColoring
+  · let D := M.toColoring
     dsimp [FormsInducedPath8] at hpath
     rcases hpath with ⟨hinj, hedge⟩
     have hp : FormsInducedPath8 G a b c d e f g h := ⟨hinj, hedge⟩

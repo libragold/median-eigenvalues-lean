@@ -11,7 +11,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem color_ne {C : GoodColoring G} {x y : V} {cx cy : Color}
+private theorem color_ne {C : MatchingCutColoring G} {x y : V} {cx cy : Color}
     (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) : x ≠ y := by
   intro h
   subst y
@@ -56,7 +56,7 @@ private theorem FormsInducedCycle8.path6
     rw [hmap x, hmap y, ← hedge]
     fin_cases x <;> fin_cases y <;> simp [ι, graphOfEdges]
 
-private theorem current_of_swap_result (C : GoodColoring G)
+private theorem current_of_swap_result (C : MatchingCutColoring G)
     (h : ContainsNegativeTailReducer C.swapSides ∨ ContainsCutEnhancer C.swapSides) :
     HasReachableNegativeReduction C := by
   apply HasReachableNegativeReduction.of_swapSides C
@@ -67,7 +67,7 @@ private theorem current_of_swap_result (C : GoodColoring G)
 /-- **Lemma 5.8.** The alternating induced eight-cycle has a reachable
 negative tail reducer or cut enhancer. -/
 theorem lemma5_8
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hcycle : FormsInducedCycle8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

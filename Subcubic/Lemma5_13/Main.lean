@@ -1,7 +1,7 @@
 import Subcubic.Lemma5_13.Case4Main
 import Subcubic.Lemma5_13.Case1
 
-/-! Final assembly of the distance-free Lemma 5.13. -/
+/-! Final assembly of Lemma 5.13. -/
 
 namespace Subcubic
 
@@ -10,9 +10,9 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- **Lemma 5.13.** If `a-b-c-d` is an induced path, `ab` is red and
 `cd` is blue, while `a` has no blue neighbor and `d` has no red neighbor,
 then a negative tail reducer is reachable by permitted flips or a cut
-enhancer occurs.  The paper's distance bound is omitted. -/
+enhancer occurs. -/
 theorem lemma5_13
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -85,7 +85,7 @@ theorem lemma5_13
                   intro z hsz hzb hza
                   rw [hSf] at hsz
                   have hz := hOutsideE z hsz hzb hza
-                  simp [GoodColoring.swapSides, hz]
+                  simp [MatchingCutColoring.swapSides, hz]
                 have hRev := lemma5_13_case4 C.swapSides hpath.reverse
                   (by simp [hd]) (by simp [hc]) (by simp [hb]) (by simp [ha])
                   hNoBlueAtDRev hNoRedAtARev S hOutsideRev

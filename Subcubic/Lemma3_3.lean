@@ -21,7 +21,7 @@ blue-side neighbors of `a`, while `b` belongs to the blue edge `bc`, with
 The hypothesis that `d` is blue or bluish is the color-only formulation of
 "`d` lies on the blue side". -/
 theorem lemma3_3
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red)
     (hb : C.color b = .blue) (hc : C.color c = .blue)
     (hdside : C.color d = .blue ∨ C.color d = .bluish)
@@ -39,7 +39,7 @@ theorem lemma3_3
 
 /-- Lemma 3.3 with red and blue, and reddish and bluish, exchanged. -/
 theorem lemma3_3_reversed
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .blue)
     (hb : C.color b = .red) (hc : C.color c = .red)
     (hdside : C.color d = .red ∨ C.color d = .reddish)

@@ -2130,22 +2130,22 @@ theorem IsNegativeTailReducer.subcubic {P : ColoredPattern}
 
 /-- An induced positive reducer in the catalog's displayed orientation. -/
 def ContainsOrientedPositiveTailReducer {V : Type*} [Fintype V]
-    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+    {G : SimpleGraph V} (C : MatchingCutColoring G) : Prop :=
   ∃ P, IsPositiveTailReducer P ∧ P.OccursInduced C
 
 /-- An induced positive reducer, allowing all colors to be exchanged. -/
 def ContainsPositiveTailReducer {V : Type*} [Fintype V]
-    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+    {G : SimpleGraph V} (C : MatchingCutColoring G) : Prop :=
   ContainsInducedUpToSwap IsPositiveTailReducer C
 
 /-- An induced negative reducer in the catalog's displayed orientation. -/
 def ContainsOrientedNegativeTailReducer {V : Type*} [Fintype V]
-    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+    {G : SimpleGraph V} (C : MatchingCutColoring G) : Prop :=
   ∃ P, IsNegativeTailReducer P ∧ P.OccursInduced C
 
 /-- An induced negative reducer, allowing all colors to be exchanged. -/
 def ContainsNegativeTailReducer {V : Type*} [Fintype V]
-    {G : SimpleGraph V} (C : GoodColoring G) : Prop :=
+    {G : SimpleGraph V} (C : MatchingCutColoring G) : Prop :=
   ContainsInducedUpToSwap IsNegativeTailReducer C
 
 /-! Named color checks for exceptional entries. -/

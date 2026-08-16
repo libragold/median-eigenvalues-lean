@@ -6,23 +6,23 @@ import Subcubic.Lemma4_10.Basic
 
 For the induced path `a-b-c-d-e-f`, the middle red vertices `b,e` cannot
 share a neighbor unless a negative tail reducer or a cut enhancer is already
-present.  The paper's distance bound is omitted.
+present.
 -/
 
 namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem color_ne {C : GoodColoring G} {x y : V} {cx cy : Color}
+private theorem color_ne {C : MatchingCutColoring G} {x y : V} {cx cy : Color}
     (hx : C.color x = cx) (hy : C.color y = cy) (hxy : cx ≠ cy) : x ≠ y := by
   intro h
   subst y
   simp_all
 
-/-- Figure 5(j), oriented so that the shared bluish neighbor also meets the
+/-- Endpoint overlap case, oriented so that the shared bluish neighbor also meets the
 right endpoint of the path. -/
 private theorem lemma5_6_endpoint_case
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -107,7 +107,7 @@ private theorem lemma5_6_endpoint_case
 common neighbor, or the graph contains a negative tail reducer or a cut
 enhancer. -/
 theorem lemma5_6
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

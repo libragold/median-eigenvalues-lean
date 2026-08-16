@@ -8,7 +8,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 `d` has a reddish third neighbor `i`, and `e` has a bluish third neighbor
 `j`, unless Lemma 3.3 has already produced a cut enhancer. -/
 theorem lemma4_8_third_neighbors
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red) :

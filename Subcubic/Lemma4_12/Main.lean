@@ -3,8 +3,7 @@ import Subcubic.Lemma4_12.Case3SharedFlip
 /-!
 # Lemma 4.12 proof assembly
 
-The paper's invocations of Lemma 4.11 have been expanded in
-`InlinePath3.lean`; no distance bound occurs in this statement.
+The intermediate path reduction is expanded in `InlinePath3.lean`.
 -/
 
 namespace Subcubic
@@ -14,7 +13,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- Complete the proof after orienting the path so that the third neighbor
 `e` of `b` is not adjacent to the left endpoint `a`. -/
 theorem lemma4_12_oriented
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -93,7 +92,7 @@ theorem lemma4_12_oriented
 then a permitted sequence of flips produces a positive tail reducer or a
 cut enhancer. -/
 theorem lemma4_12
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

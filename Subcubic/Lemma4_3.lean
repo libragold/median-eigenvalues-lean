@@ -17,7 +17,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 neighbors either induce cut enhancer `a`, or their blue edge lets Lemma 4.2
 produce the desired positive tail reducer. -/
 private theorem redEdge_twoBlueNeighbors
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hac : G.Adj a c) (had : G.Adj a d)
@@ -34,7 +34,7 @@ private theorem redEdge_twoBlueNeighbors
 into a set consisting entirely of blue vertices, then the graph contains a
 positive tail reducer or a cut enhancer. -/
 theorem lemma4_3
-    (C : GoodColoring G) {a b : V} (B : Set V)
+    (C : MatchingCutColoring G) {a b : V} (B : Set V)
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (hB : ∀ v ∈ B, C.color v = .blue)
     (hthree : 3 ≤ edgeCountFromPairToSet G a b B) :
@@ -60,7 +60,7 @@ theorem lemma4_3
 each adjacent to at least one endpoint of a red edge, already supply the
 required edge count. -/
 theorem lemma4_3_of_three_neighbors
-    (C : GoodColoring G) {a b x y z : V}
+    (C : MatchingCutColoring G) {a b x y z : V}
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (hx : C.color x = .blue) (hy : C.color y = .blue)
     (hz : C.color z = .blue)

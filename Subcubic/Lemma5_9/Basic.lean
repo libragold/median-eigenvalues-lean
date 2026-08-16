@@ -14,7 +14,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-abbrev Lemma5_9Case3Configuration (C : GoodColoring G)
+abbrev Lemma5_9Case3Configuration (C : MatchingCutColoring G)
     (a b c d e f g h : V) :=
   Lemma4_8Case3Configuration C a b c d e f g h
 

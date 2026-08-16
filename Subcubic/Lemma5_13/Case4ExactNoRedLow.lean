@@ -9,7 +9,7 @@ set_option linter.unusedSimpArgs false
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_13_case4_exact_no_red_low_degree
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -218,8 +218,8 @@ theorem lemma5_13_case4_exact_no_red_low_degree
       | reddish => rfl
       | blue => exact (C.bluish_not_adj_blueSide hi (Or.inl hcu) hiu).elim
       | bluish => exact (C.bluish_not_adj_blueSide hi (Or.inr hcu) hiu).elim
-    -- The overlap alternatives are the shortened versions of Figures
-    -- 5(e), 5(ab), 5(ac), and 5(ad); if none occurs, Figure 5(an-minus) applies.
+    -- The overlap alternatives are shortened terminal reducer configurations;
+    -- if none occurs, the low-degree disjoint configuration applies.
     by_cases hdu : G.Adj d u
     · have hdi : ¬ G.Adj d i := C.bluish_not_adj_blueSide hi (Or.inl hd) ∘
           SimpleGraph.Adj.symm

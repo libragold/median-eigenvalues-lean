@@ -14,7 +14,7 @@ Extra edges between consecutive monochromatic blocks invoke Lemma 4.2.
 The only possible extra edges between the end blocks invoke Lemma 3.3.
 The induced configuration is then handled by Lemma 4.8 if `k` has no red
 neighbor, and otherwise by extending through the red mate and using the
-distance-free Lemma 4.6.
+subgraph form of Lemma 4.6.
 -/
 
 namespace Subcubic
@@ -22,7 +22,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_11_case_3_2_1
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -95,7 +95,7 @@ theorem lemma5_11_case_3_2_1
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have noD (hout : HasReachableNegativeReduction D) : False :=
       hresult (HasReachableNegativeReduction.after_flip C hflip hout)
 

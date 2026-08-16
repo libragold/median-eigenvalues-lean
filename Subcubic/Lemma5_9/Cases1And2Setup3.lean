@@ -13,7 +13,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_9_case3_setup
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -74,7 +74,7 @@ theorem lemma5_9_case3_setup
   · exact Or.inl (HasReachableNegativeReduction.of_current_ce C hce)
 
 theorem lemma5_9_cases1_and_2_setup3
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

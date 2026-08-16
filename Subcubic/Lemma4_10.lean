@@ -3,8 +3,7 @@ import Subcubic.Lemma4_10.Case3_2_2_3_2_3
 /-!
 # Lemma 4.10
 
-Public assembly of the case lemmas.  Distance bounds from the paper are not
-part of the statement.
+Public assembly of the case lemmas.
 -/
 
 namespace Subcubic
@@ -14,9 +13,9 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- **Lemma 4.10.**  If `a-b-c-d-e-f` is an induced path, `ab` and `ef`
 are red edges, and `cd` is a blue edge, then a permitted sequence of flips
 produces a positive tail reducer or a cut enhancer.  The two endpoint
-hypotheses are the additional assumptions used in the paper. -/
+hypotheses rule out blue neighbors at the red endpoints. -/
 theorem lemma4_10
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

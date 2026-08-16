@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma5_9LMConfiguration (C : GoodColoring G)
+structure Lemma5_9LMConfiguration (C : MatchingCutColoring G)
     (a b c d e f g h : V) extends
     Lemma5_9KConfiguration C a b c d e f g h where
   hkj : ¬ G.Adj k j
@@ -22,7 +22,7 @@ structure Lemma5_9LMConfiguration (C : GoodColoring G)
   hmSide : C.color m = .blue ∨ C.color m = .bluish
 
 theorem lemma5_9_setup_lm
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (Q : Lemma5_9KConfiguration C a b c d e f g h)
     (hkj : ¬ G.Adj Q.k Q.j) (hkh : ¬ G.Adj Q.k h) :
     Nonempty (Lemma5_9LMConfiguration C a b c d e f g h) := by

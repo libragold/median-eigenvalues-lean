@@ -13,7 +13,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_11_flip_bc_isolates_ef
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (hpath : FormsInducedPath6 G a b c d e f)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -61,7 +61,7 @@ theorem lemma5_11_flip_bc_isolates_ef
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have heD : D.color e = .red := by
       apply red_of_untouched_red_edge C hflip (by simp [he]) (by simp [hf]) hef
       · exact hv (x := (4 : Fin 6)) (y := 1) (by decide)

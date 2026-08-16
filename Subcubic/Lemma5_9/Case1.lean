@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_9_case_i_adj_g
-    (C : GoodColoring G) {c d e f g h i : V}
+    (C : MatchingCutColoring G) {c d e f g h i : V}
     (hpath : FormsInducedPath6 G c d e f g h)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)

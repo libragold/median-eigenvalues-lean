@@ -17,7 +17,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 neighbors either induce cut enhancer `a`, or their blue edge lets Lemma 5.2
 produce a negative tail reducer. -/
 private theorem redEdge_twoBlueNeighbors_negative
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hab : G.Adj a b) (hac : G.Adj a c) (had : G.Adj a d)
@@ -33,9 +33,9 @@ private theorem redEdge_twoBlueNeighbors_negative
 
 /-- **Lemma 5.3.** If a red edge sends at least three edges into a set of
 blue vertices, then the current coloring contains an induced negative tail
-reducer or an induced cut enhancer.  The paper's distance bound is omitted. -/
+reducer or an induced cut enhancer. -/
 theorem lemma5_3
-    (C : GoodColoring G) {a b : V} (B : Set V)
+    (C : MatchingCutColoring G) {a b : V} (B : Set V)
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (hB : ∀ v ∈ B, C.color v = .blue)
     (hthree : 3 ≤ edgeCountFromPairToSet G a b B) :
@@ -60,7 +60,7 @@ theorem lemma5_3
 /-- Finite form of Lemma 5.3: three distinct blue vertices, each adjacent to
 at least one endpoint of the red edge, supply the required edge count. -/
 theorem lemma5_3_of_three_neighbors
-    (C : GoodColoring G) {a b x y z : V}
+    (C : MatchingCutColoring G) {a b x y z : V}
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (hx : C.color x = .blue) (hy : C.color y = .blue)
     (hz : C.color z = .blue)

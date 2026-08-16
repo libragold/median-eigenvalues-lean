@@ -8,10 +8,10 @@ set_option linter.unusedSimpArgs false
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- The five overlap alternatives in Case (4.4.3.3.2), under the paper's
-temporary degree-three assumption for `i`. -/
+/-- The five overlap alternatives in Case (4.4.3.3.2), under the temporary
+degree-three assumption for `i`. -/
 theorem lemma5_13_case4_exact_no_red_degree_three
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

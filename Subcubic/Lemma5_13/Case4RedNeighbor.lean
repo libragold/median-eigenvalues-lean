@@ -10,7 +10,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 `cd`, `ab`, and `gh`.  We apply the color-swapped inline Lemma 5.12 to the
 path `d-c-b-a-g-h`. -/
 theorem lemma5_13_case4_red_neighbor_blue
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -75,7 +75,7 @@ theorem lemma5_13_case4_red_neighbor_blue
       (degreeC (Or.inl hh)) (degreeC (Or.inr hi)) hht hhi hij with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hai : a ≠ i := color_ne ha hi (by decide)
     have hbi : b ≠ i := color_ne hb hi (by decide)
     have hch : c ≠ h := color_ne hc hh (by decide)
@@ -125,10 +125,10 @@ theorem lemma5_13_case4_red_neighbor_blue
   · exact HasReachableNegativeReduction.of_current_ce C hce
 
 /-- Complete Case (4.2).  If the new red vertex has a blue neighbor we use
-the preceding flip lemma; otherwise Figures 5(b) and 5(d) apply according
+the preceding flip lemma; otherwise two small negative reducers apply according
 to whether it meets `e`. -/
 theorem lemma5_13_case4_red_neighbor
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

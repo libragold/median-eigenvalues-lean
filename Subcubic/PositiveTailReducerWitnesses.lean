@@ -5,7 +5,7 @@ import Mathlib.Tactic.FinCases
 /-!
 # Reusable witnesses for positive tail reducers
 
-The catalog is generated from `detailed-input.txt`.  This file only
+The catalog is generated from `tail_reducers.cvs`.  This file only
 records the mathematical labellings used repeatedly in proofs.
 -/
 
@@ -16,7 +16,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- The absolute degree-two reducer used in Lemma 3.6: a red vertex with
 one displayed bluish neighbor and ambient degree two. -/
 theorem containsPositiveAbs
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .bluish)
     (hab : G.Adj a b) (haDegree : vertexDegree G a = 2) :
     ContainsPositiveTailReducer C := by
@@ -47,7 +47,7 @@ theorem containsPositiveAbs
 
 /-- Reducer `c+`, with its two red vertices, blue edge, and bluish vertex. -/
 theorem containsPositiveC
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .bluish)
@@ -91,7 +91,7 @@ theorem containsPositiveC
 
 /-- Reducer `n+`, with ambient vertices listed in catalog order. -/
 theorem containsPositiveN
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .blue)
@@ -136,7 +136,7 @@ theorem containsPositiveN
 
 /-- Reducer `x+`, with ambient vertices listed in catalog order. -/
 theorem containsPositiveX
-    (C : GoodColoring G) {a b c d e f g h i j k : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .reddish)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -203,7 +203,7 @@ theorem containsPositiveX
 
 /-- Reducer `m+`, in catalog order. -/
 theorem containsPositiveM
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -247,7 +247,7 @@ theorem containsPositiveM
 
 /-- Reducer `ptr-dc-a`: reducer `ptr-m` with its extra bluish vertex removed. -/
 theorem containsPositiveDcA
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .bluish)
     (hd : C.color d = .blue) (he : C.color e = .blue)
@@ -307,7 +307,7 @@ theorem containsPositiveDcA
 
 /-- Reducer `l+`, in catalog order. -/
 theorem containsPositiveL
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -351,7 +351,7 @@ theorem containsPositiveL
 
 /-- Reducer `g+`, in catalog order. -/
 theorem containsPositiveG
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish)
@@ -393,7 +393,7 @@ theorem containsPositiveG
 
 /-- Reducer `u+`, with its four generated boundary nonedges exposed. -/
 theorem containsPositiveU
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -444,7 +444,7 @@ theorem containsPositiveU
 
 /-- Reducer `p+`, in catalog order. -/
 theorem containsPositiveP
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -509,7 +509,7 @@ theorem containsPositiveP
 
 /-- The new reducer `r+`, inserted before the former `r+` in the catalog. -/
 theorem containsPositiveR
-    (C : GoodColoring G) {a b c d e f g h i : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -570,7 +570,7 @@ theorem containsPositiveR
 
 /-- Reducer `s+` (the former `r+`), in catalog order. -/
 theorem containsPositiveS
-    (C : GoodColoring G) {a b c d e f g h i : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -631,7 +631,7 @@ theorem containsPositiveS
 
 /-- Reducer `o+`; its only non-automatic boundary nonedge is `a-g`. -/
 theorem containsPositiveO
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .blue)
     (he : C.color e = .blue) (hf : C.color f = .bluish)
@@ -670,7 +670,7 @@ theorem containsPositiveO
 
 /-- Reducer `q+`; its two non-automatic boundary nonedges are exposed. -/
 theorem containsPositiveQ
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -712,7 +712,7 @@ theorem containsPositiveQ
 
 /-- Reducer `t+` (the old `s+` before insertion of the new `r+`). -/
 theorem containsPositiveT
-    (C : GoodColoring G) {a b c d e f g h i : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .blue)

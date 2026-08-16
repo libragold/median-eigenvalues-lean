@@ -10,7 +10,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 a red neighbor `j`.  After flipping `ij`, the six vertices
 `g,b,h,e,d,c` induce `m+` in the recomputed coloring. -/
 theorem lemma4_12_shared_i_red_flip
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -97,7 +97,7 @@ theorem lemma4_12_shared_i_red_flip
       (degreeC (Or.inl hj)) (degreeC (Or.inr R.hi))
       hjk hij.symm R.hhi.symm with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have haD : D.color a = .red :=
       red_of_untouched_red_edge C hflip (by simp [ha]) (by simp [hb]) hab
         hja.symm (color_ne ha R.hi (by decide))

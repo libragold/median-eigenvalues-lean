@@ -6,15 +6,15 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- Figure 5(ao).  The map below follows the paper's vertices as
+/-- Terminal no-overlap configuration.  The embedding below uses the order
 
 `(i,g,e,c,d,u,v,x,h,r,a,b,f,s)`,
 
 where `u,v` are the two neighbors of `i` other than `h`, `x` is the
 neighbor of `g` other than `a,h`, and `s` is the neighbor of `d` other
-than `c,h`.  We use the color-reversed catalog figure. -/
+than `c,h`.  We use the color-reversed catalogued reducer. -/
 theorem lemma5_13_case4_exact_no_overlap
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (Q : Lemma5_13Case4Configuration C a b c d)

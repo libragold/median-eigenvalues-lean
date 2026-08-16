@@ -6,10 +6,10 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- Figure 5(al): the reddish neighborhoods of `d,e,g` are pairwise
+/-- Terminal disjoint-neighborhood case: the reddish neighborhoods of `d,e,g` are pairwise
 disjoint and `d` does not meet `f`. -/
 theorem lemma5_13_case4_disjoint_avoids_f
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (Q : Lemma5_13Case4Configuration C a b c d)

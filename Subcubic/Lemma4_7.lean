@@ -23,7 +23,7 @@ def FormsInducedCycle8 (G : SimpleGraph V)
        (4, 5), (5, 6), (6, 7), (7, 0)]).Adj x y ↔ G.Adj (p x) (p y)
 
 private theorem contains_cutEnhancerB_swapped
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .bluish) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .red)
     (he : C.color e = .blue)
@@ -59,7 +59,7 @@ private theorem contains_cutEnhancerB_swapped
         ha, hb, hc, hd, he]
 
 private theorem contains_positiveC
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .bluish)
@@ -100,7 +100,7 @@ private theorem contains_positiveC
     fin_cases x <;> simp [ha, hb, hc, hd, he] <;> native_decide
 
 private theorem contains_positiveV
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
     (he : C.color e = .bluish)
@@ -143,7 +143,7 @@ private theorem contains_positiveV
     exact (hnot (positiveV_automaticNonedges x y hne hnon)).elim
 
 private theorem contains_positiveW
-    (C : GoodColoring G) {a b c d e f g h i j k : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -186,7 +186,7 @@ private theorem contains_positiveW
     exact (hnot (positiveW_automaticNonedges x y hne hnon)).elim
 
 private theorem contains_positiveY
-    (C : GoodColoring G) {a b c d e f g h i j k l : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k l : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -232,7 +232,7 @@ private theorem contains_positiveY
 /-- **Lemma 4.7.** An induced eight-cycle whose colors occur in two red
 edges and two blue edges contains a positive tail reducer or a cut enhancer. -/
 theorem lemma4_7
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hcycle : FormsInducedCycle8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

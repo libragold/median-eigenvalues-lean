@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-private theorem redSide_ne_bluish' {C : GoodColoring G} {x y : V}
+private theorem redSide_ne_bluish' {C : MatchingCutColoring G} {x y : V}
     (hx : C.color x = .red ∨ C.color x = .reddish)
     (hy : C.color y = .bluish) : x ≠ y := by
   intro h; subst y; rcases hx with hx | hx <;> simp_all
@@ -14,7 +14,7 @@ private theorem redSide_ne_bluish' {C : GoodColoring G} {x y : V}
 /-- If the third neighbor meets an exclusive bluish neighbor and also has a
 blue neighbor, subcubicity forces it to be reddish. -/
 private theorem f_reddish_of_meets_e_and_blue
-    (C : GoodColoring G) {a b g : V}
+    (C : MatchingCutColoring G) {a b g : V}
     (Q : Lemma5_4SharedConfiguration C a b)
     (hfe : G.Adj Q.f Q.e) (hg : C.color g = .blue)
     (hfg : G.Adj Q.f g) : C.color Q.f = .reddish := by
@@ -39,7 +39,7 @@ private theorem f_reddish_of_meets_e_and_blue
 
 /-- Case 2.2.3, oriented by `f-e`. -/
 theorem lemma5_4_blue_meets_e
-    (C : GoodColoring G) {a b g : V}
+    (C : MatchingCutColoring G) {a b g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hab : G.Adj a b) (Q : Lemma5_4SharedConfiguration C a b)
     (hfe : G.Adj Q.f Q.e) (hg : C.color g = .blue)
@@ -168,7 +168,7 @@ theorem lemma5_4_blue_meets_e
           hhr hgh.symm hgi with
         hflip | hce
       · obtain ⟨M, hflip⟩ := hflip
-        let D := M.toGoodColoring
+        let D := M.toColoring
         have hfh : Q.f ≠ h := vertex_ne_of_color_eq hf hh (by decide)
         have hfgV : Q.f ≠ g := hfg.ne
         have hfD : D.color Q.f = .red :=

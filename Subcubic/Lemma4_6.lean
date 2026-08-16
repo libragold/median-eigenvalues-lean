@@ -1,12 +1,12 @@
 import Subcubic.Lemma4_5
 
 /-!
-# Lemma 4.6 (distance-free form)
+# Lemma 4.6
 
-The paper uses this lemma whenever an alternating sequence of five
-monochromatic edges occurs merely as a subgraph.  If an extra crossing edge
-is present, Lemma 4.2 or 4.3 applies; otherwise the ten vertices induce the
-path required by Lemma 4.5.  Distance bounds are deliberately omitted.
+This lemma handles an alternating sequence of five monochromatic edges that
+occurs merely as a subgraph.  If an extra crossing edge is present, Lemma
+4.2 or 4.3 applies; otherwise the ten vertices induce the path required by
+Lemma 4.5.
 -/
 
 namespace Subcubic
@@ -27,7 +27,7 @@ def FormsPath10Subgraph (G : SimpleGraph V)
 already has the same reduction conclusion as the induced configuration of
 Lemma 4.5. -/
 theorem lemma4_6
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (hpath : FormsPath10Subgraph G a b c d e f g h i j)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -35,8 +35,8 @@ theorem lemma4_6
     (hg : C.color g = .blue) (hh : C.color h = .blue)
     (hi : C.color i = .red) (hj : C.color j = .red) :
     ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-      (ContainsPositiveTailReducer M.toGoodColoring ∨
-       ContainsCutEnhancer M.toGoodColoring) := by
+      (ContainsPositiveTailReducer M.toColoring ∨
+       ContainsCutEnhancer M.toColoring) := by
   classical
   dsimp [FormsPath10Subgraph] at hpath
   rcases hpath with ⟨hinj, hedge⟩
@@ -54,8 +54,8 @@ theorem lemma4_6
   have hij : G.Adj i j := hedge 8 9 (by native_decide)
   have current (hout : ContainsPositiveTailReducer C ∨ ContainsCutEnhancer C) :
       ∃ M : MatchingCut G, C.toMatchingCut.FlipReachable M ∧
-        (ContainsPositiveTailReducer M.toGoodColoring ∨
-         ContainsCutEnhancer M.toGoodColoring) := by
+        (ContainsPositiveTailReducer M.toColoring ∨
+         ContainsCutEnhancer M.toColoring) := by
     refine ⟨C.toMatchingCut, .refl, ?_⟩
     rcases hout with hptr | hce
     · exact Or.inl ((containsInducedUpToSwap_congr_color

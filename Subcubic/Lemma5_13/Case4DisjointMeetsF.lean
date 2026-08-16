@@ -6,10 +6,10 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-/-- Figure 5(an): after the temporary-flip reductions, the reddish
+/-- Terminal disjoint-neighborhood case: after the temporary-flip reductions, the reddish
 neighborhoods of `g,e,h` are disjoint. -/
 theorem lemma5_13_case4_disjoint_meets_f_no_share
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (Q : Lemma5_13Case4Configuration C a b c d)

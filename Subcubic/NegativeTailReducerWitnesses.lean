@@ -18,7 +18,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- The negative-catalog copy of the absolute degree-two reducer from
 Lemma 3.6. -/
 theorem containsNegativeAbs
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .bluish)
     (hab : G.Adj a b) (haDegree : vertexDegree G a = 2) :
     ContainsNegativeTailReducer C := by
@@ -75,7 +75,7 @@ are exactly the ambient degree guard (trivial for an unshortened reducer),
 edge, color, and remaining boundary-nonedge obligations of an induced
 occurrence. -/
 theorem containsNegative_of_embedding
-    (C : GoodColoring G) (name : NegativeTailReducerName)
+    (C : MatchingCutColoring G) (name : NegativeTailReducerName)
     (f : Fin (negativeTailReducer name).vertexCount → V)
     (_hdegree : NegativeTailReducerAmbientDegreeCondition G name f)
     (hinj : Function.Injective f)
@@ -104,7 +104,7 @@ The reducer name determines both the guarded canonical vertex and its required
 degree.  Keeping this premise at the witness call prevents a shortened drawing
 from being used with a degree equality for the wrong vertex. -/
 theorem containsNegative_of_embedding_with_degree
-    (C : GoodColoring G) (name : NegativeTailReducerName)
+    (C : MatchingCutColoring G) (name : NegativeTailReducerName)
     (f : Fin (negativeTailReducer name).vertexCount → V)
     (_hdegree : NegativeTailReducerAmbientDegreeCondition G name f)
     (hinj : Function.Injective f)
@@ -119,7 +119,7 @@ theorem containsNegative_of_embedding_with_degree
 /-- The degree-two variant needed in Lemma 5.13, Case (4.4.1): it is
 `u-` with the unused third neighbor of its first reddish vertex removed. -/
 theorem containsNegativeDcF
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .reddish) (hb : C.color b = .reddish)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -168,7 +168,7 @@ theorem containsNegativeDcF
 
 /-- Negative reducer `ntr-a`, in catalog order. -/
 theorem containsNegativeA
-    (C : GoodColoring G) {a b c : V}
+    (C : MatchingCutColoring G) {a b c : V}
     (ha : C.color a = .red) (hb : C.color b = .blue)
     (hc : C.color c = .blue)
     (hab : G.Adj a b) (hac : G.Adj a c) (hbc : G.Adj b c)
@@ -192,7 +192,7 @@ theorem containsNegativeA
 
 /-- Negative reducer `f-`, in catalog order. -/
 theorem containsNegativeF
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .blue)
     (he : C.color e = .blue) (hf : C.color f = .bluish)
@@ -222,7 +222,7 @@ theorem containsNegativeF
 
 /-- Negative reducer `k-`, in catalog order. -/
 theorem containsNegativeK
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish) (hd : C.color d = .blue)
     (he : C.color e = .blue) (hf : C.color f = .bluish)
@@ -255,7 +255,7 @@ theorem containsNegativeK
 
 /-- Negative reducer `m-`, in catalog order. -/
 theorem containsNegativeM
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .blue)
     (he : C.color e = .blue) (hf : C.color f = .bluish)
@@ -296,7 +296,7 @@ theorem containsNegativeM
 
 /-- Negative reducer `n-`, in catalog order. -/
 theorem containsNegativeO
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish) (hd : C.color d = .blue)
     (he : C.color e = .blue) (hf : C.color f = .bluish)
@@ -334,7 +334,7 @@ theorem containsNegativeO
 
 /-- Degree-constrained negative reducer `ntr-dc-a`, in catalog order. -/
 theorem containsNegativeDcA
-    (C : GoodColoring G) {a b c : V}
+    (C : MatchingCutColoring G) {a b c : V}
     (ha : C.color a = .reddish) (hb : C.color b = .blue)
     (hc : C.color c = .blue)
     (haDegree : vertexDegree G a = 2)
@@ -364,7 +364,7 @@ theorem containsNegativeDcA
 
 /-- Negative reducer `c-`, in catalog order. -/
 theorem containsNegativeC
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (hab : G.Adj a b) (hac : G.Adj a c) (had : G.Adj a d)
@@ -393,7 +393,7 @@ theorem containsNegativeC
 
 /-- Negative reducer `g-`, in catalog order. -/
 theorem containsNegativeG
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -423,7 +423,7 @@ theorem containsNegativeG
 
 /-- Negative reducer `b-`, in catalog order. -/
 theorem containsNegativeB
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (hac : G.Adj a c) (had : G.Adj a d)
@@ -457,7 +457,7 @@ theorem containsNegativeB
 
 /-- Negative reducer `d-`, in catalog order. -/
 theorem containsNegativeD
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish)
@@ -498,7 +498,7 @@ theorem containsNegativeD
 
 /-- Negative reducer `e-`, in catalog order. -/
 theorem containsNegativeE
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish)
@@ -537,7 +537,7 @@ theorem containsNegativeE
 /-- Degree-constrained reducer `ntr-dc-b`; the distinguished reddish vertex has
 ambient degree two, so the omitted fifth vertex is genuinely absent. -/
 theorem containsNegativeDcB
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (hbDegree : vertexDegree G b = 2)
@@ -571,7 +571,7 @@ theorem containsNegativeDcB
 
 /-- Negative reducer `h-`, in catalog order. -/
 theorem containsNegativeH
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -615,7 +615,7 @@ theorem containsNegativeH
 
 /-- Negative reducer `s-`, in catalog order. -/
 theorem containsNegativeT
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -659,7 +659,7 @@ theorem containsNegativeT
 
 /-- `ntr-dc-d`: `ntr-u` with `h` removed and reddish `c` of ambient degree two. -/
 theorem containsNegativeDcD
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -702,7 +702,7 @@ theorem containsNegativeDcD
 
 /-- `ntr-n`: the corresponding unguarded reducer with red `c`. -/
 theorem containsNegativeN
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -745,7 +745,7 @@ theorem containsNegativeN
 
 /-- `ntr-dc-e`: the shortened reducer with reddish `c` of ambient degree one. -/
 theorem containsNegativeDcE
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -785,7 +785,7 @@ theorem containsNegativeDcE
 
 /-- Negative reducer `y-`, in catalog order. -/
 theorem containsNegativeZ
-    (C : GoodColoring G) {a b c d e f g h i : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .red)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -865,7 +865,7 @@ theorem containsNegativeZ
 
 /-- Negative reducer `i-`, in catalog order. -/
 theorem containsNegativeI
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -910,7 +910,7 @@ theorem containsNegativeI
 
 /-- Negative reducer `j-`, in catalog order. -/
 theorem containsNegativeJ
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .reddish)
     (hc : C.color c = .bluish) (hd : C.color d = .blue)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -966,7 +966,7 @@ theorem containsNegativeJ
 
 /-- Negative reducer `r-`, in catalog order. -/
 theorem containsNegativeS
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -1009,7 +1009,7 @@ theorem containsNegativeS
 
 /-- Negative reducer `t-`, in catalog order. -/
 theorem containsNegativeU
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -1052,7 +1052,7 @@ theorem containsNegativeU
 
 /-- Negative reducer `z-`, in catalog order. -/
 theorem containsNegativeAa
-    (C : GoodColoring G) {a b c d e f g h i : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -1099,7 +1099,7 @@ theorem containsNegativeAa
 
 /-- Negative reducer `x-`, in catalog order. -/
 theorem containsNegativeY
-    (C : GoodColoring G) {a b c d e f g h i : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .blue)
@@ -1148,7 +1148,7 @@ theorem containsNegativeY
 
 /-- Negative reducer `ae-`, in catalog order. -/
 theorem containsNegativeAf
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -1202,7 +1202,7 @@ theorem containsNegativeAf
 
 /-- Negative reducer `o-`, in catalog order. -/
 theorem containsNegativeP
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -1258,7 +1258,7 @@ theorem containsNegativeP
 
 /-- Negative reducer `ai-`, in catalog order. -/
 theorem containsNegativeAj
-    (C : GoodColoring G) {a b c d e f g h i j k : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k : V}
     (ha : C.color a = .reddish) (hb : C.color b = .reddish)
     (hc : C.color c = .red) (hd : C.color d = .red)
     (he : C.color e = .blue) (hf : C.color f = .blue)
@@ -1327,7 +1327,7 @@ theorem containsNegativeAj
 
 /-- Negative reducer `aj-`, in catalog order. -/
 theorem containsNegativeAk
-    (C : GoodColoring G) {a b c d e f g h i j k : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -1368,7 +1368,7 @@ theorem containsNegativeAk
 
 /-- Negative reducer `ak-`, in catalog order. -/
 theorem containsNegativeAl
-    (C : GoodColoring G) {a b c d e f g h i j k l : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k l : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .red)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -1409,7 +1409,7 @@ theorem containsNegativeAl
 
 /-- Negative reducer `am-`, in catalog order. -/
 theorem containsNegativeAn
-    (C : GoodColoring G) {a b c d e f g h i j k l : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j k l : V}
     (ha : C.color a = .reddish)
     (hb : C.color b = .red) (hc : C.color c = .red)
     (hd : C.color d = .red) (he : C.color e = .red)
@@ -1469,7 +1469,7 @@ theorem containsNegativeAn
 
 /-- Negative reducer `ntr-l`, whose third red-side vertex is red. -/
 theorem containsNegativeL
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .blue)
@@ -1515,7 +1515,7 @@ theorem containsNegativeL
 The degree hypothesis records that this shortened pattern contains the full
 ambient neighborhood of that vertex. -/
 theorem containsNegativeDcC
-    (C : GoodColoring G) {a b c d e f g : V}
+    (C : MatchingCutColoring G) {a b c d e f g : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish)
     (hd : C.color d = .bluish) (he : C.color e = .bluish)
@@ -1559,7 +1559,7 @@ theorem containsNegativeDcC
 
 /-- Negative reducer `aa-`, in catalog order. -/
 theorem containsNegativeAb
-    (C : GoodColoring G) {a b c d e f g h i : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .reddish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .blue)
@@ -1626,7 +1626,7 @@ theorem containsNegativeAb
 
 /-- Negative reducer `af-`, in catalog order. -/
 theorem containsNegativeAg
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -1678,7 +1678,7 @@ theorem containsNegativeAg
 
 /-- Negative reducer `p-`, in catalog order. -/
 theorem containsNegativeQ
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .blue)
@@ -1734,7 +1734,7 @@ theorem containsNegativeQ
 
 /-- Negative reducer `q-`, in catalog order. -/
 theorem containsNegativeR
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (ha : C.color a = .reddish) (hb : C.color b = .red)
     (hc : C.color c = .red) (hd : C.color d = .bluish)
     (he : C.color e = .blue) (hf : C.color f = .blue)

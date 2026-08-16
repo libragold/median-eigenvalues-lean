@@ -8,7 +8,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma4_8_case_i_adj_j
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (he : C.color e = .red) (hf : C.color f = .red)
@@ -31,7 +31,7 @@ theorem lemma4_8_case_i_adj_j
   have hef : G.Adj e f := by simpa using edge 4 5 (by native_decide)
   obtain ⟨M, hflip⟩ := exists_flipAt_of_local C
     he hd hf hc (Or.inl hj) (Or.inl hi) hef hde.symm hej hcd.symm hdi
-  let D := M.toGoodColoring
+  let D := M.toColoring
   have hie : i ≠ e := by
     intro hie
     rw [hie] at hi

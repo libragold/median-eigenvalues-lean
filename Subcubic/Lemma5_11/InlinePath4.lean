@@ -5,10 +5,10 @@ import Subcubic.Lemma5_3
 /-!
 # Inlined Lemma 5.10 argument
 
-The paper uses this lemma whenever an alternating sequence of five
-monochromatic edges occurs merely as a subgraph.  If an extra crossing edge
-is present, Lemma 5.2 or 5.3 applies; otherwise the ten vertices induce the
-path required by Lemma 5.7.  Distance bounds are deliberately omitted.
+This lemma handles an alternating sequence of five monochromatic edges that
+occurs merely as a subgraph.  If an extra crossing edge is present, Lemma
+5.2 or 5.3 applies; otherwise the ten vertices induce the path required by
+Lemma 5.7.
 -/
 
 namespace Subcubic
@@ -19,7 +19,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 already has the same reduction conclusion as the induced configuration of
 Lemma 5.7. -/
 theorem lemma5_10_inline
-    (C : GoodColoring G) {a b c d e f g h i j : V}
+    (C : MatchingCutColoring G) {a b c d e f g h i j : V}
     (hpath : FormsPath10Subgraph G a b c d e f g h i j)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

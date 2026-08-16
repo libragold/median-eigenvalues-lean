@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma4_8_case_k_adj_j
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -84,7 +84,7 @@ theorem lemma4_8_case_k_adj_j
       hef.symm hfg hgh
       with hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hjf : ¬ G.Adj j f := by
       apply not_adj_fourth_neighbor_of_subcubic C.subcubic
         hej.symm hja hkj.symm

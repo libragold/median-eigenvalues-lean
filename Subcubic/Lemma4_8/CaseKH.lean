@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma4_8_case_k_not_adj_j_adj_h
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -80,7 +80,7 @@ theorem lemma4_8_case_k_not_adj_j_adj_h
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd
       with hflip1 | hce
   · obtain ⟨M₁, hflip1⟩ := hflip1
-    let D := M₁.toGoodColoring
+    let D := M₁.toColoring
     have hcD : D.color c = .red := by
       apply red_of_flipped_blue_with_reddish_neighbor C hflip1 hk hck
       · exact hkb
@@ -136,7 +136,7 @@ theorem lemma4_8_case_k_not_adj_j_adj_h
         hck.symm hkh hgh.symm
         with hflip2 | hceD
     · obtain ⟨M₂, hflip2⟩ := hflip2
-      let E := M₂.toGoodColoring
+      let E := M₂.toColoring
       have heD : D.color e = .red := by
         apply red_of_untouched_red_edge C hflip1 (by simp [he]) (by simp [hf]) hef
         · exact hv (u := (4 : Fin 8)) (v := 1) (by decide)

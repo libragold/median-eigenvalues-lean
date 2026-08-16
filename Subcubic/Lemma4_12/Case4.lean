@@ -6,7 +6,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma4_12RedGConfiguration (C : GoodColoring G)
+structure Lemma4_12RedGConfiguration (C : MatchingCutColoring G)
     (a b c d : V) extends Lemma4_12ThirdNeighborConfiguration C a b c d where
   g : V
   h : V
@@ -20,7 +20,7 @@ structure Lemma4_12RedGConfiguration (C : GoodColoring G)
 /-- If the third neighbor `g` of `e` in Case (4) is reddish, reducers `o+`
 or `q+` apply (with colors reversed). -/
 theorem lemma4_12_case4_reddish
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -111,7 +111,7 @@ theorem lemma4_12_case4_reddish
 
 /-- Split Case (4) according to the color of the third neighbor of `e`. -/
 theorem lemma4_12_case4_split
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

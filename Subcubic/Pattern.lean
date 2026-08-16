@@ -38,8 +38,8 @@ def swapSides : ColoredPattern where
   cases P
   simp [swapSides]
 
-/-- `P` occurs as an induced colored subgraph of the ambient good coloring. -/
-def OccursInduced (C : GoodColoring G) : Prop :=
+/-- `P` occurs as an induced colored subgraph of the ambient matching-cut coloring. -/
+def OccursInduced (C : MatchingCutColoring G) : Prop :=
   ∃ f : Fin P.vertexCount → V,
     Function.Injective f ∧
     (∀ x y, P.graph.Adj x y ↔ G.Adj (f x) (f y)) ∧
@@ -86,7 +86,7 @@ color-preserving embedding. Degree saturation and the matching-cut condition
 prove the automatic nonedges; `hboundary` supplies only the remaining
 cross-side nonedges. -/
 theorem occursInduced_of_embedding_with_degrees
-    (C : GoodColoring G)
+    (C : MatchingCutColoring G)
     (f : Fin P.vertexCount → V)
     (hinj : Function.Injective f)
     (hedge : ∀ {x y}, P.graph.Adj x y → G.Adj (f x) (f y))
@@ -180,7 +180,7 @@ Degree-sensitive catalogue entries use `occursInduced_of_embedding_with_degrees`
 instead. Keeping the two APIs separate makes the ordinary witnesses small and
 fast to elaborate. -/
 theorem occursInduced_of_embedding
-    (C : GoodColoring G)
+    (C : MatchingCutColoring G)
     (f : Fin P.vertexCount → V)
     (hinj : Function.Injective f)
     (hedge : ∀ {x y}, P.graph.Adj x y → G.Adj (f x) (f y))
@@ -195,14 +195,14 @@ theorem occursInduced_of_embedding
   contradiction
 
 /-- Induced colored occurrence depends only on the color function, not on the
-proof fields of `GoodColoring`. -/
-theorem occursInduced_congr_color {C D : GoodColoring G}
+proof fields of `MatchingCutColoring`. -/
+theorem occursInduced_congr_color {C D : MatchingCutColoring G}
     (hcolor : C.color = D.color) : P.OccursInduced C ↔ P.OccursInduced D := by
   unfold OccursInduced
   rw [hcolor]
 
 /-- Reversing a pattern is equivalent to reversing the ambient coloring. -/
-theorem swapSides_occursInduced_iff (C : GoodColoring G) :
+theorem swapSides_occursInduced_iff (C : MatchingCutColoring G) :
     P.swapSides.OccursInduced C ↔ P.OccursInduced C.swapSides := by
   constructor
   · rintro ⟨f, hf, hedge, hcolor, hdegree⟩
@@ -221,12 +221,12 @@ theorem swapSides_occursInduced_iff (C : GoodColoring G) :
     · simpa [swapSides] using hdegree
 
 /-- `P` occurs in its displayed orientation or with all colors exchanged. -/
-def OccursInducedUpToSwap (C : GoodColoring G) : Prop :=
+def OccursInducedUpToSwap (C : MatchingCutColoring G) : Prop :=
   P.OccursInduced C ∨ P.swapSides.OccursInduced C
 
 /-- Occurrence up to side-swap does not depend on which color-side was named
 first. -/
-@[simp] theorem occursInducedUpToSwap_swapSides (C : GoodColoring G) :
+@[simp] theorem occursInducedUpToSwap_swapSides (C : MatchingCutColoring G) :
     P.OccursInducedUpToSwap C.swapSides ↔ P.OccursInducedUpToSwap C := by
   constructor
   · rintro (h | h)
@@ -244,20 +244,20 @@ end ColoredPattern
 /-- An induced occurrence of some pattern in `Catalog`, allowing all colors to
 be exchanged. -/
 def ContainsInducedUpToSwap {V : Type*} [Fintype V] {G : SimpleGraph V}
-    (Catalog : ColoredPattern → Prop) (C : GoodColoring G) : Prop :=
+    (Catalog : ColoredPattern → Prop) (C : MatchingCutColoring G) : Prop :=
   ∃ P, Catalog P ∧ P.OccursInducedUpToSwap C
 
 /-- Catalog containment likewise depends only on the recomputed color
 function. -/
 theorem containsInducedUpToSwap_congr_color {V : Type*} [Fintype V]
     {G : SimpleGraph V} (Catalog : ColoredPattern → Prop)
-    {C D : GoodColoring G} (hcolor : C.color = D.color) :
+    {C D : MatchingCutColoring G} (hcolor : C.color = D.color) :
     ContainsInducedUpToSwap Catalog C ↔ ContainsInducedUpToSwap Catalog D := by
   unfold ContainsInducedUpToSwap ColoredPattern.OccursInducedUpToSwap
   simp only [ColoredPattern.occursInduced_congr_color _ hcolor]
 
 @[simp] theorem containsInducedUpToSwap_swapSides {V : Type*} [Fintype V]
-    {G : SimpleGraph V} (Catalog : ColoredPattern → Prop) (C : GoodColoring G) :
+    {G : SimpleGraph V} (Catalog : ColoredPattern → Prop) (C : MatchingCutColoring G) :
     ContainsInducedUpToSwap Catalog C.swapSides ↔ ContainsInducedUpToSwap Catalog C := by
   simp only [ContainsInducedUpToSwap, ColoredPattern.occursInducedUpToSwap_swapSides]
 

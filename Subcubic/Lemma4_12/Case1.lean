@@ -7,7 +7,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma4_12_case_ef
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -37,7 +37,7 @@ theorem lemma4_12_case_ef
       (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have hbD : D.color b = .blue :=
       blue_of_flipped_red_endpoint C hflip ha hab.symm
         (degreeC (Or.inl hb))

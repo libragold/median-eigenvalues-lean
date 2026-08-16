@@ -11,7 +11,7 @@ set_option linter.unusedSimpArgs false
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 theorem lemma5_13_case4_core
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -314,7 +314,7 @@ theorem lemma5_13_case4_core
 /-- Complete Case (4), including the temporary `{b,c}` relabeling in
 Case (4.4.4.1). -/
 theorem lemma5_13_case4
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -385,7 +385,7 @@ theorem lemma5_13_case4
     rcases exists_flipAt_or_cutEnhancer C hb hc ha hd
         (degreeC (Or.inl hb)) (degreeC (Or.inr hc)) hab.symm hbc hcd with
       ⟨M, hflip⟩ | hce
-    · let D := M.toGoodColoring
+    · let D := M.toColoring
       have hcD : D.color c = .red :=
         red_of_flipped_blue_endpoint C hflip hd hcd
           (degreeC (Or.inr hc))
@@ -505,9 +505,9 @@ theorem lemma5_13_case4
       intro u v p q hu hv hpq hqq htu htv huf hvf huv
         hep heq hpf hqf hpqne htdeg hea hNoShareDE' hNoShareEG' htfa htp htq
       dsimp [R] at htu htv htdeg hea hNoShareDE' hNoShareEG' htfa htp htq
-      -- The terminal post-flip configuration is precisely Figure 5(am),
-      -- unless `t` and the original `g` share a reddish neighbor; those
-      -- overlap alternatives are Figures 5(v) and 5(ac).
+      -- The terminal post-flip configuration is disjoint unless `t` and
+      -- the original `g` share a reddish neighbor; those shared-neighbor
+      -- alternatives are handled separately.
       have color_neD {z w : V} {cz cw : Color}
           (hz : D.color z = cz) (hw : D.color w = cw) (hne : cz ≠ cw) : z ≠ w := by
         intro e; subst w; simp_all

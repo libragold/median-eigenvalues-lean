@@ -14,7 +14,7 @@ namespace Subcubic
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 private theorem contains_positiveB
-    (C : GoodColoring G) {a b c d : V}
+    (C : MatchingCutColoring G) {a b c d : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (hab : G.Adj a b) (hac : G.Adj a c) (had : G.Adj a d)
@@ -44,7 +44,7 @@ private theorem contains_positiveB
     fin_cases x <;> simp [ha, hb, hc, hd] <;> native_decide
 
 private theorem contains_positiveH
-    (C : GoodColoring G) {a b c d e : V}
+    (C : MatchingCutColoring G) {a b c d e : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish)
@@ -89,7 +89,7 @@ private theorem contains_positiveH
     fin_cases x <;> simp [ha, hb, hc, hd, he] <;> native_decide
 
 private theorem contains_positiveK
-    (C : GoodColoring G) {a b c d e f : V}
+    (C : MatchingCutColoring G) {a b c d e f : V}
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .bluish) (hd : C.color d = .bluish)
     (he : C.color e = .bluish) (hf : C.color f = .bluish)
@@ -153,7 +153,7 @@ private theorem contains_positiveK
 endpoint other than its mate on `ab` is bluish, then the graph contains a
 positive tail reducer. -/
 theorem lemma4_4
-    (C : GoodColoring G) {a b : V}
+    (C : MatchingCutColoring G) {a b : V}
     (ha : C.color a = .red) (hb : C.color b = .red) (hab : G.Adj a b)
     (haDegree : vertexDegree G a = 3)
     (hbDegree : vertexDegree G b = 3)

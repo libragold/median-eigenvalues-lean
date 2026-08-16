@@ -7,7 +7,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 /-- The first case in the proof: the reddish third neighbor of `d` is also
 adjacent to `g`, giving the color-reversed copy of positive reducer `c+`. -/
 theorem lemma4_8_case_i_adj_g
-    (C : GoodColoring G) {d e f g i : V}
+    (C : MatchingCutColoring G) {d e f g i : V}
     (hd : C.color d = .blue) (he : C.color e = .red)
     (hf : C.color f = .red) (hg : C.color g = .blue)
     (hi : C.color i = .reddish)

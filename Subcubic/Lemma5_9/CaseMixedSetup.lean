@@ -7,7 +7,7 @@ namespace Subcubic
 
 variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
-structure Lemma5_9MixedPConfiguration (C : GoodColoring G)
+structure Lemma5_9MixedPConfiguration (C : MatchingCutColoring G)
     (a b c d e f g h : V) extends
     Lemma5_9LMConfiguration C a b c d e f g h where
   hl : C.color l = .bluish
@@ -40,7 +40,7 @@ structure Lemma5_9MixedPConfiguration (C : GoodColoring G)
   hpj : ¬ G.Adj p j
 
 theorem lemma5_9_case_lm_mixed_setup
-    (C : GoodColoring G) {a b c d e f g h : V}
+    (C : MatchingCutColoring G) {a b c d e f g h : V}
     (hpath : FormsInducedPath8 G a b c d e f g h)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)

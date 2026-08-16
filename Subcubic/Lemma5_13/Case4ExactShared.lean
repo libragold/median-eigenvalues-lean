@@ -10,7 +10,7 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 neighbor is blue and has a red neighbor `j`.  Flipping `ij` produces the
 alternating path `a-b-c-d-h-i`. -/
 theorem lemma5_13_case4_exact_shared_i_blue_red
-    (C : GoodColoring G) {a b c d h i j : V}
+    (C : MatchingCutColoring G) {a b c d h i j : V}
     (hpath : FormsInducedPath4 G a b c d)
     (ha : C.color a = .red) (hb : C.color b = .red)
     (hc : C.color c = .blue) (hd : C.color d = .blue)
@@ -55,7 +55,7 @@ theorem lemma5_13_case4_exact_shared_i_blue_red
       (degreeC (Or.inl hj)) (degreeC (Or.inr hi)) hjt hij.symm hik with
     hflip | hce
   · obtain ⟨M, hflip⟩ := hflip
-    let D := M.toGoodColoring
+    let D := M.toColoring
     have haD : D.color a = .red :=
       red_of_untouched_red_edge C hflip (by simp [ha]) (by simp [hb]) hab
         haj (color_ne ha hi (by decide))

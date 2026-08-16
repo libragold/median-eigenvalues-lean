@@ -10,9 +10,9 @@ variable {V : Type*} [Fintype V] {G : SimpleGraph V}
 
 /-- If `i` is blue but has no red neighbor, its third neighbor `q` is
 reddish.  According as `q` is also the remaining reddish neighbor of `d`,
-Figures 5(b) or 5(d) apply. -/
+one of the two small negative reducers applies. -/
 theorem lemma5_13_case4_exact_blue_no_red
-    (C : GoodColoring G) {c d h s i : V}
+    (C : MatchingCutColoring G) {c d h s i : V}
     (hc : C.color c = .blue) (hd : C.color d = .blue)
     (hh : C.color h = .reddish) (hs : C.color s = .reddish)
     (hi : C.color i = .blue)
